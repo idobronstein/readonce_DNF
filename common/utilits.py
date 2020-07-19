@@ -1,6 +1,4 @@
-from consts import *
-
-
+from defs import *
 
 def is_algined(network, X, i, term):
 	for x in X:

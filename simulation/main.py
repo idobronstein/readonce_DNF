@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(-1, os.path.join(os.getcwd(), '..', 'common'))
+
 from consts import *
 from data import *
 from network import *
@@ -67,7 +71,7 @@ def main():
             B_prone = network.B[aligend_indexes]
             prone_network = Network(W_prone, B_prone)
 
-            save_results(minimum_point, os.path.join(run_name, PRONE_DIR), result_object, network, readonce, X, Y)
+            save_results(minimum_point, os.path.join(run_name, PRONE_DIR), result_object, prone_network, readonce, X, Y)
 
             if is_perfect_classification(network, X, Y):
                 print("The prone network has a perfect classification")

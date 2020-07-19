@@ -1,19 +1,7 @@
-import copy
-import os
-from datetime import datetime
-import pickle
-import shutil
-import numpy as np
-import pylab
-import csv
-from itertools import combinations
-import scipy.cluster.hierarchy as sch
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
+from defs import *
 
 D = 6
-LR = 2e-3
+LR = 1e-2
 SIGMA = 1e-5
 ALPHA = 0
 SECOND_LAYER_BAIS = -1
@@ -28,8 +16,8 @@ MAX_VALUE_FOR_POSITIVE_SAMPLE = 2
 MIN_VALUE_FOR_NEGATIVE_SAMPLE = 0
 
 IS_TEMP = True
-TEMP_RESULT_PATH = r"D:\checkouts\read_once_dnf\tmp"
-GENERAL_RESULT_PATH = r"D:\checkouts\read_once_dnf\results"
+TEMP_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\tmp"
+GENERAL_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\results"
 BACKUP_DIR = 'backup'
 PRONE_DIR = 'prone'
 ORIGINAL_FINAL_DIR = 'final'
@@ -38,7 +26,7 @@ MAX_TRY_TO_DELETE_DIR = 4
 FLOAT_TYPE = np.float32
 
 PRINT_STEP_JUMP = 50
-MAX_STEPS = 300
+MAX_STEPS = 10000
 
 ##################################### OLD #####################################
 

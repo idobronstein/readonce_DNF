@@ -1,6 +1,5 @@
 from consts import *
 
-
 def calc_combinations(current, i, all_combinations):
     if i + 1 > D:
         all_combinations.append(current)
