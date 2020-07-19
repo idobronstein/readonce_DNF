@@ -36,31 +36,9 @@ def get_all_partitions():
 
 def get_all_balanced_partitions():
     all_partition = get_all_partitions()
-
-    is_balanced = lambda p: np.unique(p, return_counts=True)[1][0] == p.shape[0]
+    is_balanced = lambda p: np.unique(p, return_counts=True)[1][0] == len(p)
     all_balanced_partitions = [partition for partition in all_partition if is_balanced(partition)]
-    
     return all_balanced_partitions
-
-def upsampling(X, Y, amount, label):
-    print("Upsampeling {0} samples with label {1}".format(amount, label))
-    for i in range(2 ** D):
-        if Y[i] == label:
-            for _ in range(amount):
-                X = np.concatenate([X, [X[i]]])
-                Y = np.concatenate([Y, [Y[i]]])
-    print("Number of samples {0}".format(X.shape[0]))
-    return X, Y
-
-def downsampling(X, Y, prob, label):
-    print("Downsampeling with prob {0} and label {1}".format(prob, label))
-    for i in range(2 ** D - 1, -1 , -1):
-        if Y[i] == label or label == 0:
-            if np.random.uniform() > prob:
-                X = np.delete(X, i, 0)
-                Y = np.delete(Y, i, 0)
-    print("Number of samples {0}".format(X.shape[0]))
-    return X, Y
 
 class ReadOnceDNF():
 
@@ -86,3 +64,26 @@ class ReadOnceDNF():
                 return POSITIVE
         return NEGATIVE
 
+
+
+##################################### OLD #####################################
+
+def upsampling(X, Y, amount, label):
+    print("Upsampeling {0} samples with label {1}".format(amount, label))
+    for i in range(2 ** D):
+        if Y[i] == label:
+            for _ in range(amount):
+                X = np.concatenate([X, [X[i]]])
+                Y = np.concatenate([Y, [Y[i]]])
+    print("Number of samples {0}".format(X.shape[0]))
+    return X, Y
+
+def downsampling(X, Y, prob, label):
+    print("Downsampeling with prob {0} and label {1}".format(prob, label))
+    for i in range(2 ** D - 1, -1 , -1):
+        if Y[i] == label or label == 0:
+            if np.random.uniform() > prob:
+                X = np.delete(X, i, 0)
+                Y = np.delete(Y, i, 0)
+    print("Number of samples {0}".format(X.shape[0]))
+    return X, Y

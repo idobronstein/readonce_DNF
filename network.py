@@ -36,7 +36,7 @@ class Network():
         return value
 
     def get_prderiction(self, x):
-        first_layer_value = self.get_network_value
+        first_layer_value = self.get_network_value(x)
         return np.sign(first_layer_value + SECOND_LAYER_BAIS)
 
     def check_loss_reset_sample(self, x, y):
@@ -57,7 +57,7 @@ class Network():
 
     def update_network(self, X, Y, lr, display):
         # Update all weights
-        global_minimum_point, local_minimum_point = True True
+        global_minimum_point, local_minimum_point = True, True
         gradient_step_W, gradient_step_B = np.zeros([self.r, D]), np.zeros([self.r])
         zero_loss_sample_counter = 0
         for x, y in zip(X, Y):
@@ -85,6 +85,10 @@ class Network():
             print("Accuracy: {0} / {1}".format(zero_loss_sample_counter, X.shape[0]))
         # Return if we are in a global minimum 
         return global_minimum_point, local_minimum_point
+
+
+
+##################################### OLD #####################################
 
 
 class TwoVariableNetwork():

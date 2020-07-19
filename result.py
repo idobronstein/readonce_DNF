@@ -11,70 +11,68 @@ sigma         -  {sigma}
 """
     NETWROK_NAME = "Network.pkl"
     READ_ONCE_DNF_NAME = "ReadOnceDNF.pkl"
-    GLOBAL_MINIMUM_SIGN = "achive_global_minimum"
-    SUBNETWORK_GLOBAL_MINIMUM_SIGN = "subnetwork_global_minimum"
+    RESULT_SUMMERY_NAME = 'result_summery.txt'
     CLUSTER_GRAPH_W_NAME = "ClusterGraph_W.png"
     CLUSTER_GRAPH_B_NAME = "ClusterGraph_B.png"
-    POSITIVE_SAMPLE_TO_NEURON = 'PositiveToSampleNeuron.csv'
-    UOT_TO_NUMBER_OF_NEURONS_GRAPH_NAME = 'number_of_neurons.png'
-    UOT_TO_MEAN_NORM_OF_NEURONS_GRAPH_NAME = 'mean_norm_of_neurons.png'
-    INDEX_TO_UOF_MAP = 'index_to_UOF.txt'
+    SUMMARIZE_ALINED_TERMS_NAME = 'summarize_alined_terms.txt'
 
-    def __init__(self, create_dir=False, new_D=None):
-        assert os.path.isdir(GENERAL_RESULT_PATH), "The result path: {0} doesn't exsits".format(GENERAL_RESULT_PATH)
-        result_D = new_D if new_D is not None else D
-        dir_name = "D={0}".format(result_D)    
-        self.result_dir = os.path.join(GENERAL_RESULT_PATH, dir_name)
-        if create_dir:
-            if os.path.exists(self.result_dir):
+    def __init__(self, result_path=TEMP_RESULT_PATH, is_tmp=True, new_D=None):
+        assert os.path.isdir(result_path), "The result path: {0} doesn't exsits".format(result_path)
+        dir_name = "D={0}".format(D)    
+        self.result_dir = os.path.join(result_path, dir_name)
+        if os.path.exists(self.result_dir):
+            if is_tmp:
+                self.enforce_delete_dir()
+            else:
+                assert False, "There is already permanet directory here: {0}".format(self.result_dir)
+        os.mkdir(self.result_dir)
+        param_text_file_path = os.path.join(self.result_dir, "param_file.txt")
+        with open(param_text_file_path, "w") as f:
+            f.write(self.PARAM_TEXT.format(time=datetime.now(), D=D, lr=LR, sigma=SIGMA))
+
+    def enforce_delete_dir(self):
+        try_count = 0
+        while try_count < MAX_TRY_TO_DELETE_DIR:
+            try_count += 1
+            if not os.path.exists(self.result_dir):
+                return
+            try:
                 shutil.rmtree(self.result_dir)
-            os.mkdir(self.result_dir)
-            param_text_file_path = os.path.join(self.result_dir, "param_file.txt")
-            with open(param_text_file_path, "w") as f:
-                f.write(self.PARAM_TEXT.format(time=datetime.now(), D=result_D, lr=LR, sigma=SIGMA))
-        self.leaves_index = None
+            except:
+                pass
+        assert True, "Can't delete the directory: {0}".format(self.result_dir)
 
-    def save_run(self, name, Network, ReadOnceDNF, global_minimum):
+    def create_dir(self, name):
+        result_path = os.path.join(self.result_dir, name)
+        os.mkdir(result_path)
+
+    def save_run(self, name, network, readonce, global_minimum, perfect_classifocation):
         result_path = os.path.join(self.result_dir, name)
         os.mkdir(result_path)
         with open(os.path.join(result_path, self.NETWROK_NAME), "wb") as f:
-            pickle.dump(Network, f)
+            pickle.dump(network, f)
         with open(os.path.join(result_path, self.READ_ONCE_DNF_NAME), "wb") as f:
-            pickle.dump(ReadOnceDNF, f)
-        if global_minimum:
-            with open(os.path.join(result_path, self.GLOBAL_MINIMUM_SIGN), "wb") as f:
-                pass 
-
-    def save_subnetwork_succeed(self, name, subnetwork_global_minimum):
-        result_path = os.path.join(self.result_dir, name)
-        if subnetwork_global_minimum:
-            with open(os.path.join(result_path, self.SUBNETWORK_GLOBAL_MINIMUM_SIGN), "wb") as f:
-                pass 
+            pickle.dump(readonce, f)
+        with open(os.path.join(result_path, self.RESULT_SUMMERY_NAME), "w") as f:
+            f.write("{0}    -   Got perfect classification\n".format(perfect_classifocation))
+            f.write("{0}    -   Got to global minimum\n".format(global_minimum))
 
     def load_run(self, name):
         result_path = os.path.join(self.result_dir, name)
         with open(os.path.join(result_path, self.NETWROK_NAME), "rb") as f:
-            Network = pickle.load(f)
+            network = pickle.load(f)
         with open(os.path.join(result_path, self.READ_ONCE_DNF_NAME), "rb") as f:
-            ReadOnceDNF = pickle.load(f) 
-        return Network, ReadOnceDNF
+            readonce = pickle.load(f) 
+        return network, readonce
 
-
-    def generate_cluster_graph(self, name, Network):
+    def generate_cluster_graph(self, name, network):
         result_path = os.path.join(self.result_dir, name)
-        B_T = np.array([Network.B]).T
-        weights = np.concatenate([Network.W, B_T], 1)
-        
+        leaves_index = cluster_network(network)
+
         # Plot W graph
         fig = pylab.figure()
-        axdendro = fig.add_axes([0.09,0.1,0.2,0.8])
-        Y = sch.linkage(weights, method='centroid')
-        Z = sch.dendrogram(Y, orientation='right')
-        axdendro.set_xticks([])
-        axdendro.set_yticks([])
         axmatrix = fig.add_axes([0.3,0.1,0.6,0.8])
-        leaves_index = Z['leaves']
-        weights_by_leaves = Network.W[leaves_index,:]
+        weights_by_leaves = network.W[leaves_index,:]
         im = axmatrix.matshow(weights_by_leaves, aspect='auto', origin='lower')
         axmatrix.set_xticks([])
         axmatrix.set_yticks([])
@@ -85,14 +83,8 @@ sigma         -  {sigma}
 
         # Plot B graph
         fig = pylab.figure()
-        axdendro = fig.add_axes([0.09,0.1,0.2,0.8])
-        Y = sch.linkage(weights, method='centroid')
-        Z = sch.dendrogram(Y, orientation='right')
-        axdendro.set_xticks([])
-        axdendro.set_yticks([])
         axmatrix = fig.add_axes([0.3,0.1,0.6,0.8])
-        leaves_index = Z['leaves']
-        weights_by_leaves = B_T[leaves_index,:]
+        weights_by_leaves = np.array([network.B]).T[leaves_index,:]
         im = axmatrix.matshow(weights_by_leaves, aspect='auto', origin='lower')
         axmatrix.set_xticks([])
         axmatrix.set_yticks([])
@@ -101,45 +93,44 @@ sigma         -  {sigma}
         fig.savefig(os.path.join(result_path, self.CLUSTER_GRAPH_B_NAME), bbox_inches="tight")
         plt.clf()
 
-        # Save for later use
-        self.leaves_index = leaves_index
-
-    def generate_positive_samples_to_values(self, name, Network, X, Y):
+    def summarize_alined_terms(self, name, network, readonce, X):
         result_path = os.path.join(self.result_dir, name)
-        all_positive_x = [X[i] for i in range(X.shape[0]) if Y[i] == 1]
-        all_positive_x_num = len(all_positive_x)
-        result = []
-        if self.leaves_index is None:
-            index_list = range(Network.r)
-        else:
-            index_list = self.leaves_index[::-1]
-        for i in index_list:
-            count = 0
-            for x in all_positive_x:
-                if Network.get_neuron_value(x, i) > 0:
-                    count += 1
-            result.append((i, (count / all_positive_x_num) * 100))
-        with open(os.path.join(result_path, self.POSITIVE_SAMPLE_TO_NEURON), 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(["Nueron Index", "Precent Of Positive samples"])
-            for r in result:
-                writer.writerow([r[0], "{0} %".format(r[1])])
 
-    def show_3D_graph(self, X, Y, Z, Network, gradient_path):
+        all_algined_indexes = get_all_algined_indexes(network, readonce, X)
+        all_non_algined_indexes = [i for i in range(network.r) if i not in all_algined_indexes]
+
+        get_mean_norm = lambda w, indexes: np.mean(np.mean(np.sum(np.abs(w[indexes]),1)))
+        mean_algined_weights_norm = get_mean_norm(network.W, all_algined_indexes)
+        mean_non_algined_weights_norm = get_mean_norm(network.W, all_non_algined_indexes)
+
+        file_name = os.path.join(result_path, self.SUMMARIZE_ALINED_TERMS_NAME)
+        with open(file_name, 'w') as f:
+            f.write("{algined}/{total}    -   alined terms num\n".format(algined=len(all_algined_indexes), total=network.r))
+            f.write("{nonalgined}/{total}    -   non alined terms num\n".format(nonalgined=len(all_non_algined_indexes), total=network.r))
+            f.write("{mean_algined}    -   alined terms mean norm\n".format(mean_algined=mean_algined_weights_norm))
+            f.write("{mean_non_algined}    -   non alined terms mean norm\n".format(mean_non_algined=mean_non_algined_weights_norm))
+
+
+##################################### OLD #####################################
+    UOT_TO_NUMBER_OF_NEURONS_GRAPH_NAME = 'number_of_neurons.png'
+    UOT_TO_MEAN_NORM_OF_NEURONS_GRAPH_NAME = 'mean_norm_of_neurons.png'
+    INDEX_TO_UOF_MAP = 'index_to_UOF.txt'
+
+    def show_3D_graph(self, X, Y, Z, network, gradient_path):
         fig = plt.figure()
         ax = fig.gca(projection='3d')
-        ax.plot(Network.all_a, Network.all_b, gradient_path, 'ro', alpha=0.5)
+        ax.plot(network.all_a, network.all_b, gradient_path, 'ro', alpha=0.5)
         surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
         fig.colorbar(surf, shrink=0.5, aspect=5)
         plt.show()
         plt.clf()
 
-    def bar_graph_UOT(self, name, Network, ReadOnceDNF, X):
+    def bar_graph_terms(self, name, network, readonce, X):
         result_path = os.path.join(self.result_dir, name)
 
         # Calculate weights to union of terms to this step
-        number_of_steps = len(Network.all_W)
-        weights_to_uof = split_weights_to_UOT_2(Network, ReadOnceDNF, X, -1, len(ReadOnceDNF.DNF), False)
+        number_of_steps = len(network.all_W)
+        weights_to_uof = split_weights_to_UOT_2(network, readonce, X, -1, len(readonce.DNF), False)
 
         # Save graph bar that show terms to number of neurons
         plt.bar(range(len(weights_to_uof)), [len(t[1]) for t in weights_to_uof], align='center', alpha=0.5)
