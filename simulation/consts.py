@@ -1,8 +1,8 @@
 from defs import *
 
-D = 6
-LR = 1e-2
-SIGMA = 1e-5
+D = 12
+LR = 4e-3
+SIGMA = 1e-6
 ALPHA = 0
 SECOND_LAYER_BAIS = -1
 
@@ -15,7 +15,7 @@ assert ZERO_THRESHOLD < SIGMA and ZERO_THRESHOLD < LR / 2 ** D
 MAX_VALUE_FOR_POSITIVE_SAMPLE = 2
 MIN_VALUE_FOR_NEGATIVE_SAMPLE = 0
 
-IS_TEMP = True
+IS_TEMP = False
 TEMP_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\tmp"
 GENERAL_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\results"
 BACKUP_DIR = 'backup'

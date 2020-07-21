@@ -1,4 +1,14 @@
 from defs import *
+from consts import *
+
+def shift_label(Y):
+	res = []
+	for y in Y:
+	 	if y == POSITIVE:
+	 		res.append(1)
+	 	else:
+	 		res.append(0)
+	return res 
 
 def is_algined(network, X, i, term):
 	for x in X:

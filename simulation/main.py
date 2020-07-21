@@ -46,6 +46,8 @@ def main():
     for partition in all_partitions:
         if 1 in partition:
             continue
+        print("Start a run for: {0}".format(partition))
+        
         run_name = '_'.join([str(i) for i in partition])  
         backup_name = os.path.join(run_name, BACKUP_DIR)
         result_object.create_dir(run_name)
