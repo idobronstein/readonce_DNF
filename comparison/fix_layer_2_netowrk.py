@@ -5,22 +5,26 @@ from utilits import *
 
 class FixLayerTwoNetwork():
 
-    def __init__(self, epsilon_init, lr, r=0):
-        assert epsilon_init or (not epsilon_init and r > 0)
+    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None):
+        assert epsilon_init or (not epsilon_init and r > 0) or (W_init is not None and B_init is not None)
         # init graph
         if epsilon_init:
             print("Initialize fix layer two network with epsilon initialization")
             self. r = 2 ** D
-            self.W_init = np.array(get_all_combinations(), dtype=FLOAT_TYPE) * SIGAM_EPSILON
+            self.W_init = np.array(get_all_combinations(), dtype=TYPE) * SIGAM_EPSILON
             self.W_init = self.W_init.T
-        else:
+            self.B_init = np.zeros([self.r], dtype=TYPE)
+        elif r > 0:
             print("Initialize fix layer two network with gaussin initialization")
             self.r = r 
-            self.W_init = np.array(SIGMA_GAUSS * np.random.randn(D, self.r), dtype=FLOAT_TYPE)
-        self.B_init = np.zeros([self.r], dtype=FLOAT_TYPE)
+            self.W_init = np.array(SIGMA_GAUSS * np.random.randn(D, self.r), dtype=TYPE)
+            self.B_init = np.zeros([self.r], dtype=TYPE)
+        else:
+            self.W_init = W_init
+            self.B_init = B_init
         self.lr = lr
 
-    def run(self, train_set, test_set):
+    def run(self, train_set, test_set, just_train=False):
         train_size = train_set[0].shape[0]
         test_size = test_set[0].shape[0]
 
@@ -28,8 +32,8 @@ class FixLayerTwoNetwork():
         with tf.Graph().as_default():
             # init variables
             global_step = tf.Variable(0, trainable=False, name='global_step')
-            X = tf.placeholder(FLOAT_TYPE, name='X', shape=[None, D])
-            Y = tf.placeholder(FLOAT_TYPE, name='Y', shape=[None])
+            X = tf.placeholder(TYPE, name='X', shape=[None, D])
+            Y = tf.placeholder(TYPE, name='Y', shape=[None])
             W = tf.get_variable('W', initializer=self.W_init)
             B = tf.get_variable('B_W', initializer=self.B_init)
             
@@ -39,14 +43,14 @@ class FixLayerTwoNetwork():
 
             # calc accuracy
             prediction_train = tf.round(tf.nn.sigmoid(logits))
-            ones_train = tf.constant(np.ones([train_size]), dtype=FLOAT_TYPE)
-            zeros_train = tf.constant(np.zeros([train_size]), dtype=FLOAT_TYPE)
+            ones_train = tf.constant(np.ones([train_size]), dtype=TYPE)
+            zeros_train = tf.constant(np.zeros([train_size]), dtype=TYPE)
             correct_train = tf.where(tf.equal(prediction_train, Y), ones_train, zeros_train)
             accuracy_train = tf.reduce_mean(correct_train)
             
             prediction_test = tf.round(tf.nn.sigmoid(logits))
-            ones_test = tf.constant(np.ones([test_size]), dtype=FLOAT_TYPE)
-            zeros_test = tf.constant(np.zeros([test_size]), dtype=FLOAT_TYPE)
+            ones_test = tf.constant(np.ones([test_size]), dtype=TYPE)
+            zeros_test = tf.constant(np.zeros([test_size]), dtype=TYPE)
             correct_test = tf.where(tf.equal(prediction_test, Y), ones_test, zeros_test)
             accuracy_test = tf.reduce_mean(correct_test)
 
@@ -65,16 +69,20 @@ class FixLayerTwoNetwork():
                 sess.run(init)
                 
                 # train
-                for step in range(0, MAX_STEPS):
-                    _, train_loss, train_acc = sess.run([train_op, loss, accuracy_train], {X:train_set[0], Y:shift_label(train_set[1])})
-                    if train_loss == 0:
-                        print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
-                        break 
-                    if step % PRINT_STEP_JUMP == 0:
-                        print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
-                print("NN Train accuracy: {0}".format(train_acc)) 
+                if not just_train:
+                    for step in range(0, MAX_STEPS):
+                        _, train_loss, train_acc = sess.run([train_op, loss, accuracy_train], {X:train_set[0], Y:shift_label(train_set[1])})
+                        if train_loss == 0:
+                            print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+                            break 
+                        if step % PRINT_STEP_JUMP == 0:
+                            print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+                    print("NN Train accuracy: {0}".format(train_acc)) 
                 
                 test_loss, test_acc = sess.run([loss, accuracy_test], {X:test_set[0], Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
+
+                self.W, self.B = sess.run([W, B])
+                self.W = self.W.T
 
             return test_acc

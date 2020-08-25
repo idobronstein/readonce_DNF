@@ -8,10 +8,10 @@ class TwoLayerNetwork():
     def __init__(self, r ,lr):
         print("Initialize two layer network with gaussin initialization")
         self.r = r 
-        self.W_init = np.array(SIGMA_GAUSS * np.random.randn(D, self.r), dtype=FLOAT_TYPE)
-        self.U_init = np.array(SIGMA_GAUSS * np.random.randn(self.r), dtype=FLOAT_TYPE)
-        self.B_W_init = np.zeros([self.r], dtype=FLOAT_TYPE)
-        self.B_U_init = np.zeros([1], dtype=FLOAT_TYPE)
+        self.W_init = np.array(SIGMA_GAUSS * np.random.randn(D, self.r), dtype=TYPE)
+        self.U_init = np.array(SIGMA_GAUSS * np.random.randn(self.r), dtype=TYPE)
+        self.B_W_init = np.zeros([self.r], dtype=TYPE)
+        self.B_U_init = np.zeros([1], dtype=TYPE)
         self.lr = lr
 
 
@@ -23,8 +23,8 @@ class TwoLayerNetwork():
         with tf.Graph().as_default():
             # init variables
             global_step = tf.Variable(0, trainable=False, name='global_step')
-            X = tf.placeholder(FLOAT_TYPE, name='X', shape=[None, D])
-            Y = tf.placeholder(FLOAT_TYPE, name='Y', shape=[None])
+            X = tf.placeholder(TYPE, name='X', shape=[None, D])
+            Y = tf.placeholder(TYPE, name='Y', shape=[None])
             W = tf.get_variable('W', initializer=self.W_init)
             U = tf.get_variable('U', initializer=self.U_init)
             B_W = tf.get_variable('B_W', initializer=self.B_W_init)
@@ -36,14 +36,14 @@ class TwoLayerNetwork():
 
             # calc accuracy
             prediction_train = tf.round(tf.nn.sigmoid(logits))
-            ones_train = tf.constant(np.ones([train_size]), dtype=FLOAT_TYPE)
-            zeros_train = tf.constant(np.zeros([train_size]), dtype=FLOAT_TYPE)
+            ones_train = tf.constant(np.ones([train_size]), dtype=TYPE)
+            zeros_train = tf.constant(np.zeros([train_size]), dtype=TYPE)
             correct_train = tf.where(tf.equal(prediction_train, Y), ones_train, zeros_train)
             accuracy_train = tf.reduce_mean(correct_train)
             
             prediction_test = tf.round(tf.nn.sigmoid(logits))
-            ones_test = tf.constant(np.ones([test_size]), dtype=FLOAT_TYPE)
-            zeros_test = tf.constant(np.zeros([test_size]), dtype=FLOAT_TYPE)
+            ones_test = tf.constant(np.ones([test_size]), dtype=TYPE)
+            zeros_test = tf.constant(np.zeros([test_size]), dtype=TYPE)
             correct_test = tf.where(tf.equal(prediction_test, Y), ones_test, zeros_test)
             accuracy_test = tf.reduce_mean(correct_test)
 

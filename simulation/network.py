@@ -12,8 +12,11 @@ class Network():
         self.all_B = [B]
 
     def get_value(self, x, w, b):
-        value = np.dot(x, w) + b
-        return value if value > ZERO_THRESHOLD else ALPHA * value
+        value = 0
+        for j in range(D):
+            value += w[j] if x[j] == POSITIVE else - w[j]
+        value += b
+        return value if value > 0 else 0
 
     def get_neuron_value(self, x, i):
         return self.get_value(x, self.W[i], self.B[i])
@@ -44,8 +47,6 @@ class Network():
         return (value >= MAX_VALUE_FOR_POSITIVE_SAMPLE and y == POSITIVE) or (value <= MIN_VALUE_FOR_NEGATIVE_SAMPLE and y == NEGATIVE)
 
     def check_relu_reset_sample(self, x, i):
-        if ALPHA > 0:
-            return False
         return self.get_neuron_value(x, i) <= 0
 
     def check_predriction_for_dataset(self, X, Y):
@@ -65,11 +66,11 @@ class Network():
                 global_minimum_point = False
                 for i in range(self.r): 
                     if not self.check_relu_reset_sample(x, i):
-                        gradient_step_W[i] += (lr / X.shape[0]) * y * x
-                        gradient_step_B[i] += (lr / X.shape[0]) * y
-                        if self.get_neuron_value(x, i) < 0 and ALPHA    :
-                            gradient_step_W[i] = gradient_step_W[i] * ALPHA
-                            gradient_step_B[i] = gradient_step_B[i] * ALPHA
+                        step = int(lr / X.shape[0])
+                        step = step if y == POSITIVE else - lr / step
+                        for j in range(D):
+                             gradient_step_W[i][j] += step if x[j] == POSITIVE else -step     
+                        gradient_step_B[i] += step
             else:
                 zero_loss_sample_counter += 1
         # Save new weights
@@ -85,8 +86,7 @@ class Network():
             print("Accuracy: {0} / {1}".format(zero_loss_sample_counter, X.shape[0]))
         # Return if we are in a global minimum 
         return global_minimum_point, local_minimum_point
-
-
+                          
 
 ##################################### OLD #####################################
 
@@ -103,9 +103,9 @@ class TwoVariableNetwork():
 
     def get_neuron_value(self, x, i):
         if i == 0:
-            w = np.array([self.a] * self.L + [OPISITE_VALUE - self.a] * self.L, dtype=FLOAT_TYPE)
+            w = np.array([self.a] * self.L + [OPISITE_VALUE - self.a] * self.L, dtype=TYPE)
         else:
-            w = np.array([OPISITE_VALUE - self.a] * self.L + [self.a] * self.L, dtype=FLOAT_TYPE)
+            w = np.array([OPISITE_VALUE - self.a] * self.L + [self.a] * self.L, dtype=TYPE)
         value = np.dot(x, w) + self.b
         return value if value > ZERO_THRESHOLD else 0
 

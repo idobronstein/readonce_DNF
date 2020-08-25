@@ -20,12 +20,12 @@ def main():
 
     print("Generate all combinations")
     all_combinations = get_all_combinations()
-    X = np.array(all_combinations, dtype=FLOAT_TYPE)
+    X = np.array(all_combinations, dtype=TYPE)
 
     all_algorithems = [
-        (FixLayerTwoNetwork(False, LR_TWO_LAYER_REGULAR, R_GAUSS_FIX_LAYER), "Fix Layer Two - Gaussion Init", '.'),
-        (FixLayerTwoNetwork(True, LR_FIX_LAYER), "Fix Layer Two - Epsilon Init", 'o'),
-        (TwoLayerNetwork(R_GAUSS_TWO_LAYER_REGULAR, LR_TWO_LAYER_REGULAR), "Regular Two Layer - Gaussion Init", 'x')
+        (FixLayerTwoNetwork(False, LR_TWO_LAYER_REGULAR, R_GAUSS_FIX_LAYER), "Fix - Gaussion", 'o'),
+        #(FixLayerTwoNetwork(True, LR_FIX_LAYER), "Fix - Epsilon", 'x'),
+        (TwoLayerNetwork(R_GAUSS_TWO_LAYER_REGULAR, LR_TWO_LAYER_REGULAR), "Regular - Gaussion", '.')
     ]
 
     for partition in all_partitions:
@@ -37,7 +37,7 @@ def main():
         result_vec = np.zeros([len(all_algorithems), len(SAMPLE_PROB_LIST)])
 
         readonce = ReadOnceDNF(partition)
-        Y = np.array([readonce.get_label(x) for x in X], dtype=FLOAT_TYPE)
+        Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
 
         for i, prob in enumerate(SAMPLE_PROB_LIST):
             X_downsample, Y_downsample = downsampling(X, Y, prob)

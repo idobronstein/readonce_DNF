@@ -17,9 +17,10 @@ def is_algined(network, X, i, term):
 				return False
 	return True
 
-def get_all_algined_indexes(network, readonce, X):
+def get_all_algined_indexes(network, readonce, X, noize_size):
 	all_algined_indexes = []
 	for term in readonce.DNF:
+		term = np.pad(term, [0, noize_size], 'constant', constant_values=(0))
 		for i in range(network.r):
 			if is_algined(network, X, i, term):
 				all_algined_indexes.append(i)
@@ -35,6 +36,27 @@ def cluster_network(network):
 
 def is_perfect_classification(network, X, Y):
 	return network.check_predriction_for_dataset(X, Y) == X.shape[0]
+
+def find_mean_norm_inf(network):
+	return np.mean([calc_norm_inf(network, i) for i in range(network.r)])
+
+def find_max_norm_inf(network):
+	return np.max([calc_norm_inf(network, i) for i in range(network.r)])
+
+def calc_norm_inf(network, i):
+	return np.max(network.W[i])
+	#return np.max([np.max(network.W[i]), network.B[i]])
+
+def find_indexes_above_mean(network):
+	mean = find_mean_weight(network)
+	indexes = [i for i in range(network.r) if calc_norm_inf(network, i) > mean]
+	return indexes
+
+def find_indexes_above_half_of_max(network):
+	max_norm_inf = find_max_norm_inf(network)
+	indexes = [i for i in range(network.r) if calc_norm_inf(network, i) > 0.5 * max_norm_inf]
+	return indexes
+
 
 ##################################### OLD #####################################
 

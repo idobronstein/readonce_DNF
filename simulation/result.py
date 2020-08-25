@@ -4,10 +4,12 @@ from utilits import *
 class Result():
 
     PARAM_TEXT ="""
-Time          -  {time}
-D             -  {D}
-learinig rate -  {lr}
-sigma         -  {sigma}
+Time                 -  {time}
+D                    -  {D}
+learinig rate        -  {lr}
+dnf size             -  {dnf_size}
+epsilon              -  {epsilon}
+second layer bais    -  {second_layer_bais}
 """
     NETWROK_NAME = "Network.pkl"
     READ_ONCE_DNF_NAME = "ReadOnceDNF.pkl"
@@ -15,20 +17,33 @@ sigma         -  {sigma}
     CLUSTER_GRAPH_W_NAME = "ClusterGraph_W.png"
     CLUSTER_GRAPH_B_NAME = "ClusterGraph_B.png"
     SUMMARIZE_ALINED_TERMS_NAME = 'summarize_alined_terms.txt'
+    ALL_WEIGHTS_ALIGIN_WITH_TERM = 'AllWeightsAlign.sig'
 
-    def __init__(self, result_path=TEMP_RESULT_PATH, is_tmp=True, new_D=None):
+    def __init__(self, result_path=TEMP_RESULT_PATH, is_tmp=True, load=False):
         assert os.path.isdir(result_path), "The result path: {0} doesn't exsits".format(result_path)
-        dir_name = "D={0}".format(D)    
-        self.result_dir = os.path.join(result_path, dir_name)
-        if os.path.exists(self.result_dir):
-            if is_tmp:
-                self.enforce_delete_dir()
-            else:
-                assert False, "There is already permanet directory here: {0}".format(self.result_dir)
+        if not load:
+            dir_name = "D={0}".format(D)
+            self.result_dir = os.path.join(result_path, dir_name)
+            if os.path.exists(self.result_dir):
+                if is_tmp:
+                    self.enforce_delete_dir()
+                else:
+                    pass
+                    assert False, "There is already permanet directory here: {0}".format(self.result_dir)
+            os.mkdir(self.result_dir)
+        else:
+            self.result_dir = result_path
+        self.base_result_dir = self.result_dir
+
+    def set_result_path(self, dnf_size, epsilon):
+        self.result_dir = os.path.join(self.base_result_dir, "DNF_size={0}".format(dnf_size))
+        if not os.path.exists(self.result_dir):
+            os.mkdir(self.result_dir)
+        self.result_dir = os.path.join(self.result_dir, "epsilon={0}".format(epsilon))
         os.mkdir(self.result_dir)
         param_text_file_path = os.path.join(self.result_dir, "param_file.txt")
         with open(param_text_file_path, "w") as f:
-            f.write(self.PARAM_TEXT.format(time=datetime.now(), D=D, lr=LR, sigma=SIGMA))
+            f.write(self.PARAM_TEXT.format(time=datetime.now(), D=D, lr=LR, dnf_size=dnf_size, epsilon=epsilon, second_layer_bais=SECOND_LAYER_BAIS))
 
     def enforce_delete_dir(self):
         try_count = 0
@@ -93,10 +108,10 @@ sigma         -  {sigma}
         fig.savefig(os.path.join(result_path, self.CLUSTER_GRAPH_B_NAME), bbox_inches="tight")
         plt.clf()
 
-    def summarize_alined_terms(self, name, network, readonce, X):
+    def summarize_alined_terms(self, name, network, readonce, X, noize_size):
         result_path = os.path.join(self.result_dir, name)
 
-        all_algined_indexes = get_all_algined_indexes(network, readonce, X)
+        all_algined_indexes = get_all_algined_indexes(network, readonce, X, noize_size)
         all_non_algined_indexes = [i for i in range(network.r) if i not in all_algined_indexes]
 
         get_mean_norm = lambda w, indexes: np.mean(np.mean(np.sum(np.abs(w[indexes]),1)))
@@ -110,6 +125,10 @@ sigma         -  {sigma}
             f.write("{mean_algined}    -   alined terms mean norm\n".format(mean_algined=mean_algined_weights_norm))
             f.write("{mean_non_algined}    -   non alined terms mean norm\n".format(mean_non_algined=mean_non_algined_weights_norm))
 
+    def save_all_weights_aligned_with_term(self, name):
+        result_path = os.path.join(self.result_dir, name)
+        with open(os.path.join(result_path, self.ALL_WEIGHTS_ALIGIN_WITH_TERM), "w") as f:
+            pass
 
 ##################################### OLD #####################################
     UOT_TO_NUMBER_OF_NEURONS_GRAPH_NAME = 'number_of_neurons.png'

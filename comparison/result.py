@@ -48,6 +48,10 @@ class Result():
         fig, ax = plt.subplots()
         for i in range(len(all_algorithems)):
             ax.plot(SAMPLE_PROB_LIST, result_vec[i], all_algorithems[i][2], label=all_algorithems[i][1])
+        ax.set_title('Learning blance readonce DNF D={} - Comparison between algorithmes'.format(D))
+        ax.set_xlabel('Sampling probability')
+        ax.set_ylabel('Accuracy')
+        #ax.set_ylim(0.5, 1.05)
         legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
         fig.savefig(result_path)
         plt.clf()

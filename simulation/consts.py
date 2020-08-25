@@ -1,32 +1,33 @@
 from defs import *
 
+### Hyper params ###
 D = 12
-LR = 4e-3
-SIGMA = 1e-6
-ALPHA = 0
-SECOND_LAYER_BAIS = -1
+UNIT = 2**D
+LR = UNIT * 10
 
+### General ###
 NEGATIVE = -1
 POSITIVE = 1
+TYPE = np.int32
 
-ZERO_THRESHOLD = 1e-8
-assert ZERO_THRESHOLD < SIGMA and ZERO_THRESHOLD < LR / 2 ** D
-
-MAX_VALUE_FOR_POSITIVE_SAMPLE = 2
+### Network  ###
+SECOND_LAYER_BAIS = - UNIT * 10000
+MAX_VALUE_FOR_POSITIVE_SAMPLE = 2 * abs(SECOND_LAYER_BAIS)
 MIN_VALUE_FOR_NEGATIVE_SAMPLE = 0
 
+### Result ###
 IS_TEMP = False
 TEMP_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\tmp"
 GENERAL_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\results"
 BACKUP_DIR = 'backup'
 PRONE_DIR = 'prone'
+PRONE_BY_MEAN_DIR = 'prone_by_mean'
 ORIGINAL_FINAL_DIR = 'final'
 MAX_TRY_TO_DELETE_DIR = 4
 
-FLOAT_TYPE = np.float32
-
-PRINT_STEP_JUMP = 50
-MAX_STEPS = 10000
+### Learning ###
+PRINT_STEP_JUMP = 100
+MAX_STEPS = 70000
 
 ##################################### OLD #####################################
 

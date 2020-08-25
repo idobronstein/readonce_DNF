@@ -4,8 +4,8 @@ from result import *
 from network import *
 
 def clac_two_variable_loss(a, b, X, Y, L):
-    w1 = np.array([a] * L + [OPISITE_VALUE - a] * L, dtype=FLOAT_TYPE)
-    w2 = np.array([OPISITE_VALUE - a] * L + [a] * L, dtype=FLOAT_TYPE)
+    w1 = np.array([a] * L + [OPISITE_VALUE - a] * L, dtype=TYPE)
+    w2 = np.array([OPISITE_VALUE - a] * L + [a] * L, dtype=TYPE)
     total_loss = 0
     for x, y in zip(X, Y):
         N1 = max([0, np.dot(x, w1) + b]) + max([0, np.dot(x, w2) + b])
@@ -30,8 +30,8 @@ def main():
     read_once_DNF = ReadOnceDNF([L, L])
 
     print("Create Data")
-    X = np.array(all_combinations, dtype=FLOAT_TYPE)
-    Y = np.array([read_once_DNF.get_label(x) for x in X], dtype=FLOAT_TYPE)
+    X = np.array(all_combinations, dtype=TYPE)
+    Y = np.array([read_once_DNF.get_label(x) for x in X], dtype=TYPE)
 
     print("Calculate loss surface")
     a_grid, b_grid = np.meshgrid(A_RANGE, B_RANGE)
