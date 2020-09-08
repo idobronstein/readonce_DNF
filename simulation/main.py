@@ -25,7 +25,6 @@ def run_network(network, X, Y, run_name, result_object, readonce, noise_size):
 def save_results(minimum_point, name, result_object, network, readonce, X, Y, noise_size):
     result_object.save_run(name, network, readonce, minimum_point, is_perfect_classification(network, X, Y))
     result_object.generate_cluster_graph(name, network)
-    result_object.summarize_alined_terms(name, network, readonce, X, noise_size)
 
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
@@ -87,8 +86,9 @@ def main():
                             result_object.logger.error("After pruning the network doesn't classify perfectly")
                         elif not set(above_mean_indexes).issubset(aligend_indexes):
                             result_object.logger.error("After pruning there is terms which doesn't aligned with some term")
+                        elif not check_reconstraction(network, readonce, noise_size):
+                            result_object.logger.error("After pruning we can't succeed to reconstract the DNF")
                         else:
-                            result_object.logger.critical("After pruning the network classify perfectly and aligned with the terms")
-                            result_object.save_all_weights_aligned_with_term(os.path.join(run_name, PRONE_BY_MEAN_DIR))
+                            result_object.logger.critical("After pruning the network classify perfectly, aligned with the terms and reconstract the DNF")
 
 main()

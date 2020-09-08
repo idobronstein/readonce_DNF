@@ -58,7 +58,6 @@ class Network():
                           
     def update_network(self, X, Y, lr):
         global_minimum_point, local_minimum_point = True, True
-        step = int(lr / X.shape[0])
         # Create matrix
         X_matrix = np.concatenate([X, np.ones([X.shape[0],1], dtype=TYPE)], axis=1)
         W_matrix = np.concatenate([self.W.T, [self.B]])
@@ -80,8 +79,8 @@ class Network():
         w_update_rule = np.matmul(total_map, X)
         b_update_rule = np.sum(total_map, axis=1)
         # Update the weights
-        self.W = self.W + step*w_update_rule
-        self.B = self.B + step*b_update_rule
+        self.W = self.W + lr*w_update_rule
+        self.B = self.B + lr*b_update_rule
         self.all_W.append(self.W)
         self.all_B.append(self.B)
         # Check if we are in local minimum point
@@ -93,69 +92,6 @@ class Network():
         return global_minimum_point, local_minimum_point, non_zero_loss_sample_counter
 
 ##################################### OLD #####################################
-
-
-class TwoVariableNetwork():
-
-    def __init__(self, a, b, L):
-        self.a = a
-        self.b = b
-        self.L = L
-        self.all_a = [a]
-        self.all_b = [b]
-        self.all_gradient = []
-
-    def get_neuron_value(self, x, i):
-        if i == 0:
-            w = np.array([self.a] * self.L + [OPISITE_VALUE - self.a] * self.L, dtype=TYPE)
-        else:
-            w = np.array([OPISITE_VALUE - self.a] * self.L + [self.a] * self.L, dtype=TYPE)
-        value = np.dot(x, w) + self.b
-        return value if value > ZERO_THRESHOLD else 0
-
-    def get_network_value(self, x):
-        value = 0
-        for i in range(2):
-            a = self.get_neuron_value(x, i)
-            value += a if a > 0 else 0
-        return value
-
-    def check_loss_reset_sample(self, x, y):
-        value = self.get_network_value(x)
-        return (value >= MAX_VALUE_FOR_POSITIVE_SAMPLE and y == POSITIVE) or (value <= MIN_VALUE_FOR_NEGATIVE_SAMPLE and y == NEGATIVE)
-
-    def check_relu_reset_sample(self, x, i):
-        return self.get_neuron_value(x, i) <= 0
-
-    def update_network(self, X, Y, if_print=False):
-        minimum_point = True
-        gradient_step_a, gradient_step_b = 0, 0
-
-        # Update all weights
-        for x, y in zip(X, Y):
-            if not self.check_loss_reset_sample(x, y):
-                minimum_point = False
-                if not self.check_relu_reset_sample(x, 0):
-                    v = np.sum(x[:self.L]) - np.sum(x[self.L:])
-                    if if_print:
-                        print(0,y , x,v)
-                    gradient_step_a += y * v / X.shape[0]
-                    gradient_step_b += y / X.shape[0]
-                if not self.check_relu_reset_sample(x, 1):
-                    v = - np.sum(x[:self.L]) + np.sum(x[self.L:])
-                    #if if_print:
-                    #    print(1,y,x,v)
-                    gradient_step_a += y * v / X.shape[0]
-                    gradient_step_b += y / X.shape[0]
-        # Save new weights
-        self.a = self.a + LR * gradient_step_a
-        self.b = self.b+ LR * gradient_step_b
-        self.all_a.append(self.a)
-        self.all_b.append(self.b)
-        self.all_gradient.append((gradient_step_a, gradient_step_b))
-        # Return if we are in a global minimum 
-        return minimum_point
-
 
     def update_network_old(self, X, Y, lr, result_objuct=None):
         # Update all weights
