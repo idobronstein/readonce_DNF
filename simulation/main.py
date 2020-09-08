@@ -86,7 +86,7 @@ def main():
                             result_object.logger.error("After pruning the network doesn't classify perfectly")
                         elif not set(above_mean_indexes).issubset(aligend_indexes):
                             result_object.logger.error("After pruning there is terms which doesn't aligned with some term")
-                        elif not check_reconstraction(network, readonce, noise_size):
+                        elif not check_reconstraction(prone_network, readonce, noise_size):
                             result_object.logger.error("After pruning we can't succeed to reconstract the DNF")
                         else:
                             result_object.logger.critical("After pruning the network classify perfectly, aligned with the terms and reconstract the DNF")
