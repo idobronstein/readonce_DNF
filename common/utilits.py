@@ -37,15 +37,11 @@ def cluster_network(network):
 def is_perfect_classification(network, X, Y):
 	return network.check_predriction_for_dataset(X, Y) == X.shape[0]
 
-def find_mean_norm_inf(network):
-	return np.mean([calc_norm_inf(network, i) for i in range(network.r)])
-
 def find_max_norm_inf(network):
 	return np.max([calc_norm_inf(network, i) for i in range(network.r)])
 
 def calc_norm_inf(network, i):
 	return np.max(network.W[i])
-	#return np.max([np.max(network.W[i]), network.B[i]])
 
 def find_indexes_above_mean(network):
 	mean = find_mean_weight(network)
@@ -54,9 +50,13 @@ def find_indexes_above_mean(network):
 
 def find_indexes_above_half_of_max(network):
 	max_norm_inf = find_max_norm_inf(network)
-	indexes = [i for i in range(network.r) if calc_norm_inf(network, i) > 0.5 * max_norm_inf]
+	indexes = [i for i in range(network.r) if PRUNE_FACTOR_WEIGHT * calc_norm_inf(network, i) > PRUNE_FACTOR_TOTAL_NORM * max_norm_inf]
 	return indexes
 
+
+def reconstraction(network, i):
+	reconstraction_nueron = np.zeros([], dtype=TYPE)
+	info_norm = calc_norm_inf(network, i)
 
 ##################################### OLD #####################################
 

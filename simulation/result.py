@@ -2,6 +2,13 @@ from consts import *
 from utilits import *
 
 class Result():
+    COLORS = {
+        'DEBUG':    'cyan',
+        'INFO':     'cyan',
+        'WARNING':  'yellow',
+        'ERROR':    'red',
+        'CRITICAL': 'green',
+    }
 
     PARAM_TEXT ="""
 Time                 -  {time}
@@ -23,6 +30,7 @@ second layer bais    -  {second_layer_bais}
         assert os.path.isdir(result_path), "The result path: {0} doesn't exsits".format(result_path)
         if not load:
             dir_name = "D={0}".format(D)
+            #dir_name = "new_D={0}".format(D)
             self.result_dir = os.path.join(result_path, dir_name)
             if os.path.exists(self.result_dir):
                 if is_tmp:
@@ -34,6 +42,21 @@ second layer bais    -  {second_layer_bais}
         else:
             self.result_dir = result_path
         self.base_result_dir = self.result_dir
+        self.set_logging()
+
+    def set_logging(self):
+        logFormatter = colorlog.ColoredFormatter("%(log_color)s%(message)s", log_colors=self.COLORS)
+        self.logger = logging.getLogger()
+        
+        fileHandler = logging.FileHandler(os.path.join(self.result_dir, "log.txt"))
+        fileHandler.setFormatter(logFormatter)
+        self.logger.addHandler(fileHandler)
+        
+        consoleHandler = logging.StreamHandler()
+        consoleHandler.setFormatter(logFormatter)
+        self.logger.addHandler(consoleHandler)
+
+        self.logger.setLevel(logging.INFO)
 
     def set_result_path(self, dnf_size, epsilon):
         self.result_dir = os.path.join(self.base_result_dir, "DNF_size={0}".format(dnf_size))
@@ -94,7 +117,7 @@ second layer bais    -  {second_layer_bais}
         axcolor = fig.add_axes([0.91,0.1,0.02,0.8])
         pylab.colorbar(im, cax=axcolor)
         fig.savefig(os.path.join(result_path, self.CLUSTER_GRAPH_W_NAME), bbox_inches="tight")
-        plt.clf()
+        plt.close(fig)
 
         # Plot B graph
         fig = pylab.figure()
@@ -106,7 +129,7 @@ second layer bais    -  {second_layer_bais}
         axcolor = fig.add_axes([0.91,0.1,0.02,0.8])
         pylab.colorbar(im, cax=axcolor)
         fig.savefig(os.path.join(result_path, self.CLUSTER_GRAPH_B_NAME), bbox_inches="tight")
-        plt.clf()
+        plt.close(fig)
 
     def summarize_alined_terms(self, name, network, readonce, X, noize_size):
         result_path = os.path.join(self.result_dir, name)
@@ -142,7 +165,7 @@ second layer bais    -  {second_layer_bais}
         surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
         fig.colorbar(surf, shrink=0.5, aspect=5)
         plt.show()
-        plt.clf()
+        plt.close(fig)
 
     def bar_graph_terms(self, name, network, readonce, X):
         result_path = os.path.join(self.result_dir, name)
@@ -158,7 +181,7 @@ second layer bais    -  {second_layer_bais}
         plt.title('terms to number of neurons')
         bar_graph_name = os.path.join(result_path, self.UOT_TO_NUMBER_OF_NEURONS_GRAPH_NAME)
         plt.savefig(bar_graph_name)
-        plt.clf()
+        plt.close(fig)
 
         # Save graph bar that show terms to mean norm of wights
         norm_weights_to_uof = []
@@ -174,7 +197,7 @@ second layer bais    -  {second_layer_bais}
         plt.title('terms to mean norm of neurons')
         bar_graph_name = os.path.join(result_path, self.UOT_TO_MEAN_NORM_OF_NEURONS_GRAPH_NAME)
         plt.savefig(bar_graph_name)
-        plt.clf()
+        plt.close(fig)
 
         # Create map from index to unuion of term:
         file_name = os.path.join(result_path, self.INDEX_TO_UOF_MAP)

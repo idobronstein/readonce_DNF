@@ -55,38 +55,42 @@ class Network():
             if self.get_prderiction(x) == y:
                 predriction_count += 1
         return predriction_count
-
-    def update_network(self, X, Y, lr, display):
-        # Update all weights
+                          
+    def update_network(self, X, Y, lr):
         global_minimum_point, local_minimum_point = True, True
-        gradient_step_W, gradient_step_B = np.zeros([self.r, D]), np.zeros([self.r])
-        zero_loss_sample_counter = 0
-        for x, y in zip(X, Y):
-            if not self.check_loss_reset_sample(x, y):
-                global_minimum_point = False
-                for i in range(self.r): 
-                    if not self.check_relu_reset_sample(x, i):
-                        step = int(lr / X.shape[0])
-                        step = step if y == POSITIVE else - lr / step
-                        for j in range(D):
-                             gradient_step_W[i][j] += step if x[j] == POSITIVE else -step     
-                        gradient_step_B[i] += step
-            else:
-                zero_loss_sample_counter += 1
-        # Save new weights
-        self.W = self.W + gradient_step_W
-        self.B = self.B + gradient_step_B
+        step = int(lr / X.shape[0])
+        # Create matrix
+        X_matrix = np.concatenate([X, np.ones([X.shape[0],1], dtype=TYPE)], axis=1)
+        W_matrix = np.concatenate([self.W.T, [self.B]])
+        # Calc first layer
+        first_layer_output = np.matmul(X_matrix, W_matrix)
+        first_layer_output[first_layer_output < 0] = 0
+        # Calc second layer
+        second_layer_output = np.matmul(first_layer_output, np.ones([self.r], dtype=TYPE)) + SECOND_LAYER_BAIS
+        # Calc reset hinge loss map
+        hinge_loss_map = HINGE_LOST_CONST - np.multiply(second_layer_output.T, Y)
+        hinge_loss_map[hinge_loss_map < 0] = 0
+        hinge_loss_map[hinge_loss_map > 0] = 1
+        # Calc relu reset map
+        relu_reset_map = first_layer_output.T
+        relu_reset_map[relu_reset_map > 0] = 1
+        # Calc update rule
+        total_reset_map = np.multiply(relu_reset_map, hinge_loss_map)
+        total_map = np.multiply(total_reset_map, Y)
+        w_update_rule = np.matmul(total_map, X)
+        b_update_rule = np.sum(total_map, axis=1)
+        # Update the weights
+        self.W = self.W + step*w_update_rule
+        self.B = self.B + step*b_update_rule
         self.all_W.append(self.W)
         self.all_B.append(self.B)
         # Check if we are in local minimum point
-        if np.sum(np.abs(gradient_step_W)) > 0 or np.sum(np.abs(gradient_step_B)) > 0:
-            local_minimum_point = False
-        # Display accuracy
-        if display:
-            print("Accuracy: {0} / {1}".format(zero_loss_sample_counter, X.shape[0]))
+        local_minimum_point = np.sum(np.abs(w_update_rule)) == 0 and np.sum(np.abs(b_update_rule)) == 0
+        # Check if we are in global minimum point
+        non_zero_loss_sample_counter = np.sum(hinge_loss_map)
+        global_minimum_point = non_zero_loss_sample_counter == 0
         # Return if we are in a global minimum 
-        return global_minimum_point, local_minimum_point
-                          
+        return global_minimum_point, local_minimum_point, non_zero_loss_sample_counter
 
 ##################################### OLD #####################################
 
@@ -151,3 +155,35 @@ class TwoVariableNetwork():
         self.all_gradient.append((gradient_step_a, gradient_step_b))
         # Return if we are in a global minimum 
         return minimum_point
+
+
+    def update_network_old(self, X, Y, lr, result_objuct=None):
+        # Update all weights
+        global_minimum_point, local_minimum_point = True, True
+        gradient_step_W, gradient_step_B = np.zeros([self.r, D]), np.zeros([self.r])
+        zero_loss_sample_counter = 0
+        for x, y in zip(X, Y):
+            if not self.check_loss_reset_sample(x, y):
+                global_minimum_point = False
+                for i in range(self.r): 
+                    if not self.check_relu_reset_sample(x, i):
+                        step = int(lr / X.shape[0])
+                        step = step if y == POSITIVE else - step
+                        for j in range(D):
+                             gradient_step_W[i][j] += step if x[j] == POSITIVE else -step     
+                        gradient_step_B[i] += step
+            else:
+                zero_loss_sample_counter += 1
+        # Save new weights
+        self.W = self.W + gradient_step_W
+        self.B = self.B + gradient_step_B
+        self.all_W.append(self.W)
+        self.all_B.append(self.B)
+        # Check if we are in local minimum point
+        if np.sum(np.abs(gradient_step_W)) > 0 or np.sum(np.abs(gradient_step_B)) > 0:
+            local_minimum_point = False
+        # Display accuracy
+        if result_objuct:
+            result_object.rootLogger.critical("Accuracy: {0} / {1}".format(zero_loss_sample_counter, X.shape[0]))
+        # Return if we are in a global minimum 
+        return global_minimum_point, local_minimum_point
