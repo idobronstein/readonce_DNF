@@ -7,7 +7,7 @@ TYPE = np.int64
 
 ### Hyper params ###
 D = 8
-ALPHA = 10000 * 2**D
+ALPHA = 1000000 * 2**D
 LR = 100
 
 ### Network  ###
@@ -20,8 +20,8 @@ MAX_VALUE_FOR_POSITIVE_SAMPLE = 2 * abs(SECOND_LAYER_BAIS)
 MIN_VALUE_FOR_NEGATIVE_SAMPLE = 0
 
 ### Learning ###
-PRINT_STEP_JUMP = 500
-MAX_STEPS = 500000
+PRINT_STEP_JUMP = 1000
+MAX_STEPS = 50000
 
 ### After learning ###
 PRUNE_FACTOR_WEIGHT = 2
@@ -30,9 +30,9 @@ RECONSTRACTION_FACTOR_WEIGHT = 10
 RECONSTRACTION_FACTOR_NORM = 9
 
 ### Result ###
-IS_TEMP = True
-TEMP_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\tmp"
-GENERAL_RESULT_PATH = r"D:\checkouts\read_once_dnf\simulation\results"
+IS_TEMP = False
+TEMP_RESULT_PATH = r"tmp"
+GENERAL_RESULT_PATH = r"results"
 BACKUP_DIR = 'backup'
 PRONE_DIR = 'prone'
 PRONE_BY_MEAN_DIR = 'prone_by_mean'

@@ -36,7 +36,7 @@ def main():
     r = len(all_combinations)
     X = np.array(all_combinations, dtype=TYPE)
 
-    for dnf_size in range(2, D+1):
+    for dnf_size in range(2, D + 1):
         noise_size = D - dnf_size
 
         result_object.logger.info("Generate all balanced partitions in size {}".format(dnf_size))
@@ -47,12 +47,19 @@ def main():
         if len(all_partitions) == 0:
             result_object.logger.info("No relevant phrases. Skippinig..")
         else:
-            for epsilon in range(MIN_EPSILON, MAX_EPSILON, STEP_EPSILON):
+            for epsilon in range(MIN_EPSILON, MAX_EPSILON , STEP_EPSILON):
                 result_object.logger.info("Running for all dnf in size: {0} and initialization: {1}".format(dnf_size, epsilon))
                             
                 result_object.set_result_path(dnf_size, epsilon)
 
                 for partition in all_partitions:
+                    flag = False
+                    for p in partition:
+                        if 1 == p or p > D//2:
+                            flag = True
+                    if flag:
+                        result_object.logger.info("Skipping a run for: {0}".format(partition))
+                        continue
             
                     result_object.logger.info("Start a run for: {0}".format(partition))
                     
