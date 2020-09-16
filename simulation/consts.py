@@ -4,6 +4,7 @@ from defs import *
 NEGATIVE = -1
 POSITIVE = 1
 TYPE = np.int64
+TF_TYPE = tf.int64
 
 ### Hyper params ###
 D = 8
@@ -30,7 +31,7 @@ RECONSTRACTION_FACTOR_WEIGHT = 10
 RECONSTRACTION_FACTOR_NORM = 9
 
 ### Result ###
-IS_TEMP = False
+IS_TEMP = True
 TEMP_RESULT_PATH = r"tmp"
 GENERAL_RESULT_PATH = r"results"
 BACKUP_DIR = 'backup'

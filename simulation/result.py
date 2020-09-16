@@ -86,7 +86,7 @@ second layer bais    -  {second_layer_bais}
         result_path = os.path.join(self.result_dir, name)
         os.mkdir(result_path)
         with open(os.path.join(result_path, self.NETWROK_NAME), "wb") as f:
-            pickle.dump(network, f)
+            pickle.dump((network.W, network.B, network.all_W, network. all_B), f)
         with open(os.path.join(result_path, self.READ_ONCE_DNF_NAME), "wb") as f:
             pickle.dump(readonce, f)
         with open(os.path.join(result_path, self.RESULT_SUMMERY_NAME), "w") as f:

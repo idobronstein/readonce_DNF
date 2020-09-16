@@ -55,38 +55,46 @@ class Network():
             if self.get_prderiction(x) == y:
                 predriction_count += 1
         return predriction_count
-                          
-    def update_network(self, X, Y, lr):
-        global_minimum_point, local_minimum_point = True, True
+
+    def prepere_update_network(self, X, Y):
+        self.tf_W = tf.placeholder(TYPE, name='W', shape=[self.r, D])
+        self.tf_B = tf.placeholder(TYPE, name='B', shape=[self.r])
+        tf_X = tf.constant(X, dtype=TF_TYPE, name="X")
+        tf_Y = tf.constant(Y, dtype=TF_TYPE, name="Y")
         # Create matrix
-        X_matrix = np.concatenate([X, np.ones([X.shape[0],1], dtype=TYPE)], axis=1)
-        W_matrix = np.concatenate([self.W.T, [self.B]])
+        self.X_matrix = tf.concat([tf_X, tf.ones([X.shape[0],1], dtype=TF_TYPE)], axis=1)
+        self.W_matrix = tf.concat([tf.transpose(self.tf_W), [self.tf_B]], axis=0)
         # Calc first layer
-        first_layer_output = np.matmul(X_matrix, W_matrix)
-        first_layer_output[first_layer_output < 0] = 0
+        self.first_layer_output = tf.matmul(self.X_matrix, self.W_matrix)
+        self.mask_first_layer_output= tf.where(self.first_layer_output < 0, tf.zeros(self.first_layer_output.shape, dtype=TF_TYPE), self.first_layer_output)
         # Calc second layer
-        second_layer_output = np.matmul(first_layer_output, np.ones([self.r], dtype=TYPE)) + SECOND_LAYER_BAIS
+        self.second_layer_output = tf.reshape(tf.matmul(self.mask_first_layer_output, tf.ones([self.r,1], dtype=TF_TYPE)), [self.r]) + SECOND_LAYER_BAIS
         # Calc reset hinge loss map
-        hinge_loss_map = HINGE_LOST_CONST - np.multiply(second_layer_output.T, Y)
-        hinge_loss_map[hinge_loss_map < 0] = 0
-        hinge_loss_map[hinge_loss_map > 0] = 1
+        self.hinge_loss_map = HINGE_LOST_CONST - tf.multiply(tf.transpose(self.second_layer_output), tf_Y)
+        self.mask_one_hinge_loss_map = tf.where(self.hinge_loss_map < 0, tf.zeros(self.hinge_loss_map.shape, dtype=TF_TYPE), self.hinge_loss_map)
+        self.mask_two_hinge_loss_map = tf.where(self.hinge_loss_map > 0, tf.ones(self.hinge_loss_map.shape, dtype=TF_TYPE), self.mask_one_hinge_loss_map)
         # Calc relu reset map
-        relu_reset_map = first_layer_output.T
-        relu_reset_map[relu_reset_map > 0] = 1
+        self.relu_reset_map = tf.transpose(self.mask_first_layer_output)
+        self.mask_relu_reset_map= tf.where(self.relu_reset_map > 0, tf.ones(self.relu_reset_map.shape, dtype=TF_TYPE), self.relu_reset_map)
         # Calc update rule
-        total_reset_map = np.multiply(relu_reset_map, hinge_loss_map)
-        total_map = np.multiply(total_reset_map, Y)
-        w_update_rule = np.matmul(total_map, X)
-        b_update_rule = np.sum(total_map, axis=1)
+        self.total_reset_map = tf.multiply(self.mask_relu_reset_map, self.mask_two_hinge_loss_map)
+        self.total_map = tf.multiply(self.total_reset_map, tf_Y)
+        self.w_update_rule = tf.matmul(self.total_map, tf_X)
+        self.b_update_rule = tf.reduce_sum(self.total_map, axis=1)
+              
+    def update_network(self, sess, lr):
+        global_minimum_point, local_minimum_point = True, True
+        current_w_update_rule, current_b_update_rule, current_hinge_loss_map = sess.run([self.w_update_rule, self.b_update_rule, self.mask_two_hinge_loss_map], {self.tf_W: self.W, self.tf_B: self.B})
+        
         # Update the weights
-        self.W = self.W + lr*w_update_rule
-        self.B = self.B + lr*b_update_rule
+        self.W = self.W + lr*current_w_update_rule
+        self.B = self.B + lr*current_b_update_rule
         self.all_W.append(self.W)
         self.all_B.append(self.B)
         # Check if we are in local minimum point
-        local_minimum_point = np.sum(np.abs(w_update_rule)) == 0 and np.sum(np.abs(b_update_rule)) == 0
+        local_minimum_point = np.sum(np.abs(current_w_update_rule)) == 0 and np.sum(np.abs(current_b_update_rule)) == 0
         # Check if we are in global minimum point
-        non_zero_loss_sample_counter = np.sum(hinge_loss_map)
+        non_zero_loss_sample_counter = np.sum(current_hinge_loss_map)
         global_minimum_point = non_zero_loss_sample_counter == 0
         # Return if we are in a global minimum 
         return global_minimum_point, local_minimum_point, non_zero_loss_sample_counter
