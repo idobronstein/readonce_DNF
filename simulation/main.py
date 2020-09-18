@@ -85,7 +85,6 @@ def main():
                     with tf.Graph().as_default():
                         if minimum_point:
                             result_object.logger.info("We got to minimum point")
-                            aligend_indexes = get_all_algined_indexes(network, readonce, X, noise_size)
                             result_object.logger.info("Prone the network by inf norm")
                             above_mean_indexes = find_indexes_above_half_of_max(network)
                             W_prone = network.W[above_mean_indexes]
