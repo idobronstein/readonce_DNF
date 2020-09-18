@@ -22,8 +22,8 @@ def run_network(network, X, Y, run_name, result_object, readonce, noise_size, se
         result_object.logger.error("Got to local minimums")
     return global_minimum_point
 
-def save_results(minimum_point, name, result_object, network, readonce, X, Y, noise_size):
-    result_object.save_run(name, network, readonce, minimum_point, is_perfect_classification(network, X, Y))
+def save_results(minimum_point, name, result_object, network, readonce, X, sess, noise_size):
+    result_object.save_run(name, network, readonce, minimum_point, is_perfect_classification(network, X, sess))
     result_object.generate_cluster_graph(name, network)
 
 def main():
@@ -36,7 +36,7 @@ def main():
     r = len(all_combinations)
     X = np.array(all_combinations, dtype=TYPE)
 
-    for dnf_size in range(6, D + 1):
+    for dnf_size in range(2, D + 1):
         noise_size = D - dnf_size
 
         result_object.logger.info("Generate all balanced partitions in size {}".format(dnf_size))
@@ -47,7 +47,7 @@ def main():
         if len(all_partitions) == 0:
             result_object.logger.info("No relevant phrases. Skippinig..")
         else:
-            for epsilon in range(26, MAX_EPSILON , STEP_EPSILON):
+            for epsilon in range(MIN_EPSILON, MAX_EPSILON, STEP_EPSILON):
                 result_object.logger.info("Running for all dnf in size: {0} and initialization: {1}".format(dnf_size, epsilon))
                             
                 result_object.set_result_path(dnf_size, epsilon)
@@ -79,8 +79,10 @@ def main():
                             sess.run(init)
                             minimum_point = run_network(network, X, Y, backup_name, result_object, readonce, noise_size, sess)
                     
-                            save_results(minimum_point, os.path.join(run_name, ORIGINAL_FINAL_DIR), result_object, network, readonce, X, Y, noise_size)
-                
+                            save_results(minimum_point, os.path.join(run_name, ORIGINAL_FINAL_DIR), result_object, network, readonce, X, sess, noise_size)
+
+                    tf.reset_default_graph()
+                    with tf.Graph().as_default():
                         if minimum_point:
                             result_object.logger.info("We got to minimum point")
                             aligend_indexes = get_all_algined_indexes(network, readonce, X, noise_size)
@@ -89,14 +91,20 @@ def main():
                             W_prone = network.W[above_mean_indexes]
                             B_prone = network.B[above_mean_indexes]
                             prone_network = Network(W_prone, B_prone)
-                            save_results(minimum_point, os.path.join(run_name, PRONE_BY_MEAN_DIR), result_object, prone_network, readonce, X, Y, noise_size)
-                            if not is_perfect_classification(network, X, Y):
-                                result_object.logger.error("After pruning the network doesn't classify perfectly")
-                            elif not set(above_mean_indexes).issubset(aligend_indexes):
-                                result_object.logger.error("After pruning there is terms which doesn't aligned with some term")
-                            elif not check_reconstraction(prone_network, readonce, noise_size):
-                                result_object.logger.error("After pruning we can't succeed to reconstract the DNF")
-                            else:
-                                result_object.logger.critical("After pruning the network classify perfectly, aligned with the terms and reconstract the DNF")
+                            prone_network.prepere_update_network(X, Y)
+                            with tf.Session() as sess:
+                                init = tf.initialize_all_variables()
+                                sess.run(init)
+                                save_results(minimum_point, os.path.join(run_name, PRONE_BY_MEAN_DIR), result_object, prone_network, readonce, X, sess, noise_size)
+                                if not is_perfect_classification(prone_network, X, sess):
+                                    result_object.logger.error("After pruning the network doesn't classify perfectly")
+                                elif not set(above_mean_indexes).issubset(aligend_indexes):
+                                    result_object.logger.error("After pruning there is terms which doesn't aligned with some term")
+                                elif not check_reconstraction(prone_network, readonce, noise_size):
+                                    result_object.logger.error("After pruning we can't succeed to reconstract the DNF")
+                                else:
+                                    result_object.logger.critical("After pruning the network classify perfectly, aligned with the terms and reconstract the DNF")
+                        else:
+                            result_object.logger.error("Got to local minimums")
 
 main()

@@ -34,8 +34,8 @@ def cluster_network(network):
 	leaves_index = Z['leaves']
 	return leaves_index
 
-def is_perfect_classification(network, X, Y):
-	return network.check_predriction_for_dataset(X, Y) == X.shape[0]
+def is_perfect_classification(network, X, sess):
+	return network.check_predriction_for_dataset(sess) == X.shape[0]
 
 def find_max_norm_inf(network):
 	return np.max([calc_norm_inf(network, i) for i in range(network.r)])

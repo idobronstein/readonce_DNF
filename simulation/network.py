@@ -49,12 +49,9 @@ class Network():
     def check_relu_reset_sample(self, x, i):
         return self.get_neuron_value(x, i) <= 0
 
-    def check_predriction_for_dataset(self, X, Y):
-        predriction_count = 0
-        for x, y in zip(X, Y):
-            if self.get_prderiction(x) == y:
-                predriction_count += 1
-        return predriction_count
+    def check_predriction_for_dataset(self, sess):
+        current_margin = sess.run([self.mask_two_margin], {self.tf_W: self.W, self.tf_B: self.B})
+        return np.sum(current_margin)
 
     def prepere_update_network(self, X, Y):
         self.tf_W = tf.placeholder(TYPE, name='W', shape=[self.r, D])
@@ -68,9 +65,13 @@ class Network():
         self.first_layer_output = tf.matmul(self.X_matrix, self.W_matrix)
         self.mask_first_layer_output= tf.where(self.first_layer_output < 0, tf.zeros(self.first_layer_output.shape, dtype=TF_TYPE), self.first_layer_output)
         # Calc second layer
-        self.second_layer_output = tf.reshape(tf.matmul(self.mask_first_layer_output, tf.ones([self.r,1], dtype=TF_TYPE)), [self.r]) + SECOND_LAYER_BAIS
+        self.second_layer_output = tf.reshape(tf.matmul(self.mask_first_layer_output, tf.ones([self.r,1], dtype=TF_TYPE)), [X.shape[0]]) + SECOND_LAYER_BAIS
+        # Calc margin
+        self.margin = tf.multiply(tf.transpose(self.second_layer_output), tf_Y)
+        self.mask_one_margin = tf.where(self.margin < 0, tf.zeros(self.margin.shape, dtype=TF_TYPE), self.margin)
+        self.mask_two_margin = tf.where(self.margin > 0, tf.ones(self.margin.shape, dtype=TF_TYPE), self.mask_one_margin)
         # Calc reset hinge loss map
-        self.hinge_loss_map = HINGE_LOST_CONST - tf.multiply(tf.transpose(self.second_layer_output), tf_Y)
+        self.hinge_loss_map = HINGE_LOST_CONST - self.margin
         self.mask_one_hinge_loss_map = tf.where(self.hinge_loss_map < 0, tf.zeros(self.hinge_loss_map.shape, dtype=TF_TYPE), self.hinge_loss_map)
         self.mask_two_hinge_loss_map = tf.where(self.hinge_loss_map > 0, tf.ones(self.hinge_loss_map.shape, dtype=TF_TYPE), self.mask_one_hinge_loss_map)
         # Calc relu reset map
