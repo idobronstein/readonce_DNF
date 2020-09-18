@@ -98,7 +98,7 @@ def main():
                                 save_results(minimum_point, os.path.join(run_name, PRONE_BY_MEAN_DIR), result_object, prone_network, readonce, X, sess, noise_size)
                                 if not is_perfect_classification(prone_network, X, sess):
                                     result_object.logger.error("After pruning the network doesn't classify perfectly")
-                                elif not set(above_mean_indexes).issubset(aligend_indexes):
+                                elif is_all_algined(network, readonce, X, noise_size, above_mean_indexes):
                                     result_object.logger.error("After pruning there is terms which doesn't aligned with some term")
                                 elif not check_reconstraction(prone_network, readonce, noise_size):
                                     result_object.logger.error("After pruning we can't succeed to reconstract the DNF")

@@ -17,6 +17,14 @@ def is_algined(network, X, i, term):
 				return False
 	return True
 
+def is_all_algined(network, readonce, X, noize_size, indexes):
+	padded_terms = [np.pad(term, [0, noize_size], 'constant', constant_values=(0)) for term in readonce.DNF]
+	for i in indexes:
+		for term in padded_terms:
+			if not is_algined(network, X, i, term):
+				return False
+	return True
+	
 def get_all_algined_indexes(network, readonce, X, noize_size):
 	all_algined_indexes = []
 	for term in readonce.DNF:

@@ -7,7 +7,7 @@ TYPE = np.int64
 TF_TYPE = tf.int64
 
 ### Hyper params ###
-D = 9
+D = 8
 ALPHA = 100000 * 2**D
 LR = 100
 
@@ -31,7 +31,7 @@ RECONSTRACTION_FACTOR_WEIGHT = 10
 RECONSTRACTION_FACTOR_NORM = 9
 
 ### Result ###
-IS_TEMP = False
+IS_TEMP = True
 TEMP_RESULT_PATH = r"tmp"
 GENERAL_RESULT_PATH = r"results"
 BACKUP_DIR = 'backup'
