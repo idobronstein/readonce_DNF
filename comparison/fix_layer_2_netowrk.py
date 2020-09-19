@@ -91,4 +91,4 @@ class FixLayerTwoNetwork():
                 self.W, self.B = sess.run([W, B])
                 self.W = self.W.T
 
-            return 0, test_acc
+            return train_loss, test_acc

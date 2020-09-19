@@ -74,4 +74,4 @@ class TwoLayerNetwork():
                 test_loss, test_acc = sess.run([loss, accuracy_test], {X:test_set[0], Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
 
-            return 0, test_acc
+            return train_loss, test_acc
