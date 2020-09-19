@@ -80,8 +80,8 @@ class FixLayerTwoNetwork():
                             break 
                         if step % PRINT_STEP_JUMP == 0:
                             self.W, self.B = sess.run([W, B])
-                            self.all_W.append(self.W)
-                            self.all_B.append(self.B)
+                            #self.all_W.append(self.W)
+                            #self.all_B.append(self.B)
                             print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                     print("NN Train accuracy: {0}".format(train_acc)) 
                 
