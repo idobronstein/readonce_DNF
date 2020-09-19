@@ -25,7 +25,7 @@ TRAIN_SIZE = 5000
 
 ### Learning ###
 PRINT_STEP_JUMP = 1000
-MAX_STEPS = 500000
+MAX_STEPS = 100
 
 ### After learning ###
 PRUNE_FACTOR_WEIGHT = 10
@@ -34,11 +34,11 @@ RECONSTRACTION_FACTOR_WEIGHT = 10
 RECONSTRACTION_FACTOR_NORM = 9
 
 ### Result ###
-IS_TEMP = False
-TEMP_RESULT_PATH = r"D:\checkouts\read_once_dnf\comparison\tmp"
-GENERAL_RESULT_PATH = r"D:\checkouts\read_once_dnf\comparison\results"
+IS_TEMP = True
+TEMP_RESULT_PATH = "tmp"
+GENERAL_RESULT_PATH = "results"
 MAX_TRY_TO_DELETE_DIR = 4
 
-
-
+### State File ###
+STATE_PATH = 'state.pkl'
 
