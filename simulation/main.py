@@ -17,7 +17,7 @@ def run_network(network, X, Y, run_name, result_object, readonce, noise_size, se
         if step % PRINT_STEP_JUMP == 0 and step > 0:
             result_name = os.path.join(run_name, str(step))
             result_object.logger.info("Step number: {0}, Accuracy: {1} / {2}".format(step, X.shape[0] - non_zero_loss_sample_counter, X.shape[0]))
-            #save_results(global_minimum_point, result_name, result_object, network, readonce, X, Y, noise_size)
+            #save_results(global_minimum_point, result_name, result_object, network, readonce, X, sess, noise_size)
     if local_minimum_point and not global_minimum_point:
         result_object.logger.error("Got to local minimums")
     return global_minimum_point
@@ -36,7 +36,7 @@ def main():
     r = len(all_combinations)
     X = np.array(all_combinations, dtype=TYPE)
 
-    for dnf_size in range(2, D + 1):
+    for dnf_size in range(6, D + 1):
         noise_size = D - dnf_size
 
         result_object.logger.info("Generate all balanced partitions in size {}".format(dnf_size))
@@ -47,7 +47,10 @@ def main():
         if len(all_partitions) == 0:
             result_object.logger.info("No relevant phrases. Skippinig..")
         else:
-            for epsilon in range(MIN_EPSILON, MAX_EPSILON, STEP_EPSILON):
+            all_epsilon = range(9, MAX_EPSILON, STEP_EPSILON)
+            if dnf_size == 6:
+                all_epsilon = range(5, MAX_EPSILON, STEP_EPSILON)
+            for epsilon in all_epsilon:
                 result_object.logger.info("Running for all dnf in size: {0} and initialization: {1}".format(dnf_size, epsilon))
                             
                 result_object.set_result_path(dnf_size, epsilon)
@@ -84,7 +87,7 @@ def main():
                     tf.reset_default_graph()
                     with tf.Graph().as_default():
                         if minimum_point:
-                            result_object.logger.info("We got to minimum point")
+                            result_object.logger.info("We got to minimum point")    
                             result_object.logger.info("Prone the network by inf norm")
                             above_mean_indexes = find_indexes_above_half_of_max(network)
                             W_prone = network.W[above_mean_indexes]

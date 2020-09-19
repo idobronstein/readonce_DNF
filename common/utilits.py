@@ -24,15 +24,22 @@ def is_all_algined(network, readonce, X, noize_size, indexes):
 			if not is_algined(network, X, i, term):
 				return False
 	return True
-	
-def get_all_algined_indexes(network, readonce, X, noize_size):
-	all_algined_indexes = []
-	for term in readonce.DNF:
-		term = np.pad(term, [0, noize_size], 'constant', constant_values=(0))
-		for i in range(network.r):
-			if is_algined(network, X, i, term):
-				all_algined_indexes.append(i)
-	return all_algined_indexes
+
+def unit_vector(vector):
+    return vector / np.linalg.norm(vector)
+
+def angle_between(v1, v2):
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    val = np.rad2deg(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
+    return val
+
+def find_angle_to_closest_term(network, readonce, X, noize_size, i):
+	padded_terms = [np.pad(term, [0, noize_size], 'constant', constant_values=(0)) for term in readonce.DNF]
+	max_angle = 0
+	for term in padded_terms:
+		max_angle = np.min([max_angle, angle_between(term, network.W[i])])
+	return max_angle
 
 def cluster_network(network):
 	B_T = np.array([network.B]).T
@@ -80,3 +87,12 @@ def check_reconstraction(network, readonce, noize_size):
 		if not flag:
 			return False
 	return True
+
+def calc_bais_threshold(w, readonce, noize_size, D):
+    value = 0
+    padded_terms = [np.pad(term, [0, noize_size], 'constant', constant_values=(0)) for term in readonce.DNF]
+    for term in padded_terms:
+      term_in_weight = np.array([w[l] for l in range(D) if term[l] != 0])
+      min_value = np.max([np.min(term_in_weight), 0])
+      value += - np.sum(np.abs(term_in_weight)) + 2 * min_value 
+    return value

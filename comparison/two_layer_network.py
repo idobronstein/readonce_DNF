@@ -8,8 +8,8 @@ class TwoLayerNetwork():
     def __init__(self, r ,lr):
         print("Initialize two layer network with gaussin initialization")
         self.r = r 
-        self.W_init = np.array(SIGMA_GAUSS * np.random.randn(D, self.r), dtype=TYPE)
-        self.U_init = np.array(SIGMA_GAUSS * np.random.randn(self.r), dtype=TYPE)
+        self.W_init = np.array(SIGMA * np.random.randn(D, self.r), dtype=TYPE)
+        self.U_init = np.array(SIGMA * np.random.randn(self.r), dtype=TYPE)
         self.B_W_init = np.zeros([self.r], dtype=TYPE)
         self.B_U_init = np.zeros([1], dtype=TYPE)
         self.lr = lr
@@ -63,8 +63,8 @@ class TwoLayerNetwork():
                 
                 # train
                 for step in range(0, MAX_STEPS):
-                    _, train_loss, train_acc = sess.run([train_op, loss, accuracy_train], {X:train_set[0], Y:shift_label(train_set[1])})
-                    if train_loss == 0:
+                    _, train_loss, train_acc, current_gradient = sess.run([train_op, loss, accuracy_train, gradient], {X:train_set[0], Y:shift_label(train_set[1])})
+                    if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0 and np.sum(np.abs(current_gradient[2][0])) == 0 and np.sum(np.abs(current_gradient[3][0])) == 0) or (train_loss == 0):
                         print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                         break 
                     if step % PRINT_STEP_JUMP == 0:
@@ -74,4 +74,4 @@ class TwoLayerNetwork():
                 test_loss, test_acc = sess.run([loss, accuracy_test], {X:test_set[0], Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
 
-            return test_acc
+            return train_loss, test_acc

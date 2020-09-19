@@ -1,30 +1,44 @@
 from defs import *
 
+### General ###
 NEGATIVE = -1
 POSITIVE = 1
+TYPE = np.float32
 
-D = 784
-LR_FIX_LAYER = 1e-2
-LR_TWO_LAYER_REGULAR = 1e-2
+### Target params ###
+D = 14
+DNF = [4] * 3
+FULL = True
 
-SAMPLE_PROB_LIST = [0.009, 0.01, 0.025, 0.05, 0.075, 0.1, 0.12, 0.15]
+### Hyper params ###
+LR = 1e-3
+R = 1000
+SIGMA = 1e-5
 
-# epsilon intialization
-SIGAM_EPSILON = 1e-5
+### Compartion params ###
+TEST_SIZE = 5000
+TRAIN_SIZE_LIST = range(150, 750, 50)
+NUM_OF_RUNNING = 5
 
-# gaussion initialization
-SIGMA_GAUSS = 1e-5
-R_GAUSS_FIX_LAYER = 200
-R_GAUSS_TWO_LAYER_REGULAR = 100
+### Graphs ###
+TRAIN_SIZE = 5000
 
-# results consts
+### Learning ###
+PRINT_STEP_JUMP = 1000
+MAX_STEPS = 500000
+
+### After learning ###
+PRUNE_FACTOR_WEIGHT = 10
+PRUNE_FACTOR_TOTAL_NORM = 4
+RECONSTRACTION_FACTOR_WEIGHT = 10
+RECONSTRACTION_FACTOR_NORM = 9
+
+### Result ###
 IS_TEMP = False
 TEMP_RESULT_PATH = r"D:\checkouts\read_once_dnf\comparison\tmp"
 GENERAL_RESULT_PATH = r"D:\checkouts\read_once_dnf\comparison\results"
 MAX_TRY_TO_DELETE_DIR = 4
 
-PRINT_STEP_JUMP =10
-MAX_STEPS = 70000
-TYPE = np.float32
+
 
 

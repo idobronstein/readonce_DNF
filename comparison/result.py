@@ -23,13 +23,13 @@ class Result():
         param_text_file_path = os.path.join(self.result_dir, self.PARAM_FILE_NAME)
         with open(param_text_file_path, "w") as f:
             f.write("D             -  {}\n".format(D))
-            f.write("lr fix        -  {}\n".format(LR_FIX_LAYER))
-            f.write("lr normal     -  {}\n".format(LR_TWO_LAYER_REGULAR))
-            f.write("sigma epsilon -  {}\n".format(SIGAM_EPSILON))
-            f.write("sigma gauss   -  {}\n".format(SIGMA_GAUSS))
-            f.write("r epsilon fix -  {}\n".format(2 ** D))
-            f.write("r gauss fix   -  {}\n".format(R_GAUSS_FIX_LAYER))
-            f.write("r gauss normal-  {}\n".format(R_GAUSS_TWO_LAYER_REGULAR))
+            f.write("lr            -  {}\n".format(LR))
+            f.write("sigma         -  {}\n".format(SIGMA))
+            f.write("r             -  {}\n".format(R))
+
+    def create_dir(self, name):
+        self.result_dir = os.path.join(self.result_dir, name)
+        os.mkdir(self.result_dir)
 
     def enforce_delete_dir(self):
         try_count = 0
@@ -43,15 +43,66 @@ class Result():
                 pass
         assert True, "Can't delete the directory: {0}".format(self.result_dir)
 
-    def save_graph(self, run_name, all_algorithems, result_vec):
-        result_path = os.path.join(self.result_dir, run_name)
+    def save_graph(self, all_algorithems, result_vec):
         fig, ax = plt.subplots()
         for i in range(len(all_algorithems)):
-            ax.plot(SAMPLE_PROB_LIST, result_vec[i], all_algorithems[i][2], label=all_algorithems[i][1])
+            ax.plot(TRAIN_SIZE_LIST, result_vec[i], all_algorithems[i][2], label=all_algorithems[i][1])
         ax.set_title('Learning blance readonce DNF D={} - Comparison between algorithmes'.format(D))
         ax.set_xlabel('Sampling probability')
         ax.set_ylabel('Accuracy')
         #ax.set_ylim(0.5, 1.05)
         legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
-        fig.savefig(result_path)
-        plt.clf()
+        fig.savefig(os.path.join(self.result_dir, "compersion.png"))
+        plt.close(fig)
+
+    def angle_vs_norm_graph(self, network, readonce, X, noize_size):
+        fig, ax = plt.subplots()
+        ax.set_title('Norm Vs. Angle with closest term')
+        ax.set_xlabel('Angle (degrees)')
+        ax.set_ylabel('Norm')
+        angel_vec = [find_angle_to_closest_term(network, readonce, X, noize_size, i) for i in range(network.r)]
+        norm_vec = [np.linalg.norm(network.W[i]) for i in range(network.r)]
+        ax.plot(angel_vec, norm_vec, '.')
+        fig.savefig(os.path.join(self.result_dir, "angle_vs_norm.png"))
+        plt.close(fig)
+
+    def bias_graph(self, network, readonce, X, noize_size):
+        steps_range = range(len(network.all_W))
+        fig, ax = plt.subplots()
+        ax.set_title('Mean Bais Threshold \\ Network Bais Vs. Steps')
+        ax.set_xlabel('Steps')
+        ax.set_ylabel('Mean Value')
+        bais_threshold_vec = [np.mean([calc_bais_threshold(network.all_W[step].T[i], readonce, noize_size, D) for i in range(network.r)]) for step in steps_range]
+        bais_vec = [np.mean(network.all_B[step]) for step in range(len(network.all_W))]
+        ax.plot(steps_range, bais_threshold_vec, 'r.', label="Bias Threshold")
+        ax.plot(steps_range, bais_vec, 'b.', label="Network Bias")
+        legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
+        fig.savefig(os.path.join(self.result_dir, "bias_threshold.png"))
+        plt.close(fig)
+
+    def cluster_graph(self, network, add_to_name=''):
+        leaves_index = cluster_network(network)
+
+        # Plot W graph
+        fig = pylab.figure()
+        axmatrix = fig.add_axes([0.3,0.1,0.6,0.8])
+        weights_by_leaves = network.W[leaves_index,:]
+        im = axmatrix.matshow(weights_by_leaves, aspect='auto', origin='lower')
+        axmatrix.set_xticks([])
+        axmatrix.set_yticks([])
+        axcolor = fig.add_axes([0.91,0.1,0.02,0.8])
+        pylab.colorbar(im, cax=axcolor)
+        fig.savefig(os.path.join(self.result_dir, add_to_name + "cluster_w.png"), bbox_inches="tight")
+        plt.close(fig)
+
+        # Plot B graph
+        fig = pylab.figure()
+        axmatrix = fig.add_axes([0.3,0.1,0.6,0.8])
+        weights_by_leaves = np.array([network.B]).T[leaves_index,:]
+        im = axmatrix.matshow(weights_by_leaves, aspect='auto', origin='lower')
+        axmatrix.set_xticks([])
+        axmatrix.set_yticks([])
+        axcolor = fig.add_axes([0.91,0.1,0.02,0.8])
+        pylab.colorbar(im, cax=axcolor)
+        fig.savefig(os.path.join(self.result_dir, add_to_name+ "cluster_b.png"), bbox_inches="tight")
+        plt.close(fig)

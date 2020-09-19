@@ -7,9 +7,9 @@ TYPE = np.int64
 TF_TYPE = tf.int64
 
 ### Hyper params ###
-D = 8
-ALPHA = 100000 * 2**D
-LR = 100
+D = 11
+ALPHA = 1000000 * 2**D
+LR = 10
 
 ### Network  ###
 HINGE_LOST_CONST = ALPHA
@@ -22,7 +22,7 @@ MIN_VALUE_FOR_NEGATIVE_SAMPLE = 0
 
 ### Learning ###
 PRINT_STEP_JUMP = 1000
-MAX_STEPS = 50000
+MAX_STEPS = 1000000
 
 ### After learning ###
 PRUNE_FACTOR_WEIGHT = 10

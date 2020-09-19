@@ -10,19 +10,22 @@ class FixLayerTwoNetwork():
         # init graph
         if epsilon_init:
             print("Initialize fix layer two network with epsilon initialization")
-            self. r = 2 ** D
-            self.W_init = np.array(get_all_combinations(), dtype=TYPE) * SIGAM_EPSILON
-            self.W_init = self.W_init.T
-            self.B_init = np.zeros([self.r], dtype=TYPE)
+            self.r = 2 ** D
+            self.W = np.array(get_all_combinations(), dtype=TYPE) * SIGAM
+            self.W = self.W_init.T
+            self.B = np.zeros([self.r], dtype=TYPE)
         elif r > 0:
             print("Initialize fix layer two network with gaussin initialization")
             self.r = r 
-            self.W_init = np.array(SIGMA_GAUSS * np.random.randn(D, self.r), dtype=TYPE)
-            self.B_init = np.zeros([self.r], dtype=TYPE)
+            self.W = np.array(SIGMA * np.random.randn(D, self.r), dtype=TYPE)
+            self.B = np.zeros([self.r], dtype=TYPE)
         else:
-            self.W_init = W_init
-            self.B_init = B_init
+            self.r = W.shape[0]
+            self.W = W
+            self.B = B
         self.lr = lr
+        self.all_W = [self.W]
+        self.all_B = [self.B]
 
     def run(self, train_set, test_set, just_train=False):
         train_size = train_set[0].shape[0]
@@ -34,8 +37,8 @@ class FixLayerTwoNetwork():
             global_step = tf.Variable(0, trainable=False, name='global_step')
             X = tf.placeholder(TYPE, name='X', shape=[None, D])
             Y = tf.placeholder(TYPE, name='Y', shape=[None])
-            W = tf.get_variable('W', initializer=self.W_init)
-            B = tf.get_variable('B_W', initializer=self.B_init)
+            W = tf.get_variable('W', initializer=self.W)
+            B = tf.get_variable('B_W', initializer=self.B)
             
             # Netrowk
             out_1 = tf.nn.relu(tf.matmul(X, W) + B)
@@ -71,11 +74,14 @@ class FixLayerTwoNetwork():
                 # train
                 if not just_train:
                     for step in range(0, MAX_STEPS):
-                        _, train_loss, train_acc = sess.run([train_op, loss, accuracy_train], {X:train_set[0], Y:shift_label(train_set[1])})
-                        if train_loss == 0:
+                        _, train_loss, train_acc, current_gradient = sess.run([train_op, loss, accuracy_train, gradient], {X:train_set[0], Y:shift_label(train_set[1])})
+                        if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
                             print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                             break 
                         if step % PRINT_STEP_JUMP == 0:
+                            self.W, self.B = sess.run([W, B])
+                            self.all_W.append(self.W)
+                            self.all_B.append(self.B)
                             print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                     print("NN Train accuracy: {0}".format(train_acc)) 
                 
@@ -85,4 +91,4 @@ class FixLayerTwoNetwork():
                 self.W, self.B = sess.run([W, B])
                 self.W = self.W.T
 
-            return test_acc
+            return train_loss, test_acc
