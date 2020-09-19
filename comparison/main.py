@@ -66,15 +66,14 @@ def main():
             for j in range(algorithem_location, len(all_algorithems)):
                 algorithem = all_algorithems[j]
                 print('Running algorithem: "{0}" with train set in size: {1}'.format(algorithem[1], set_size))
+                save_state(result_vec, k, i, j)
                 train_result = 1
                 while train_result > 0:
                     network = algorithem[0]()
                     train_result, algorithem_result = network.run(train_set, test_set) 
                 result_vec[j][i] += algorithem_result 
-                save_state(result_vec, k, i, j)
             algorithem_location = 0
         train_list_location = 0 
-
     result_vec = result_vec / NUM_OF_RUNNING
     result_object.save_graph(all_algorithems, result_vec)
     
