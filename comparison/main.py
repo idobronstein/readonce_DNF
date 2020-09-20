@@ -12,19 +12,18 @@ def load_state(all_algorithems):
     if os.path.isfile(STATE_PATH):
         with open(STATE_PATH, 'rb') as f:
            all_state = pickle.load(f) 
-           result_vec, round_num, train_list_location, algorithem_location = all_state
-        print("Restore state: round_num - {0}, train list location - {1}, algorithem location - {2}".format(round_num, train_list_location, algorithem_location))
+           result_vec, round_num, train_list_location = all_state
+        print("Restore state: round_num - {0}, train list location - {1}".format(round_num, train_list_location))
     else:
-        result_vec = np.zeros([len(all_algorithems), len(TRAIN_SIZE_LIST)])
+        result_vec = np.zeros([NUM_OF_RUNNING, len(all_algorithems), len(TRAIN_SIZE_LIST)])
         round_num = 0
         train_list_location = 0
-        algorithem_location = 0
-    return result_vec, round_num, train_list_location, algorithem_location
+    return result_vec, round_num, train_list_location
 
-def save_state(result_vec, round_num, train_list_location, algorithem_location):
-    print("Saving state for: round_num - {0}, train list location - {1}, algorithem location - {2}".format(round_num, train_list_location, algorithem_location))
+def save_state(result_vec, round_num, train_list_location):
+    print("Saving state for: round_num - {0}, train list location - {1}".format(round_num, train_list_location, ))
     with open(STATE_PATH, 'wb+') as f:
-        pickle.dump((result_vec, round_num, train_list_location, algorithem_location), f) 
+        pickle.dump((result_vec, round_num, train_list_location), f) 
 
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
@@ -48,7 +47,7 @@ def main():
         (lambda: FixLayerTwoNetwork(False, LR, R), "Fix - Gaussion", 'o'),
         (lambda: TwoLayerNetwork(R, LR), "Regular - Gaussion", '.')
     ]
-    result_vec, round_num, train_list_location, algorithem_location = load_state(all_algorithems)
+    result_vec, round_num, train_list_location = load_state(all_algorithems)
 
 
     if FULL:
@@ -59,22 +58,31 @@ def main():
         test_set = (X_test, Y_test)
     for k in range(round_num, NUM_OF_RUNNING):
         for i in range(train_list_location, len(TRAIN_SIZE_LIST)):
+            flag = True
             set_size = TRAIN_SIZE_LIST[i]
-            X_train = get_random_init_uniform_samples(set_size, D)
-            Y_train = np.array([readonce.get_label(x) for x in X_train], dtype=TYPE)
-            train_set = (X_train, Y_train)
-            for j in range(algorithem_location, len(all_algorithems)):
-                algorithem = all_algorithems[j]
-                print('Running algorithem: "{0}" with train set in size: {1}'.format(algorithem[1], set_size))
-                save_state(result_vec, k, i, j)
-                train_result = 1
-                while train_result > 0:
-                    network = algorithem[0]()
-                    train_result, algorithem_result = network.run(train_set, test_set) 
-                result_vec[j][i] += algorithem_result 
-            algorithem_location = 0
+            while flag:
+                X_train = get_random_init_uniform_samples(set_size, D)
+                Y_train = np.array([readonce.get_label(x) for x in X_train], dtype=TYPE)
+                train_set = (X_train, Y_train)
+                for j in range(len(all_algorithems)):
+                    algorithem = all_algorithems[j]
+                    print('Running algorithem: "{0}" with train set in size: {1}'.format(algorithem[1], set_size))
+                    save_state(result_vec, k, i)
+                    l = 0
+                    flag_2 = True
+                    while l < ATTEMPT_NUM and flag_2:
+                        l += 1
+                        network = algorithem[0]()
+                        train_result, algorithem_result = network.run(train_set, test_set) 
+                        if train_result == 0:
+                            flag = False
+                            flag_2 = False
+                    if flag:
+                        print("Couldn't reach global minimum. Try again.")
+                        break
+                    result_vec[k][j][i] = algorithem_result 
         train_list_location = 0 
-    result_vec = result_vec / NUM_OF_RUNNING
+    result_vec = np.mean(result_vec, axis=0)
     result_object.save_graph(all_algorithems, result_vec)
     
     '''

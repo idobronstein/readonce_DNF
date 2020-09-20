@@ -18,7 +18,7 @@ SIGMA = 1e-5
 ### Compartion params ###
 TEST_SIZE = 5000
 TRAIN_SIZE_LIST = range(150, 750, 50)
-NUM_OF_RUNNING = 5
+NUM_OF_RUNNING = 2
 
 ### Graphs ###
 TRAIN_SIZE = 5000
@@ -26,6 +26,7 @@ TRAIN_SIZE = 5000
 ### Learning ###
 PRINT_STEP_JUMP = 1000
 MAX_STEPS = 100
+ATTEMPT_NUM = 3
 
 ### After learning ###
 PRUNE_FACTOR_WEIGHT = 10
