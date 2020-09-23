@@ -11,8 +11,8 @@ DNF = [4] * 3
 FULL = False
 
 ### Hyper params ###
-LR = 1e-3
-R = 300
+LR = 1e-4
+R = 500
 SIGMA = 1e-5
 
 ### Test params ###
@@ -34,6 +34,7 @@ POSITIVE_NUMBERS = [2,4]
 NEGATIVE_NUMBERS = [1,3]
 TRAIN_SET_PRECENT = 0.8
 BINARY_THRESHOLD = 127
+BATCH_SIZE = 1000
 
 ### Result ###
 IS_TEMP = True
