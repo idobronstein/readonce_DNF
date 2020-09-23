@@ -7,7 +7,7 @@ TYPE = np.int64
 TF_TYPE = tf.int64
 
 ### Hyper params ###
-D = 11
+D = 6
 ALPHA = 1000000 * 2**D
 LR = 10
 

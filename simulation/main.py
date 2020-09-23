@@ -36,25 +36,21 @@ def main():
     r = len(all_combinations)
     X = np.array(all_combinations, dtype=TYPE)
 
-    for dnf_size in range(6, D + 1):
-        noise_size = D - dnf_size
-
-        result_object.logger.info("Generate all balanced partitions in size {}".format(dnf_size))
-        all_partitions = get_all_balanced_partitions(dnf_size)
-        # remove the DNF of all 1 and the DNF with one term
-        all_partitions = all_partitions[1:-1]
-
-        if len(all_partitions) == 0:
-            result_object.logger.info("No relevant phrases. Skippinig..")
-        else:
-            all_epsilon = range(9, MAX_EPSILON, STEP_EPSILON)
-            if dnf_size == 6:
-                all_epsilon = range(5, MAX_EPSILON, STEP_EPSILON)
-            for epsilon in all_epsilon:
-                result_object.logger.info("Running for all dnf in size: {0} and initialization: {1}".format(dnf_size, epsilon))
-                            
+    for epsilon in range(MIN_EPSILON, MAX_EPSILON, STEP_EPSILON):
+        for dnf_size in range(2, D + 1):
+            noise_size = D - dnf_size
+    
+            result_object.logger.info("Generate all balanced partitions in size {}".format(dnf_size))
+            all_partitions = get_all_balanced_partitions(dnf_size)
+            # remove the DNF of all 1 and the DNF with one term
+            all_partitions = all_partitions[1:-1]
+    
+            if len(all_partitions) == 0:
+                result_object.logger.info("No relevant phrases. Skippinig..")
+            
+            else:
+                result_object.logger.info("Running for all dnf in size: {0} and initialization: {1}".format(dnf_size, epsilon))            
                 result_object.set_result_path(dnf_size, epsilon)
-
                 for partition in all_partitions:
             
                     result_object.logger.info("Start a run for: {0}".format(partition))
@@ -73,9 +69,7 @@ def main():
                         B_init = np.zeros([r], dtype=TYPE)
                         network = Network(W_init, B_init)
                         network.prepere_update_network(X, Y)
-
                         result_name = os.path.join(run_name, BACKUP_DIR)
-
                         with tf.Session() as sess:
                             # init params
                             init = tf.initialize_all_variables()
@@ -83,7 +77,6 @@ def main():
                             minimum_point = run_network(network, X, Y, backup_name, result_object, readonce, noise_size, sess)
                     
                             save_results(minimum_point, os.path.join(run_name, ORIGINAL_FINAL_DIR), result_object, network, readonce, X, sess, noise_size)
-
                     tf.reset_default_graph()
                     with tf.Graph().as_default():
                         if minimum_point:
@@ -108,5 +101,5 @@ def main():
                                     result_object.logger.critical("After pruning the network classify perfectly, aligned with the terms and reconstract the DNF")
                         else:
                             result_object.logger.error("Got to local minimums")
-
-main()
+    
+main()  

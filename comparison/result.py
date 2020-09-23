@@ -44,14 +44,16 @@ class Result():
         assert True, "Can't delete the directory: {0}".format(self.result_dir)
 
     def save_graph(self, all_algorithems, result_vec):
+        plt.rcParams.update({'font.size': 15})
         fig, ax = plt.subplots()
+        fig.set_size_inches(7, 5)
         for i in range(len(all_algorithems)):
-            ax.plot(TRAIN_SIZE_LIST, result_vec[i], all_algorithems[i][2], label=all_algorithems[i][1])
-        ax.set_title('Learning blance readonce DNF D={} - Comparison between algorithmes'.format(D))
-        ax.set_xlabel('Sampling probability')
+            ax.plot(TRAIN_SIZE_LIST, result_vec[i], all_algorithems[i][2], markersize=14)
+        ax.set_title('Learning f1')
+        ax.set_xlabel('Train set size')
         ax.set_ylabel('Accuracy')
         #ax.set_ylim(0.5, 1.05)
-        legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
+        #legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
         fig.savefig(os.path.join(self.result_dir, "compersion.png"))
         plt.close(fig)
 

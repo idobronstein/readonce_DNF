@@ -10,9 +10,14 @@ class FixLayerTwoNetwork():
         # init graph
         if epsilon_init:
             print("Initialize fix layer two network with epsilon initialization")
-            self.r = 2 ** D
-            self.W = np.array(get_all_combinations(), dtype=TYPE) * SIGAM
-            self.W = self.W_init.T
+            all_combinations = get_all_combinations()
+            if r > 0:
+                self.W = np.array(get_random_init_uniform_samples(r), dtype=TYPE) * SIGMA
+                self.r = r
+            else:
+                self.W = np.array(all_combinations, dtype=TYPE) * SIGMA
+                self.r = 2 ** D
+            self.W = self.W.T
             self.B = np.zeros([self.r], dtype=TYPE)
         elif r > 0:
             print("Initialize fix layer two network with gaussin initialization")
@@ -20,9 +25,9 @@ class FixLayerTwoNetwork():
             self.W = np.array(SIGMA * np.random.randn(D, self.r), dtype=TYPE)
             self.B = np.zeros([self.r], dtype=TYPE)
         else:
-            self.r = W.shape[0]
-            self.W = W
-            self.B = B
+            self.r = W_init.shape[0]
+            self.W = W_init
+            self.B = B_init
         self.lr = lr
         self.all_W = [self.W]
         self.all_B = [self.B]

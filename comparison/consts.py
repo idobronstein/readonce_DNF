@@ -6,13 +6,13 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 14
-DNF = [4] * 3
-FULL = True
+D = 50
+DNF = [5] * 9
+FULL = False
 
 ### Hyper params ###
 LR = 1e-3
-R = 1000
+R = 10000
 SIGMA = 1e-5
 
 ### Compartion params ###
@@ -24,15 +24,15 @@ NUM_OF_RUNNING = 2
 TRAIN_SIZE = 5000
 
 ### Learning ###
-PRINT_STEP_JUMP = 1000
-MAX_STEPS = 100
+PRINT_STEP_JUMP = 100
+MAX_STEPS = 1000000
 ATTEMPT_NUM = 3
 
 ### After learning ###
 PRUNE_FACTOR_WEIGHT = 10
 PRUNE_FACTOR_TOTAL_NORM = 4
 RECONSTRACTION_FACTOR_WEIGHT = 10
-RECONSTRACTION_FACTOR_NORM = 9
+RECONSTRACTION_FACTOR_NORM = 5
 
 ### Result ###
 IS_TEMP = True

@@ -44,12 +44,12 @@ def main():
     
     # Compere algorthims    
     all_algorithems = [
-        (lambda: FixLayerTwoNetwork(False, LR, R), "Fix - Gaussion", 'o'),
-        (lambda: TwoLayerNetwork(R, LR), "Regular - Gaussion", '.')
+        (lambda: FixLayerTwoNetwork(False, LR, R), "Fix - Gaussion", 'bo'),
+        (lambda: TwoLayerNetwork(R, LR), "Regular - Gaussion", 'r.')
     ]
     result_vec, round_num, train_list_location = load_state(all_algorithems)
 
-
+    '''
     if FULL:
         test_set = (X_full, Y_full)
     else:
@@ -65,6 +65,7 @@ def main():
                 Y_train = np.array([readonce.get_label(x) for x in X_train], dtype=TYPE)
                 train_set = (X_train, Y_train)
                 for j in range(len(all_algorithems)):
+                    flag = True
                     algorithem = all_algorithems[j]
                     print('Running algorithem: "{0}" with train set in size: {1}'.format(algorithem[1], set_size))
                     save_state(result_vec, k, i)
@@ -93,7 +94,8 @@ def main():
         X = get_random_init_uniform_samples(TRAIN_SIZE, D)
         Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
     train_set = (X, Y)
-    network = FixLayerTwoNetwork(False, LR, R)
+    #network = FixLayerTwoNetwork(False, LR, R)
+    network = FixLayerTwoNetwork(True, LR, R)
     network.run(train_set, train_set)
     result_object.angle_vs_norm_graph(network, readonce, X, noise_size)
     result_object.bias_graph(network, readonce, X, noise_size)
@@ -101,8 +103,9 @@ def main():
     above_mean_indexes = find_indexes_above_half_of_max(network)
     W_prone = network.W[above_mean_indexes]
     B_prone = network.B[above_mean_indexes]
-    prone_network = FixLayerTwoNetwork(False, LR, R, W_init=W_prone, B_init=B_prone)    
-    result_object.cluster_graph(network, add_to_name='prone_')
+    prone_network = FixLayerTwoNetwork(False, LR, W_init=W_prone, B_init=B_prone)    
+    result_object.cluster_graph(prone_network, add_to_name='prone_')
+    import IPython; IPython.embed()
     assert check_reconstraction(prone_network, readonce, noise_size)
-    '''
+    
 main() 

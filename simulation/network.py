@@ -90,8 +90,8 @@ class Network():
         # Update the weights
         self.W = self.W + lr*current_w_update_rule
         self.B = self.B + lr*current_b_update_rule
-        self.all_W.append(self.W)
-        self.all_B.append(self.B)
+        #self.all_W.append(self.W)
+        #self.all_B.append(self.B)
         # Check if we are in local minimum point
         local_minimum_point = np.sum(np.abs(current_w_update_rule)) == 0 and np.sum(np.abs(current_b_update_rule)) == 0
         # Check if we are in global minimum point
