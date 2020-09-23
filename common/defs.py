@@ -16,6 +16,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import logging
 import colorlog
+#import mnist
 
 tf.disable_v2_behavior() 
 

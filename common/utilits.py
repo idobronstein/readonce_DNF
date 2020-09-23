@@ -63,28 +63,32 @@ def find_indexes_above_mean(network):
 	indexes = [i for i in range(network.r) if calc_norm_inf(network, i) > mean]
 	return indexes
 
-def find_indexes_above_half_of_max(network):
+def find_indexes_above_half_of_max(network, prune_factor_weight, prune_factor_total_norm):
 	max_norm_inf = find_max_norm_inf(network)
-	indexes = [i for i in range(network.r) if PRUNE_FACTOR_WEIGHT * calc_norm_inf(network, i) > PRUNE_FACTOR_TOTAL_NORM * max_norm_inf]
+	indexes = [i for i in range(network.r) if prune_factor_weight * calc_norm_inf(network, i) > prune_factor_total_norm * max_norm_inf]
 	return indexes
 
-def reconstraction(network, i):
+def reconstraction(network, i, reconstraction_factor_weight, reconstraction_factor_norm):
 	reconstraction_nueron = np.zeros([D], dtype=TYPE)
 	info_norm = calc_norm_inf(network, i)
 	for j in range(D):
-		if RECONSTRACTION_FACTOR_WEIGHT * network.W[i][j] >= RECONSTRACTION_FACTOR_NORM * info_norm:
+		if reconstraction_factor_weight * network.W[i][j] >= reconstraction_factor_norm * info_norm:
 			reconstraction_nueron[j] = 1
 	return reconstraction_nueron
 
-def check_reconstraction(network, readonce, noize_size):
+def check_reconstraction(network, readonce, noize_size, reconstraction_factor_weight, reconstraction_factor_norm):
+	terms_flag = [False] * len(readonce.DNF)
 	for i in range(network.r):
-		reconstraction_nueron = reconstraction(network, i)
+		reconstraction_nueron = reconstraction(network, i, reconstraction_factor_weight, reconstraction_factor_norm)
 		flag = False
-		for term in readonce.DNF:
+		for j, term in enumerate(readonce.DNF):
 			term = np.pad(term, [0, noize_size], 'constant', constant_values=(0))
 			if np.dot(term, reconstraction_nueron) == np.sum(term):
 				flag = True
+				terms_flag[j] = True
 		if not flag:
+			return False
+		if False in terms_flag:
 			return False
 	return True
 

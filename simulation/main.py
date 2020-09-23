@@ -17,7 +17,8 @@ def run_network(network, X, Y, run_name, result_object, readonce, noise_size, se
         if step % PRINT_STEP_JUMP == 0 and step > 0:
             result_name = os.path.join(run_name, str(step))
             result_object.logger.info("Step number: {0}, Accuracy: {1} / {2}".format(step, X.shape[0] - non_zero_loss_sample_counter, X.shape[0]))
-            #save_results(global_minimum_point, result_name, result_object, network, readonce, X, sess, noise_size)
+            if step > 500:
+                save_results(global_minimum_point, result_name, result_object, network, readonce, X, sess, noise_size)
     if local_minimum_point and not global_minimum_point:
         result_object.logger.error("Got to local minimums")
     return global_minimum_point
@@ -37,7 +38,7 @@ def main():
     X = np.array(all_combinations, dtype=TYPE)
 
     for epsilon in range(MIN_EPSILON, MAX_EPSILON, STEP_EPSILON):
-        for dnf_size in range(2, D + 1):
+        for dnf_size in reversed(range(2, D + 1)):
             noise_size = D - dnf_size
     
             result_object.logger.info("Generate all balanced partitions in size {}".format(dnf_size))
@@ -82,7 +83,7 @@ def main():
                         if minimum_point:
                             result_object.logger.info("We got to minimum point")    
                             result_object.logger.info("Prone the network by inf norm")
-                            above_mean_indexes = find_indexes_above_half_of_max(network)
+                            above_mean_indexes = find_indexes_above_half_of_max(network, PRUNE_FACTOR_WEIGHT, PRUNE_FACTOR_TOTAL_NORM)
                             W_prone = network.W[above_mean_indexes]
                             B_prone = network.B[above_mean_indexes]
                             prone_network = Network(W_prone, B_prone)
@@ -95,7 +96,7 @@ def main():
                                     result_object.logger.error("After pruning the network doesn't classify perfectly")
                                 elif is_all_algined(network, readonce, X, noise_size, above_mean_indexes):
                                     result_object.logger.error("After pruning there is terms which doesn't aligned with some term")
-                                elif not check_reconstraction(prone_network, readonce, noise_size):
+                                elif not check_reconstraction(prone_network, readonce, noise_size, RECONSTRACTION_FACTOR_WEIGHT, RECONSTRACTION_FACTOR_NORM):
                                     result_object.logger.error("After pruning we can't succeed to reconstract the DNF")
                                 else:
                                     result_object.logger.critical("After pruning the network classify perfectly, aligned with the terms and reconstract the DNF")
