@@ -70,7 +70,7 @@ class Result():
 
     def save_result_to_pickle(self, name, result):
         with open(os.path.join(self.result_dir, name), 'wb') as f:
-            pickle.dump(result, name)
+            pickle.dump(result, f)
 
     def angle_vs_norm_graph(self, network, readonce, X, noize_size):
         fig, ax = plt.subplots()

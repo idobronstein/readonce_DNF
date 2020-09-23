@@ -6,28 +6,28 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 784
+D = 14
 DNF = [4] * 3
 FULL = False
 
 ### Hyper params ###
 LR = 1e-4
-R = 500
+R = 1000
 SIGMA = 1e-5
 
 ### Test params ###
 TEST_SIZE = 5000
-TRAIN_SIZE_LIST = range(100, 3100, 100)
-NUM_OF_RUNNING = 10
+TRAIN_SIZE_LIST = range(500, 4500, 250)
+NUM_OF_RUNNING = 300
 
 ### Learning ###
-PRINT_STEP_JUMP = 99
-MAX_STEPS = 100
+PRINT_STEP_JUMP = 1000
+MAX_STEPS = 10000000
 ATTEMPT_NUM = 3
 
 ### After learning ###
 PRUNE_FACTOR_RANGE = np.arange(0.1, 1, 0.1)
-RECONSTRACTION_FACTOR_RANGE = np.arange(0.3, 1, 0.1)
+RECONSTRACTION_FACTOR_RANGE = np.arange(0.3, 1, 0.05)
 
 ### MNIST ###
 POSITIVE_NUMBERS = [2,4]
