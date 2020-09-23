@@ -21,8 +21,8 @@ TRAIN_SIZE_LIST = range(100, 3100, 100)
 NUM_OF_RUNNING = 10
 
 ### Learning ###
-PRINT_STEP_JUMP = 100
-MAX_STEPS = 100000
+PRINT_STEP_JUMP = 99
+MAX_STEPS = 100
 ATTEMPT_NUM = 3
 
 ### After learning ###

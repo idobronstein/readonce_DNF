@@ -13,7 +13,7 @@ def main():
 	best_threshold = (0, 0)
 	best_threshold_value = 0
 	for prune_factor in PRUNE_FACTOR_RANGE:
-		above_mean_indexes = find_indexes_above_half_of_max(network, 1, prune_factor, use_batch=True)
+		above_mean_indexes = find_indexes_above_half_of_max(network, 1, prune_factor)
 		if len(above_mean_indexes) > 0:
 			W_prone = network.W[above_mean_indexes]
 			B_prone = network.B[above_mean_indexes]
@@ -24,7 +24,7 @@ def main():
 				for i in range(W_prone.shape[0]):
 					W_reconstract[i] = reconstraction(prone_network, i, 1, reconstraction_factor)
 					B_reconstract[i] = - np.sum(np.abs(W_reconstract[i])) + 2 * np.max(W_reconstract[i])
-				reconstract_network = FixLayerTwoNetwork(False, LR, W_init=W_reconstract, B_init=B_reconstract, use_batch=True)
+				reconstract_network = FixLayerTwoNetwork(False, LR, W_init=W_reconstract, B_init=B_reconstract)
 				_, test_acc = reconstract_network.run(train_set, validation_set, True)
 				if test_acc > best_threshold_value:
 					best_threshold = (prune_factor, reconstraction_factor)
