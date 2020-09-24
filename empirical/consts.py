@@ -11,17 +11,17 @@ DNF = [4] * 3
 FULL = False
 
 ### Hyper params ###
-LR = 1e-4
+LR = 1e-2
 R = 500
 SIGMA = 1e-5
 
 ### Test params ###
 TEST_SIZE = 5000
-TRAIN_SIZE_LIST = range(750, 4500, 250)
+TRAIN_SIZE_LIST = range(1000, 1050, 50)
 NUM_OF_RUNNING = 300
 
 ### Learning ###
-PRINT_STEP_JUMP = 1000
+PRINT_STEP_JUMP = 100
 MAX_STEPS = 10000000
 ATTEMPT_NUM = 3
 

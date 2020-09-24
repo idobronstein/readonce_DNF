@@ -5,13 +5,20 @@ from utilits import *
 
 class TwoLayerNetwork():
 
-    def __init__(self, r ,lr):
+    def __init__(self, r ,lr, W_init=None, U_init=None, B_W_init=None, B_U_init=None):
         print("Initialize two layer network with gaussin initialization")
-        self.r = r 
-        self.W_init = np.array(SIGMA * np.random.randn(D, self.r), dtype=TYPE)
-        self.U_init = np.array(SIGMA * np.random.randn(self.r), dtype=TYPE)
-        self.B_W_init = np.zeros([self.r], dtype=TYPE)
-        self.B_U_init = np.zeros([1], dtype=TYPE)
+        if W_init is not None:
+            self.W = W_init
+            self.U = U_init
+            self.B_W = B_W_init
+            self.B_U = B_U_init
+            self.r = W_init.shape[0]
+        else:
+            self.r = r 
+            self.W = np.array(SIGMA * np.random.randn(self.r, D), dtype=TYPE)
+            self.U = np.array(SIGMA * np.random.randn(self.r), dtype=TYPE)
+            self.B_W = np.zeros([self.r], dtype=TYPE)
+            self.B_U = np.zeros([1], dtype=TYPE)
         self.lr = lr
 
 
@@ -25,10 +32,10 @@ class TwoLayerNetwork():
             global_step = tf.Variable(0, trainable=False, name='global_step')
             X = tf.placeholder(TYPE, name='X', shape=[None, D])
             Y = tf.placeholder(TYPE, name='Y', shape=[None])
-            W = tf.get_variable('W', initializer=self.W_init)
-            U = tf.get_variable('U', initializer=self.U_init)
-            B_W = tf.get_variable('B_W', initializer=self.B_W_init)
-            B_U = tf.get_variable('B_U', initializer=self.B_U_init)
+            W = tf.get_variable('W', initializer=self.W.T)
+            U = tf.get_variable('U', initializer=self.U)
+            B_W = tf.get_variable('B_W', initializer=self.B_W)
+            B_U = tf.get_variable('B_U', initializer=self.B_U)
             
             # Netrowk
             out_1 = tf.nn.relu(tf.matmul(X, W) + B_W)
@@ -73,5 +80,7 @@ class TwoLayerNetwork():
                 
                 test_loss, test_acc = sess.run([loss, accuracy_test], {X:test_set[0], Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
+                self.W, self.U, self.B_W, self.B_U = sess.run([W, U, B_W, B_U])
+                self.W = self.W.T
 
             return train_loss, test_acc
