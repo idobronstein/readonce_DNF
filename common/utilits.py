@@ -88,8 +88,8 @@ def check_reconstraction(network, readonce, noize_size, reconstraction_factor_we
 				terms_flag[j] = True
 		if not flag:
 			return False
-		if False in terms_flag:
-			return False
+	if False in terms_flag:
+		return False
 	return True
 
 def calc_bais_threshold(w, readonce, noize_size, D):

@@ -43,8 +43,9 @@ def main():
                             break
                     if flag:
                         break
+            result_object.save_result_to_pickle('result.pkl', result_vec)
     result_vec_mean = np.mean(result_vec, axis=0)
     result_object.save_reconstraction_graph(result_vec_mean)
-    result_object.save_result_to_pickle('result.pkl', result_vec)
+    
     
 main() 
