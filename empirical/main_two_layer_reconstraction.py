@@ -31,10 +31,10 @@ def main():
             W_fold = np.zeros(network.W.shape)
             B_W_fold = np.zeros(network.B_W.shape)
             U_fold = np.ones(network.U.shape)
-            for i in range(network.r):
-                W_fold[i] = network.W[i] * np.abs(network.U[i])
-                B_W_fold[i] = network.B_W[i] * np.abs(network.U[i])
-                U_fold[i] = U_fold[i] * np.sign(network.U[i])
+            for j in range(network.r):
+                W_fold[j] = network.W[j] * np.abs(network.U[j])
+                B_W_fold[j] = network.B_W[j] * np.abs(network.U[j])
+                U_fold[j] = U_fold[j] * np.sign(network.U[j])
             fold_network = TwoLayerNetwork(R, LR, W_init=W_fold, U_init=U_fold, B_W_init=B_W_fold, B_U_init=network.B_U)
             for prune_factor in PRUNE_FACTOR_RANGE:
                 flag = False
