@@ -72,8 +72,11 @@ def reconstraction(network, i, reconstraction_factor_weight, reconstraction_fact
 	reconstraction_nueron = np.zeros([D], dtype=TYPE)
 	info_norm = calc_norm_inf(network, i)
 	for j in range(D):
-		if reconstraction_factor_weight * network.W[i][j] >= reconstraction_factor_norm * info_norm:
-			reconstraction_nueron[j] = 1
+		if reconstraction_factor_weight * np.abs(network.W[i][j]) >= reconstraction_factor_norm * info_norm:
+			if network.W[i][j] > 0:
+				reconstraction_nueron[j] = 1
+			else:
+				reconstraction_nueron[j] = -1
 	return reconstraction_nueron
 
 def check_reconstraction(network, readonce, noize_size, reconstraction_factor_weight, reconstraction_factor_norm):

@@ -6,8 +6,8 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 14
-DNF = [4] * 3
+D = 784
+DNF = [2] * 3
 FULL = False
 
 ### Hyper params ###
@@ -37,7 +37,7 @@ BINARY_THRESHOLD = 127
 BATCH_SIZE = 10000
 
 ### Result ###
-IS_TEMP = True
+IS_TEMP = False
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
 MAX_TRY_TO_DELETE_DIR = 4
