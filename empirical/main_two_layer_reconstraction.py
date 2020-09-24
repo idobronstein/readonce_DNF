@@ -45,12 +45,13 @@ def main():
                     U_prone = fold_network.U[above_mean_indexes]
                     prone_network = TwoLayerNetwork(R, LR, W_init=W_prone, U_init=U_prone, B_W_init=B_W_prone, B_U_init=network.B_U)
                     for reconstraction_factor in RECONSTRACTION_FACTOR_RANGE:
-                        if check_reconstraction(prone_network, readonce, noise_size, 1, reconstraction_factor):
-                            #import IPython; IPython.embed()
-                            print("Reconstraction seecced with prune_factor: {0} and reconstraction_factor: {1}".format(prune_factor, reconstraction_factor))
-                            result_vec[round_num][i] = 1
-                            flag = True
-                            break
+                        if np.sum(U_prone) == U_prone.shape[0]:
+                            if check_reconstraction(prone_network, readonce, noise_size, 1, reconstraction_factor):
+                                #import IPython; IPython.embed()
+                                print("Reconstraction seecced with prune_factor: {0} and reconstraction_factor: {1}".format(prune_factor, reconstraction_factor))
+                                result_vec[round_num][i] = 1
+                                flag = True
+                                break
                     if flag:
                         break
             result_object.save_result_to_pickle('result.pkl', result_vec)

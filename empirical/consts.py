@@ -17,7 +17,7 @@ SIGMA = 1e-5
 
 ### Test params ###
 TEST_SIZE = 5000
-TRAIN_SIZE_LIST = range(1000, 1050, 50)
+TRAIN_SIZE_LIST = range(50, 850, 50)
 NUM_OF_RUNNING = 300
 
 ### Learning ###
