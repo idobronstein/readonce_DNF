@@ -35,7 +35,6 @@ def main():
                 W_fold[j] = network.W[j] * np.abs(network.U[j])
                 B_W_fold[j] = network.B_W[j] * np.abs(network.U[j])
                 U_fold[j] = U_fold[j] * np.sign(network.U[j])
-            import ipdb; ipdb.set_trace()
             fold_network = TwoLayerNetwork(R, LR, W_init=W_fold, U_init=U_fold, B_W_init=B_W_fold, B_U_init=network.B_U)
             for prune_factor in PRUNE_FACTOR_RANGE:
                 flag = False

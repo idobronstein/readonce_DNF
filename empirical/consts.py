@@ -6,12 +6,12 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 784
-DNF = [2] * 3
+D = 14
+DNF = [2, 3, 3, 4]
 FULL = False
 
 ### Hyper params ###
-LR = 1e-2
+LR = 1e-3
 R = 500
 SIGMA = 1e-5
 
