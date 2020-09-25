@@ -33,7 +33,7 @@ class FixLayerTwoNetwork():
         self.all_B = [self.B]
         self.use_batch = use_batch
 
-    def train_without_batch(self, train_set, sess):
+    def train_without_batch(self, train_set, sess, result_object=None):
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1])})
             if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
@@ -44,10 +44,13 @@ class FixLayerTwoNetwork():
         print("NN Train accuracy: {0}".format(train_acc)) 
         return train_loss
 
-    def train_with_batch(self, train_set, sess):
+    def train_with_batch(self, train_set, sess, result_object=None):
         all_train_size = train_set[0].shape[0]
         step = 0
+        
+
         while step < MAX_STEPS:
+            minimum_point_counter = 0
             for i in range(0, all_train_size, BATCH_SIZE):
                 if i + BATCH_SIZE < all_train_size:
                     X_batch, Y_batch =  train_set[0][i : i + BATCH_SIZE], train_set[1][i : i + BATCH_SIZE]
@@ -59,13 +62,18 @@ class FixLayerTwoNetwork():
                 step += 1
                 if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
                     print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
-                    break 
+                    minimum_point_counter += 1 
                 if step % PRINT_STEP_JUMP == 0:
                     print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+            if i == minimum_point_counter:
+                break
+            self.W, self.B = sess.run([self.W_tf, self.B_tf])
+            if result_object:
+                result_object.save_result_to_pickle('Network.pkl', (self.W, self.B))
         print("NN Train accuracy: {0}".format(train_acc)) 
         return train_loss        
 
-    def run(self, train_set, test_set, just_test=False):
+    def run(self, train_set, test_set, result_object=None, just_test=False):
         if self.use_batch:
             train_size = BATCH_SIZE
         else:
@@ -78,11 +86,11 @@ class FixLayerTwoNetwork():
             global_step = tf.Variable(0, trainable=False, name='global_step')
             self.X = tf.placeholder(TYPE, name='X', shape=[None, D])
             self.Y = tf.placeholder(TYPE, name='Y', shape=[None])
-            W = tf.get_variable('W', initializer=self.W.T)
-            B = tf.get_variable('B_W', initializer=self.B)
+            self.W_tf = tf.get_variable('W', initializer=self.W.T)
+            self.B_tf = tf.get_variable('B_W', initializer=self.B)
             
             # Netrowk
-            out_1 = tf.nn.relu(tf.matmul(self.X, W) + B)
+            out_1 = tf.nn.relu(tf.matmul(self.X, self.W_tf) + self.B_tf)
             logits = tf.reduce_sum(out_1, axis=1)  - 1
 
             # calc accuracy
@@ -115,14 +123,14 @@ class FixLayerTwoNetwork():
                 # train
                 if not just_test:
                     if self.use_batch:
-                        train_loss = self.train_with_batch(train_set, sess)    
+                        train_loss = self.train_with_batch(train_set, sess, result_object)    
                     else:
-                        train_loss = self.train_without_batch(train_set, sess)
+                        train_loss = self.train_without_batch(train_set, sess, result_object)
                     
                 test_loss, test_acc = sess.run([self.loss, accuracy_test], {self.X:test_set[0], self.Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
 
-                self.W, self.B = sess.run([W, B])
+                self.W, self.B = sess.run([self.W_tf, self.B_tf])
                 self.W = self.W.T
 
             return train_loss, test_acc

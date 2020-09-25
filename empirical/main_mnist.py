@@ -7,9 +7,13 @@ from result import *
 from fix_layer_2_netowrk import *
 
 def main():
+	result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
+	print("Making result object in the path: {0}".format(result_path))
+	result_object = Result(result_path, IS_TEMP, extra_to_name='mnist')
+
 	train_set, validation_set, test_set = get_binary_mnist_db(POSITIVE_NUMBERS, NEGATIVE_NUMBERS)
 	network = FixLayerTwoNetwork(False, LR, R, use_batch=True)
-	network.run(train_set, test_set)
+	network.run(train_set, test_set, result_object)
 	best_threshold = (0, 0)
 	best_threshold_value = 0
 	for prune_factor in PRUNE_FACTOR_RANGE:
