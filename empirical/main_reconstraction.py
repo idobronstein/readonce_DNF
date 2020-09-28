@@ -29,6 +29,7 @@ def main():
             network = FixLayerTwoNetwork(False, LR, R)
             network.run(train_set, train_set)
             for prune_factor in PRUNE_FACTOR_RANGE:
+                import IPython; IPython.embed()
                 flag = False
                 above_mean_indexes = find_indexes_above_half_of_max(network, 1, prune_factor)
                 if len(above_mean_indexes) > 0:
@@ -44,8 +45,8 @@ def main():
                     if flag:
                         break
             result_object.save_result_to_pickle('result.pkl', result_vec)
-    result_vec_mean = np.mean(result_vec, axis=0)
-    result_object.save_reconstraction_graph(result_vec_mean)
+    #result_vec_mean = np.mean(result_vec, axis=0)
+    #result_object.save_reconstraction_graph(result_vec_mean)
     
     
 main() 

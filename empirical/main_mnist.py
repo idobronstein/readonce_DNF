@@ -2,7 +2,8 @@ import sys
 import os
 sys.path.insert(-1, os.path.join(os.getcwd(), '..', 'common'))
 from consts import *
-from mnist_dataset import *
+#from mnist_dataset import *
+from tabular_datasets import *
 from result import *
 from fix_layer_2_netowrk import *
 
@@ -11,8 +12,9 @@ def main():
 	print("Making result object in the path: {0}".format(result_path))
 	result_object = Result(result_path, IS_TEMP, extra_to_name='mnist')
 
-	train_set, validation_set, test_set = get_binary_mnist_db(POSITIVE_NUMBERS, NEGATIVE_NUMBERS)
-	network = FixLayerTwoNetwork(False, LR, R, use_batch=True)
+	#train_set, validation_set, test_set = get_db(POSITIVE_NUMBERS, NEGATIVE_NUMBERS)
+	train_set, test_set = get_splice_db()
+	network = FixLayerTwoNetwork(False, LR, R)
 	network.run(train_set, test_set, result_object)
 	best_threshold = (0, 0)
 	best_threshold_value = 0
@@ -28,7 +30,7 @@ def main():
 				W_reconstract = np.zeros(W_prone.shape, dtype=TYPE)
 				for i in range(W_prone.shape[0]):
 					W_reconstract[i] = reconstraction(prone_network, i, 1, reconstraction_factor)
-				test_acc = validate_dataset_with_all_terms(validation_set, W_reconstract)
+				test_acc = validate_dataset_with_all_terms(train_set, W_reconstract)
 				print("Got {0} ".format(test_acc))
 				if test_acc > best_threshold_value:
 					best_threshold = (prune_factor, reconstraction_factor)

@@ -7,8 +7,8 @@ TYPE = np.int64
 TF_TYPE = tf.int64
 
 ### Hyper params ###
-D = 16
-ALPHA = 1000000 * 2**D
+D = 9
+ALPHA = 100000 * 2**D
 LR = 10
 
 ### Network  ###
@@ -21,7 +21,7 @@ MAX_VALUE_FOR_POSITIVE_SAMPLE = 2 * abs(SECOND_LAYER_BAIS)
 MIN_VALUE_FOR_NEGATIVE_SAMPLE = 0
 
 ### Learning ###
-PRINT_STEP_JUMP = 20
+PRINT_STEP_JUMP = 1000
 MAX_STEPS = 1000000
 
 ### After learning ###
@@ -31,7 +31,7 @@ RECONSTRACTION_FACTOR_WEIGHT = 10
 RECONSTRACTION_FACTOR_NORM = 9
 
 ### Result ###
-IS_TEMP = True
+IS_TEMP = False
 TEMP_RESULT_PATH = r"tmp"
 GENERAL_RESULT_PATH = r"results"
 BACKUP_DIR = 'backup'

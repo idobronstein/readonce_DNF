@@ -37,6 +37,7 @@ def main():
                 U_fold[j] = U_fold[j] * np.sign(network.U[j])
             fold_network = TwoLayerNetwork(R, LR, W_init=W_fold, U_init=U_fold, B_W_init=B_W_fold, B_U_init=network.B_U)
             for prune_factor in PRUNE_FACTOR_RANGE:
+                import IPython; IPython.embed()
                 flag = False
                 above_mean_indexes = find_indexes_above_half_of_max(fold_network, 1, prune_factor)
                 if len(above_mean_indexes) > 0:

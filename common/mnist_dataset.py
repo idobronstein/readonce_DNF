@@ -25,23 +25,3 @@ def get_binary_mnist_db(positive_numbers, negative_numbers):
 	return (to_array(final_x_train_without_validation), to_array(final_y_train_without_validation)), (to_array(final_x_validation), to_array(final_y_validation)), (to_array(final_x_test), to_array(final_y_test))
 
 
-def validate_figure_with_term(figure, term):
-	figure_reshape = figure.reshape([-1])
-	return np.dot(figure, term)	== np.sum(np.abs(term))
-
-def validate_dataset_with_all_terms(dataset, all_terms):
-	success_num = 0
-	for x, y in zip(dataset[0], dataset[1]):
-		flag = False
-		for term in all_terms:
-			if validate_figure_with_term(x, term):
-				if y == POSITIVE:
-					flag = True
-					success_num += 1
-					break
-				else:
-					flag = True
-					break
-		if not flag and y == NEGATIVE:
-			success_num += 1
-	return success_num / float(dataset[0].shape[0])

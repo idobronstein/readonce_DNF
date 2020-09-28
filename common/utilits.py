@@ -103,3 +103,26 @@ def calc_bais_threshold(w, readonce, noize_size, D):
       min_value = np.max([np.min(term_in_weight), 0])
       value += - np.sum(np.abs(term_in_weight)) + 2 * min_value 
     return value
+
+
+def validate_figure_with_term(figure, term, need_to_reshape=False):
+	if need_to_reshape:
+		figure_reshape = figure.reshape([-1])
+	return np.dot(figure, term)	== np.sum(np.abs(term))
+
+def validate_dataset_with_all_terms(dataset, all_terms, need_to_reshape=False):
+	success_num = 0
+	for x, y in zip(dataset[0], dataset[1]):
+		flag = False
+		for term in all_terms:
+			if validate_figure_with_term(x, term, need_to_reshape):
+				if y == POSITIVE:
+					flag = True
+					success_num += 1
+					break
+				else:
+					flag = True
+					break
+		if not flag and y == NEGATIVE:
+			success_num += 1
+	return success_num / float(dataset[0].shape[0])
