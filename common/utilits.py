@@ -76,7 +76,7 @@ def reconstraction(network, i, reconstraction_factor_weight, reconstraction_fact
 			if network.W[i][j] > 0:
 				reconstraction_nueron[j] = 1
 			else:
-				reconstraction_nueron[j] = -1
+				reconstraction_nueron[j] = 1
 	return reconstraction_nueron
 
 def check_reconstraction(network, readonce, noize_size, reconstraction_factor_weight, reconstraction_factor_norm):
@@ -86,7 +86,7 @@ def check_reconstraction(network, readonce, noize_size, reconstraction_factor_we
 		flag = False
 		for j, term in enumerate(readonce.DNF):
 			term = np.pad(term, [0, noize_size], 'constant', constant_values=(0))
-			if np.dot(term, reconstraction_nueron) == np.sum(term):
+			if np.array_equal(term, reconstraction_nueron):
 				flag = True
 				terms_flag[j] = True
 		if not flag:

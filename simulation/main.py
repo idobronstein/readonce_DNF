@@ -45,7 +45,6 @@ def main():
             all_partitions = get_all_balanced_partitions(dnf_size)
             # remove the DNF of all 1 and the DNF with one term
             all_partitions = all_partitions[1:-1]
-    
             if len(all_partitions) == 0:
                 result_object.logger.info("No relevant phrases. Skippinig..")
             

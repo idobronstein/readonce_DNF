@@ -43,7 +43,7 @@ def generate_samples(amount, D=D):
     return 2 * (np.random.randn(amount, D) > 0).astype(TYPE) - 1
 
 def get_random_init_uniform_samples(set_size, D=D):
-    x = (np.random.randn(set_size, D) > 0.0).astype(float)
+    x = (np.random.randn(set_size, D) > 0.0).astype(TYPE)
     x = 2 * (x-0.5)
     return x
 

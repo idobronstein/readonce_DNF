@@ -6,14 +6,14 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 8
-DNF = [2, 2, 2]
+D = 100
+DNF = [3, 3, 3]
 FULL = False
 
 ### Hyper params ###
 LR = 1e-4
-R = 300
-SIGMA = 1e-5
+R = 169
+SIGMA = 1e-6
 
 ### Test params ###
 TEST_SIZE = 5000
@@ -57,4 +57,4 @@ PIMA_BIMARY_PATH = r"D:\checkouts\read_once_dnf\common\datasets\pima_diabetes_bi
 TRAIN_SET_SIZE = 0.9
 
 ### Plot params ###
-TRAIN_SET_SIZE = 200
+TRAIN_SET_SIZE = 400
