@@ -13,7 +13,7 @@ def main():
 	result_object = Result(result_path, IS_TEMP, extra_to_name='mnist')
 
 	#train_set, validation_set, test_set = get_db(POSITIVE_NUMBERS, NEGATIVE_NUMBERS)
-	train_set, test_set = get_splice_db()
+	train_set, test_set = get_diabetes()
 	network = FixLayerTwoNetwork(False, LR, R)
 	network.run(train_set, test_set, result_object)
 	best_threshold = (0, 0)
@@ -32,7 +32,7 @@ def main():
 					W_reconstract[i] = reconstraction(prone_network, i, 1, reconstraction_factor)
 				test_acc = validate_dataset_with_all_terms(train_set, W_reconstract)
 				print("Got {0} ".format(test_acc))
-				if test_acc > best_threshold_value:
+				if test_acc >= best_threshold_value:
 					best_threshold = (prune_factor, reconstraction_factor)
 					best_threshold_value = test_acc
 	import IPython; IPython.embed()

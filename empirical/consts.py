@@ -6,21 +6,23 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 100
+D = 14
 DNF = [3, 3, 3]
 FULL = False
 
 ### Hyper params ###
-LR = 1e-4
-R = 169
+LR = 1e-3
+R = 700
 SIGMA = 1e-6
 
 ### Test params ###
-TEST_SIZE = 5000
+TEST_SIZE = 500
+TRAIN_SIZE = 20
 TRAIN_SIZE_LIST = range(300, 400, 20)
 NUM_OF_RUNNING = 2
 
 ### Learning ###
+
 PRINT_STEP_JUMP = 100
 MAX_STEPS = 100000
 ATTEMPT_NUM = 3
@@ -54,7 +56,9 @@ DIABETES_PATH = r"D:\checkouts\read_once_dnf\common\datasets\diabetes_data_uploa
 DIABETES_BIMARY_PATH = r"D:\checkouts\read_once_dnf\common\datasets\diabetes_binary.csv"
 PIMA_PATH = r"D:\checkouts\read_once_dnf\common\datasets\dataset_37_diabetes.csv"
 PIMA_BIMARY_PATH = r"D:\checkouts\read_once_dnf\common\datasets\pima_diabetes_binary.csv"
-TRAIN_SET_SIZE = 0.9
+BALANCE_PATH = r"D:\checkouts\read_once_dnf\common\datasets\balance-scale.csv"
+BALANCE_BIMARY_PATH = r"D:\checkouts\read_once_dnf\common\datasets\balance-scale_binary.csv"
+
 
 ### Plot params ###
-TRAIN_SET_SIZE = 400
+#TRAIN_SET_SIZE = 400

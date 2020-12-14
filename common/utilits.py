@@ -76,7 +76,7 @@ def reconstraction(network, i, reconstraction_factor_weight, reconstraction_fact
 			if network.W[i][j] > 0:
 				reconstraction_nueron[j] = 1
 			else:
-				reconstraction_nueron[j] = 1
+				reconstraction_nueron[j] = -1
 	return reconstraction_nueron
 
 def check_reconstraction(network, readonce, noize_size, reconstraction_factor_weight, reconstraction_factor_norm):

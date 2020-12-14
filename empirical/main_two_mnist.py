@@ -43,7 +43,7 @@ def main():
 						W_reconstract[i] = reconstraction(prone_network, i, 1, reconstraction_factor)
 					test_acc = validate_dataset_with_all_terms(test_set, W_reconstract)
 					print("Got {0} ".format(test_acc))
-					if test_acc > best_threshold_value:
+					if test_acc >= best_threshold_value:
 						best_threshold = (prune_factor, reconstraction_factor)
 						best_threshold_value = test_acc
 	import IPython; IPython.embed()

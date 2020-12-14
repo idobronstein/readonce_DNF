@@ -45,6 +45,7 @@ def main():
             all_partitions = get_all_balanced_partitions(dnf_size)
             # remove the DNF of all 1 and the DNF with one term
             all_partitions = all_partitions[1:-1]
+            all_partitions = [[3,3,3]]
             if len(all_partitions) == 0:
                 result_object.logger.info("No relevant phrases. Skippinig..")
             
@@ -87,6 +88,7 @@ def main():
                             B_prone = network.B[above_mean_indexes]
                             prone_network = Network(W_prone, B_prone)
                             prone_network.prepere_update_network(X, Y)
+                            import IPython; IPython.embed()
                             with tf.Session() as sess:
                                 init = tf.initialize_all_variables()
                                 sess.run(init)
@@ -101,5 +103,6 @@ def main():
                                     result_object.logger.critical("After pruning the network classify perfectly, aligned with the terms and reconstract the DNF")
                         else:
                             result_object.logger.error("Got to local minimums")
+                        
     
 main()  
