@@ -7,6 +7,7 @@ from data import *
 from result import *
 from fix_layer_2_netowrk import *
 from two_layer_network import *
+from NTK_svn import *
 
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
@@ -28,7 +29,9 @@ def main():
         train_set = (X, Y)
         test_set = (X_test, Y_test)
 
-        network = FixLayerTwoNetwork(False, LR, R)
+        #network = FixLayerTwoNetwork(False, LR, R)
+        #network.run(train_set, test_set)
+        network = NTKsvn(R)
         network.run(train_set, test_set)
         #result_object.cluster_graph(network, str(round_num))
 main() 

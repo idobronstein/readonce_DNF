@@ -16,7 +16,7 @@ R = 700
 SIGMA = 1e-6
 
 ### Test params ###
-TEST_SIZE = 500
+TEST_SIZE = 100
 TRAIN_SIZE = 20
 TRAIN_SIZE_LIST = range(300, 400, 20)
 NUM_OF_RUNNING = 2

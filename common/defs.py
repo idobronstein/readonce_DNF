@@ -17,6 +17,7 @@ from matplotlib import cm
 import logging
 import colorlog
 import pandas as pd
+from sklearn.svm import SVC
 #import mnist
 
 tf.disable_v2_behavior() 
