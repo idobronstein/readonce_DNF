@@ -123,3 +123,25 @@ class Result():
         pylab.colorbar(im, cax=axcolor)
         fig.savefig(os.path.join(self.result_dir, add_to_name+ "cluster_b.png"), bbox_inches="tight")
         plt.close(fig)
+
+
+    def comp_save_graph(self, result_vec):
+        plt.rcParams.update({'font.size': 26, 'figure.subplot.left': 0.25, 'figure.subplot.right': 0.95, 'figure.subplot.bottom': 0.20, 'figure.subplot.top': 0.97})
+        plt.rcParams.update({'axes.labelsize':'large', 'xtick.labelsize':'large', 'ytick.labelsize':'large','legend.fontsize': 'medium'})
+        result_vec = 100 * result_vec
+        mean = np.mean(result_vec, axis=0)
+        std = np.std(result_vec, axis=0)
+        fig, ax = plt.subplots()
+        fig.set_size_inches(6.4, 4.8)
+        plt.plot(TRAIN_SIZE_LIST, mean[0], color="blue", label='Convex NN', marker = "o", linewidth=4.0, markersize=10.0)
+        plt.plot(TRAIN_SIZE_LIST, mean[1], color="red", label='NTK', marker = "s", linewidth=4.0, markersize=10.0)
+        plt.fill_between(TRAIN_SIZE_LIST , mean[0] + std[0], mean[0] - std[0], alpha=.2, label='_')
+        plt.fill_between(TRAIN_SIZE_LIST, mean[1] + std[1], mean[1] - std[1], alpha=.2, label='_')
+        ax.legend(loc=0, prop={'size': 30})
+        ax.set_xlabel('Train Set Size')
+        ax.xaxis.set_label_coords(0.5, -0.15)
+        ax.set_ylabel('Accuracy (%)')
+        ax.set_ylim(75, 101)
+        #legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
+        fig.savefig(os.path.join(self.result_dir, "D=14_ntk_compersion.png"))
+        plt.close(fig)

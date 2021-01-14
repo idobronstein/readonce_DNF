@@ -7,6 +7,7 @@ from data import *
 from result import *
 from fix_layer_2_netowrk import *
 from two_layer_network import *
+from NTK_svn import *
 
 def load_state(all_algorithems):
     if os.path.isfile(STATE_PATH):
@@ -38,7 +39,8 @@ def main():
 
     all_algorithems = [
         (lambda: FixLayerTwoNetwork(False, LR, R), "Fix - Gaussion", 'bo'),
-        (lambda: TwoLayerNetwork(R, LR), "Regular - Gaussion", 'r.')
+        #(lambda: TwoLayerNetwork(R, LR), "Regular - Gaussion", 'r.')
+        (lambda:  NTKsvn(R), "NTK", 'r.')
     ]
     result_vec, round_num, train_list_location = load_state(all_algorithems)
 
@@ -80,8 +82,7 @@ def main():
                         break
                     result_vec[k][j][i] = algorithem_result 
         train_list_location = 0 
-    result_vec = np.mean(result_vec, axis=0)
-    result_object.save_graph(all_algorithems, result_vec)
+    result_object.comp_save_graph(result_vec)
     
 
 main() 

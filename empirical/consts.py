@@ -16,15 +16,15 @@ R = 700
 SIGMA = 1e-6
 
 ### Test params ###
-TEST_SIZE = 100
+TEST_SIZE = 3000
 TRAIN_SIZE = 20
-TRAIN_SIZE_LIST = range(300, 400, 20)
-NUM_OF_RUNNING = 2
+TRAIN_SIZE_LIST = range(100, 1000, 50)
+NUM_OF_RUNNING = 10
 
 ### Learning ###
 
 PRINT_STEP_JUMP = 100
-MAX_STEPS = 100000
+MAX_STEPS = 1000000
 ATTEMPT_NUM = 3
 
 ### After learning ###

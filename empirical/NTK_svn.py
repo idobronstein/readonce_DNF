@@ -55,3 +55,5 @@ class NTKsvn():
 
 		test_accuracy = np.dot(np.sign(learner.predict(test_distance_matrix)), test_set[1]) / test_set[0].shape[0]
 		print("NTK Test accuracy: {0}".format(test_accuracy)) 
+
+		return 1 - train_accuracy, test_accuracy
