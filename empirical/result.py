@@ -5,7 +5,7 @@ class Result():
 
     PARAM_FILE_NAME = "param_file.txt"
 
-    def __init__(self, result_path=TEMP_RESULT_PATH, is_tmp=True, extra_to_name=''):
+    def __init__(self, result_path=TEMP_RESULT_PATH, is_tmp=True, extra_to_name='', const_dir=False):
         assert os.path.isdir(result_path), "The result path: {0} doesn't exsits".format(result_path)
         dir_name = "D={0}_{1}".format(D, extra_to_name) 
         self.result_dir = os.path.join(result_path, dir_name)
@@ -16,9 +16,10 @@ class Result():
         else:
             os.mkdir(self.result_dir)
         if not is_tmp:
-            now = datetime.now()
-            self.result_dir = os.path.join(self.result_dir, now.strftime("%m_%d_%H_%M"))
-            os.mkdir(self.result_dir)
+            if not const_dir: 
+                now = datetime.now()
+                self.result_dir = os.path.join(self.result_dir, now.strftime("%m_%d_%H_%M"))
+                os.mkdir(self.result_dir)
 
         param_text_file_path = os.path.join(self.result_dir, self.PARAM_FILE_NAME)
         with open(param_text_file_path, "w") as f:
@@ -27,9 +28,11 @@ class Result():
             f.write("sigma         -  {}\n".format(SIGMA))
             f.write("r             -  {}\n".format(R))
 
+        self.const_dir = const_dir
     def create_dir(self, name):
         self.result_dir = os.path.join(self.result_dir, name)
-        os.mkdir(self.result_dir)
+        if self.const_dir and not os.path.exists(self.result_dir):
+            os.mkdir(self.result_dir)
 
     def enforce_delete_dir(self):
         try_count = 0
@@ -145,3 +148,22 @@ class Result():
         #legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
         fig.savefig(os.path.join(self.result_dir, "D=14_ntk_compersion.png"))
         plt.close(fig)
+
+    def save_state(self, result_vec, round_num, train_list_location):
+        print("Saving state for: round_num - {0}, train list location - {1}".format(round_num, train_list_location))
+        state_path = os.path.join(self.result_dir, STATE_PATH)
+        with open(state_path, 'wb+') as f:
+            pickle.dump((result_vec, round_num, train_list_location), f) 
+
+    def load_state(self, all_algorithems):
+        state_path = os.path.join(self.result_dir, STATE_PATH)
+        if os.path.isfile(state_path):
+            with open(state_path, 'rb') as f:
+                all_state = pickle.load(f) 
+                result_vec, round_num, train_list_location = all_state
+            print("Restore state: round_num - {0}, train list location - {1}".format(round_num, train_list_location))
+        else:
+            result_vec = np.zeros([NUM_OF_RUNNING, len(all_algorithems), len(TRAIN_SIZE_LIST)])
+            round_num = 0
+            train_list_location = 0
+        return result_vec, round_num, train_list_location

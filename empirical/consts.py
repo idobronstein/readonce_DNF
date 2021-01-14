@@ -6,7 +6,7 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 14
+D = 9
 DNF = [3, 3, 3]
 FULL = False
 
@@ -16,10 +16,10 @@ R = 700
 SIGMA = 1e-6
 
 ### Test params ###
-TEST_SIZE = 3000
-TRAIN_SIZE = 20
-TRAIN_SIZE_LIST = range(100, 1000, 50)
-NUM_OF_RUNNING = 10
+TEST_SIZE = 10
+TRAIN_SIZE = 30
+TRAIN_SIZE_LIST = range(100, 200, 50) 
+NUM_OF_RUNNING = 4
 
 ### Learning ###
 
@@ -39,7 +39,7 @@ BINARY_THRESHOLD = 127
 BATCH_SIZE = 5000
 
 ### Result ###
-IS_TEMP = True
+IS_TEMP = False
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
 MAX_TRY_TO_DELETE_DIR = 4

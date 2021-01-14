@@ -9,27 +9,10 @@ from fix_layer_2_netowrk import *
 from two_layer_network import *
 from NTK_svn import *
 
-def load_state(all_algorithems):
-    if os.path.isfile(STATE_PATH):
-        with open(STATE_PATH, 'rb') as f:
-           all_state = pickle.load(f) 
-           result_vec, round_num, train_list_location = all_state
-        print("Restore state: round_num - {0}, train list location - {1}".format(round_num, train_list_location))
-    else:
-        result_vec = np.zeros([NUM_OF_RUNNING, len(all_algorithems), len(TRAIN_SIZE_LIST)])
-        round_num = 0
-        train_list_location = 0
-    return result_vec, round_num, train_list_location
-
-def save_state(result_vec, round_num, train_list_location):
-    print("Saving state for: round_num - {0}, train list location - {1}".format(round_num, train_list_location, ))
-    with open(STATE_PATH, 'wb+') as f:
-        pickle.dump((result_vec, round_num, train_list_location), f) 
-
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
     print("Making result object in the path: {0}".format(result_path))
-    result_object = Result(result_path, IS_TEMP)
+    result_object = Result(result_path, IS_TEMP, const_dir=True)
 
     print("Start a run for: {0}".format(DNF))        
     run_name = '_'.join([str(i) for i in DNF]) 
@@ -42,7 +25,7 @@ def main():
         #(lambda: TwoLayerNetwork(R, LR), "Regular - Gaussion", 'r.')
         (lambda:  NTKsvn(R), "NTK", 'r.')
     ]
-    result_vec, round_num, train_list_location = load_state(all_algorithems)
+    result_vec, round_num, train_list_location = result_object.load_state(all_algorithems)
 
 
     if FULL:
@@ -67,7 +50,7 @@ def main():
                     flag = True
                     algorithem = all_algorithems[j]
                     print('Running algorithem: "{0}" with train set in size: {1}'.format(algorithem[1], set_size))
-                    save_state(result_vec, k, i)
+                    result_object.save_state(result_vec, k, i)
                     l = 0
                     flag_2 = True
                     while l < ATTEMPT_NUM and flag_2:
