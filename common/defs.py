@@ -6,6 +6,7 @@ import pylab
 import warnings
 import colorama
 from datetime import datetime
+from sklearn.svm import SVC
 import numpy as np
 from datetime import datetime
 import tensorflow.compat.v1 as tf
@@ -17,7 +18,7 @@ from matplotlib import cm
 import logging
 import colorlog
 import pandas as pd
-from sklearn.svm import SVC
+
 #import mnist
 
 tf.disable_v2_behavior() 
