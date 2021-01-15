@@ -29,6 +29,12 @@ class Result():
             f.write("r             -  {}\n".format(R))
 
         self.const_dir = const_dir
+
+
+    def save_const_file(self):
+        shutil.copyfile(CONST_FILE_NAME, os.path.join(self.result_dir, CONST_FILE_NAME))
+
+
     def create_dir(self, name):
         self.result_dir = os.path.join(self.result_dir, name)
         if self.const_dir and not os.path.exists(self.result_dir):
@@ -128,7 +134,7 @@ class Result():
         plt.close(fig)
 
 
-    def comp_save_graph(self, result_vec):
+    def comp_save_graph(self, result_vec, all_algorithems):
         plt.rcParams.update({'font.size': 26, 'figure.subplot.left': 0.25, 'figure.subplot.right': 0.95, 'figure.subplot.bottom': 0.20, 'figure.subplot.top': 0.97})
         plt.rcParams.update({'axes.labelsize':'large', 'xtick.labelsize':'large', 'ytick.labelsize':'large','legend.fontsize': 'medium'})
         result_vec = 100 * result_vec
@@ -136,17 +142,18 @@ class Result():
         std = np.std(result_vec, axis=0)
         fig, ax = plt.subplots()
         fig.set_size_inches(6.4, 4.8)
-        plt.plot(TRAIN_SIZE_LIST, mean[0], color="blue", label='Convex NN', marker = "o", linewidth=4.0, markersize=10.0)
-        plt.plot(TRAIN_SIZE_LIST, mean[1], color="red", label='NTK', marker = "s", linewidth=4.0, markersize=10.0)
-        plt.fill_between(TRAIN_SIZE_LIST , mean[0] + std[0], mean[0] - std[0], alpha=.2, label='_')
-        plt.fill_between(TRAIN_SIZE_LIST, mean[1] + std[1], mean[1] - std[1], alpha=.2, label='_')
-        ax.legend(loc=0, prop={'size': 30})
+        for i in range(len(all_algorithems)):
+            label = all_algorithems[i][1]
+            color = all_algorithems[i][2]
+            marker = all_algorithems[i][3]
+            plt.plot(TRAIN_SIZE_LIST, mean[i], color=color, label=label, marker = marker, linewidth=4.0, markersize=10.0)
+            plt.fill_between(TRAIN_SIZE_LIST , mean[i] + std[i], mean[i] - std[i], alpha=.2, label='_')
+        ax.legend(loc=0, prop={'size': 15})
         ax.set_xlabel('Train Set Size')
         ax.xaxis.set_label_coords(0.5, -0.15)
         ax.set_ylabel('Accuracy (%)')
-        ax.set_ylim(75, 101)
-        #legend = ax.legend(loc='lower right', shadow=True, fontsize='x-large')
-        fig.savefig(os.path.join(self.result_dir, "D=14_ntk_compersion.png"))
+        ax.set_ylim(65, 101)
+        fig.savefig(os.path.join(self.result_dir, "compersion.png"))
         plt.close(fig)
 
     def save_state(self, result_vec, round_num, train_list_location):

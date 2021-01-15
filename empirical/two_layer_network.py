@@ -5,7 +5,7 @@ from utilits import *
 
 class TwoLayerNetwork():
 
-    def __init__(self, r ,lr, W_init=None, U_init=None, B_W_init=None, B_U_init=None):
+    def __init__(self, r ,lr, W_init=None, U_init=None, B_W_init=None, B_U_init=None, sigma_1=SIGMA, sigma_2=SIGMA):
         print("Initialize two layer network with gaussin initialization")
         if W_init is not None:
             self.W = W_init
@@ -15,8 +15,8 @@ class TwoLayerNetwork():
             self.r = W_init.shape[0]
         else:
             self.r = r 
-            self.W = np.array(SIGMA * np.random.randn(self.r, D), dtype=TYPE)
-            self.U = np.array(SIGMA * np.random.randn(self.r), dtype=TYPE)
+            self.W = np.array(sigma_1 * np.random.randn(self.r, D), dtype=TYPE)
+            self.U = np.array(sigma_2 * np.random.randn(self.r), dtype=TYPE)
             self.B_W = np.zeros([self.r], dtype=TYPE)
             self.B_U = np.zeros([1], dtype=TYPE)
         self.lr = lr

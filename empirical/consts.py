@@ -15,16 +15,19 @@ LR = 1e-3
 R = 700
 SIGMA = 1e-6
 
+### Hyper params to NTK###
+SIGMA_1 = 1e-1
+SIGMA_2 = 1e-6
+
 ### Test params ###
-TEST_SIZE = 10
-TRAIN_SIZE = 30
-TRAIN_SIZE_LIST = range(100, 200, 50) 
-NUM_OF_RUNNING = 4
+TEST_SIZE = 500
+TRAIN_SIZE = 300
+TRAIN_SIZE_LIST = range(100, 400, 50) 
+NUM_OF_RUNNING = 2
 
 ### Learning ###
-
-PRINT_STEP_JUMP = 100
-MAX_STEPS = 1000000
+PRINT_STEP_JUMP = 5000
+MAX_STEPS = 100
 ATTEMPT_NUM = 3
 
 ### After learning ###
@@ -39,9 +42,10 @@ BINARY_THRESHOLD = 127
 BATCH_SIZE = 5000
 
 ### Result ###
-IS_TEMP = False
+IS_TEMP = True
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
+CONST_FILE_NAME = "consts.py"
 MAX_TRY_TO_DELETE_DIR = 4
 
 ### State File ###

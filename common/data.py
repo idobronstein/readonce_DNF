@@ -66,7 +66,6 @@ class ReadOnceDNF():
                         term += [0] * partition[j]
                 self.DNF.append(np.array(term, dtype=TYPE))
 
-
     def get_label(self, x):
         for term in self.DNF:
             flag = True
@@ -76,3 +75,10 @@ class ReadOnceDNF():
             if flag:
                 return POSITIVE
         return NEGATIVE
+
+    def evaluate(self, X, Y):
+        res = 0
+        for (x, y) in zip(X, Y):
+            if self.get_label(x) == y:
+                res += 1
+        return res / X.shape[0]
