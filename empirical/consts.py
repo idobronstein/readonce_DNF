@@ -22,12 +22,12 @@ SIGMA_2 = 1e-6
 ### Test params ###
 TEST_SIZE = 15000
 TRAIN_SIZE = 5000
-TRAIN_SIZE_LIST = range(100, 400, 50) 
-NUM_OF_RUNNING = 1
+TRAIN_SIZE_LIST = range(500, 1550, 50) 
+NUM_OF_RUNNING = 10
 
 ### Learning ###
 PRINT_STEP_JUMP = 5000
-MAX_STEPS = 1000000
+MAX_STEPS = 2
 ATTEMPT_NUM = 3
 
 ### After learning ###
@@ -42,7 +42,7 @@ BINARY_THRESHOLD = 127
 BATCH_SIZE = 5000
 
 ### Result ###
-IS_TEMP = True
+IS_TEMP = False
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
 CONST_FILE_NAME = "consts.py"

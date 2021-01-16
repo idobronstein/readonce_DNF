@@ -51,13 +51,12 @@ def main():
             Y_train = np.array([readonce.get_label(x) for x in X_train], dtype=TYPE)
             train_set = (X_train, Y_train)
             for j in range(len(all_algorithems)):
-                flag = True
                 algorithem = all_algorithems[j]
                 print('Running algorithem: "{0}" with train set in size: {1}'.format(algorithem[1], set_size))
-                result_object.save_state(result_vec, k, i)
                 network = algorithem[0]()
                 train_result, algorithem_result = network.run(train_set, test_set) 
                 result_vec[k][j][i] = algorithem_result 
+                result_object.save_state(result_vec, k, i)
         train_list_location = 0 
     result_object.comp_save_graph(result_vec, all_algorithems)
     
