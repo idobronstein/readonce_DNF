@@ -6,8 +6,8 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 9
-DNF = [3, 3, 3]
+D = 24
+DNF = [5] * 15
 FULL = False
 
 ### Hyper params ###
@@ -20,14 +20,14 @@ SIGMA_1 = 1e-1
 SIGMA_2 = 1e-6
 
 ### Test params ###
-TEST_SIZE = 500
-TRAIN_SIZE = 300
+TEST_SIZE = 15000
+TRAIN_SIZE = 5000
 TRAIN_SIZE_LIST = range(100, 400, 50) 
-NUM_OF_RUNNING = 2
+NUM_OF_RUNNING = 1
 
 ### Learning ###
 PRINT_STEP_JUMP = 5000
-MAX_STEPS = 100
+MAX_STEPS = 1000000
 ATTEMPT_NUM = 3
 
 ### After learning ###

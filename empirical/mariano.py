@@ -40,7 +40,6 @@ class mariano():
 			for a in t:
 				term[a[0]] = a[1]
 			dnf.append(term)
-		#import ipdb; ipdb.set_trace()
 		return ReadOnceDNF(specifiec_DNF=dnf)
 
 	def LeanMaxEnt(self, X, Y):
