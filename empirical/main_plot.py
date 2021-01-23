@@ -35,15 +35,13 @@ def main():
         test_set = (X_test, Y_test)
 
         #network = FixLayerTwoNetwork(False, LR, R)
-        #network.run(train_set, test_set)
+        #network = TwoLayerNetwork(R, LR)
         #network = NTKNetwork(False, LR, R)
-        #network.run(train_set, test_set)
-        #result_object.cluster_graph(network, str(round_num))
-        #network = FixLayerTwoNetwork(False, LR, R)
-        #network.run(train_set, test_set)
-
         network = mariano()
+
         network.run(train_set, test_set)
+
+        
 
         import IPython; IPython.embed()     
 main() 

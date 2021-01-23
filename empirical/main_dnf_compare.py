@@ -35,7 +35,7 @@ def main():
         for i in range(train_list_location, len(TRAIN_SIZE_LIST)):
             set_size = TRAIN_SIZE_LIST[i]
             #X = np.array(get_all_combinations(), dtype=TYPE)
-            X = get_random_init_uniform_samples(TRAIN_SIZE, D)
+            X = get_random_init_uniform_samples(set_size, D)
             X_test = get_random_init_uniform_samples(TEST_SIZE, D)
             for j, readonce in enumerate(all_readonce):
                 print('Running DNF num: "{0}" with train set in size: {1}'.format(j, set_size))

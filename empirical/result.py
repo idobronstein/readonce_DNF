@@ -153,7 +153,7 @@ class Result():
         ax.xaxis.set_label_coords(0.5, -0.15)
         ax.set_ylabel('Accuracy (%)')
         ax.set_ylim(65, 101)
-        fig.savefig(os.path.join(self.result_dir, "compersion.png"))
+        fig.savefig(os.path.join(self.result_dir, "comparsion.png"))
         plt.close(fig)
 
     def save_state(self, result_vec, round_num, train_list_location):

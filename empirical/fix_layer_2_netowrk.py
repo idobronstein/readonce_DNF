@@ -34,8 +34,11 @@ class FixLayerTwoNetwork():
         self.use_batch = use_batch
 
     def train_without_batch(self, train_set, sess, result_object=None):
+        #X_positive = train_set[0][[i for i in range(train_set[0].shape[0]) if train_set[1][i] == POSITIVE]]
+        #Y_positive = np.ones([X_positive.shape[0]], dtype=TYPE)
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1])})
+            #positive_loss = sess.run([ self.loss], {self.X:X_positive, self.Y:shift_label(Y_positive)})[0]
             if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
                 print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                 break 
@@ -109,6 +112,7 @@ class FixLayerTwoNetwork():
             # calc loss
             loss_vec = tf.losses.hinge_loss(logits=logits, labels=self.Y, reduction=tf.losses.Reduction.NONE)
             self.loss = tf.reduce_mean(loss_vec)
+            #self.loss = tf.keras.losses.binary_crossentropy(self.Y, logits, from_logits=True)
             
             # set optimizer
             optimizer = tf.train.GradientDescentOptimizer(self.lr)

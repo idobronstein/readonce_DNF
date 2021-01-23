@@ -6,13 +6,14 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 24
-DNF = [5] * 15
+D = 12
+DNF = [3,3,3]
 FULL = False
 
 ### Hyper params ###
 LR = 1e-3
 R = 700
+R_SVN = 2000
 SIGMA = 1e-6
 
 ### Hyper params to NTK###
@@ -20,13 +21,13 @@ SIGMA_1 = 1e-1
 SIGMA_2 = 1e-6
 
 ### Test params ###
-TEST_SIZE = 15000
-TRAIN_SIZE = 5000
-TRAIN_SIZE_LIST = range(500, 1550, 50) 
-NUM_OF_RUNNING = 10
+TEST_SIZE = 9000
+TRAIN_SIZE = 7000
+TRAIN_SIZE_LIST = range(40, 100, 20) 
+NUM_OF_RUNNING = 2
 
 ### Learning ###
-PRINT_STEP_JUMP = 5000
+PRINT_STEP_JUMP = 500
 MAX_STEPS = 2
 ATTEMPT_NUM = 3
 
@@ -63,6 +64,11 @@ PIMA_BIMARY_PATH = r"D:\checkouts\read_once_dnf\common\datasets\pima_diabetes_bi
 BALANCE_PATH = r"D:\checkouts\read_once_dnf\common\datasets\balance-scale.csv"
 BALANCE_BIMARY_PATH = r"D:\checkouts\read_once_dnf\common\datasets\balance-scale_binary.csv"
 
+
+### Mariano ###
+START_EPSILON = 0.1
+END_EPSILON = 2
+NUMBER_OF_EPSILONS = 20
 
 ### Plot params ###
 #TRAIN_SET_SIZE = 400

@@ -57,7 +57,8 @@ class TwoLayerNetwork():
             # calc loss
             loss_vec = tf.losses.hinge_loss(logits=logits, labels=Y, reduction=tf.losses.Reduction.NONE)
             loss = tf.reduce_mean(loss_vec)
-            
+            #loss = tf.keras.losses.binary_crossentropy(Y, logits, from_logits=True)
+
             # set optimizer
             optimizer = tf.train.GradientDescentOptimizer(self.lr)
             gradient = optimizer.compute_gradients(loss)
