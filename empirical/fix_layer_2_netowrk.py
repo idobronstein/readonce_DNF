@@ -33,19 +33,18 @@ class FixLayerTwoNetwork():
         self.all_B = [self.B]
         self.use_batch = use_batch
         self.use_crossentropy = use_crossentropy
-        self.train_loss_thresholod = CROSSENTROPY_THRESHOLD if use_crossentropy else 0
 
     def train_without_batch(self, train_set, sess, result_object=None):
-        #X_positive = train_set[0][[i for i in range(train_set[0].shape[0]) if train_set[1][i] == POSITIVE]]
-        #Y_positive = np.ones([X_positive.shape[0]], dtype=TYPE)
+        X_positive = train_set[0][[i for i in range(train_set[0].shape[0]) if train_set[1][i] == POSITIVE]]
+        Y_positive = np.ones([X_positive.shape[0]], dtype=TYPE)
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1])})
-            #positive_loss = sess.run([ self.loss], {self.X:X_positive, self.Y:shift_label(Y_positive)})[0]
-            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss <= self.train_loss_thresholod):
-                print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+            positive_loss = sess.run([ self.loss], {self.X:X_positive, self.Y:shift_label(Y_positive)})[0]
+            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or ((self.use_crossentropy and positive_loss <= CROSSENTROPY_THRESHOLD) or (not self.use_crossentropy and train_loss <= 0)):
+                print('step: {0}, loss: {1}, accuracy: {2}, positive_loss: {3}'.format(step, train_loss, train_acc, positive_loss)) 
                 break 
             if step % PRINT_STEP_JUMP == 0:
-                print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+                print('step: {0}, loss: {1}, accuracy: {2}, positive_loss: {3}'.format(step, train_loss, train_acc, positive_loss)) 
         print("NN Train accuracy: {0}".format(train_acc)) 
         return train_loss
 
