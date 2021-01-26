@@ -5,7 +5,7 @@ from utilits import *
 
 class FixLayerTwoNetwork():
 
-    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, use_batch=False):
+    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, use_batch=False, use_crossentropy=False):
         assert epsilon_init or (not epsilon_init and r > 0) or (W_init is not None and B_init is not None)
         # init graph
         if epsilon_init:
@@ -32,6 +32,8 @@ class FixLayerTwoNetwork():
         self.all_W = [self.W]
         self.all_B = [self.B]
         self.use_batch = use_batch
+        self.use_crossentropy = use_crossentropy
+        self.train_loss_thresholod = CROSSENTROPY_THRESHOLD if use_crossentropy else 0
 
     def train_without_batch(self, train_set, sess, result_object=None):
         #X_positive = train_set[0][[i for i in range(train_set[0].shape[0]) if train_set[1][i] == POSITIVE]]
@@ -39,7 +41,7 @@ class FixLayerTwoNetwork():
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1])})
             #positive_loss = sess.run([ self.loss], {self.X:X_positive, self.Y:shift_label(Y_positive)})[0]
-            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
+            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss <= self.train_loss_thresholod):
                 print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                 break 
             if step % PRINT_STEP_JUMP == 0:
@@ -63,7 +65,7 @@ class FixLayerTwoNetwork():
                     _, train_loss, current_gradient = sess.run([self.train_op, self.loss, self.gradient], {self.X:X_batch, self.Y:shift_label(Y_batch)})
                     train_acc = -1
                 step += 1
-                if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
+                if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss <= self.train_loss_thresholod):
                     print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                     minimum_point_counter += 1 
                 if step % PRINT_STEP_JUMP == 0:
@@ -110,9 +112,11 @@ class FixLayerTwoNetwork():
             accuracy_test = tf.reduce_mean(correct_test)
 
             # calc loss
-            loss_vec = tf.losses.hinge_loss(logits=logits, labels=self.Y, reduction=tf.losses.Reduction.NONE)
-            self.loss = tf.reduce_mean(loss_vec)
-            #self.loss = tf.keras.losses.binary_crossentropy(self.Y, logits, from_logits=True)
+            if self.use_crossentropy:
+                self.loss = tf.keras.losses.binary_crossentropy(self.Y, logits, from_logits=True)
+            else:
+                loss_vec = tf.losses.hinge_loss(logits=logits, labels=self.Y, reduction=tf.losses.Reduction.NONE)
+                self.loss = tf.reduce_mean(loss_vec)
             
             # set optimizer
             optimizer = tf.train.GradientDescentOptimizer(self.lr)

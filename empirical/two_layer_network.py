@@ -20,6 +20,8 @@ class TwoLayerNetwork():
             self.B_W = np.zeros([self.r], dtype=TYPE)
             self.B_U = np.zeros([1], dtype=TYPE)
         self.lr = lr
+        self.W0 = self.W
+        self.B0 = self.B_W
 
 
     def run(self, train_set, test_set):
@@ -55,9 +57,9 @@ class TwoLayerNetwork():
             accuracy_test = tf.reduce_mean(correct_test)
 
             # calc loss
-            loss_vec = tf.losses.hinge_loss(logits=logits, labels=Y, reduction=tf.losses.Reduction.NONE)
-            loss = tf.reduce_mean(loss_vec)
-            #loss = tf.keras.losses.binary_crossentropy(Y, logits, from_logits=True)
+            #loss_vec = tf.losses.hinge_loss(logits=logits, labels=Y, reduction=tf.losses.Reduction.NONE)
+            #loss = tf.reduce_mean(loss_vec)
+            loss = tf.keras.losses.binary_crossentropy(Y, logits, from_logits=True)
 
             # set optimizer
             optimizer = tf.train.GradientDescentOptimizer(self.lr)

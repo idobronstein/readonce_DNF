@@ -5,6 +5,7 @@ import shutil
 import pylab
 import warnings
 import colorama
+import random
 from datetime import datetime
 from sklearn.svm import SVC
 import numpy as np

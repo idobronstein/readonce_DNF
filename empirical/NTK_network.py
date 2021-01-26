@@ -36,19 +36,18 @@ class NTKNetwork():
     def train_without_batch(self, train_set, sess, mask, result_object=None):
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1]), self.mask_tf: mask})
-            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
+            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss <= CROSSENTROPY_THRESHOLD):
                 print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                 break 
             if step % PRINT_STEP_JUMP == 0:
                 print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
-        print("NN Train accuracy: {0}".format(train_acc)) 
+        print("NTK NN Train accuracy: {0}".format(train_acc)) 
         return train_loss
 
     def train_with_batch(self, train_set, sess, mask, result_object=None):
         all_train_size = train_set[0].shape[0]
         step = 0
         
-
         while step < MAX_STEPS:
             minimum_point_counter = 0
             for i in range(0, all_train_size, BATCH_SIZE):
@@ -60,7 +59,7 @@ class NTKNetwork():
                     _, train_loss, current_gradient = sess.run([self.train_op, self.loss, self.gradient], {self.X:X_batch, self.Y:shift_label(Y_batch), self.mask_tf: mask})
                     train_acc = -1
                 step += 1
-                if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss == 0):
+                if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss <= CROSSENTROPY_THRESHOLD):
                     print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                     minimum_point_counter += 1 
                 if step % PRINT_STEP_JUMP == 0:
@@ -70,7 +69,7 @@ class NTKNetwork():
             self.W, self.B = sess.run([self.W_tf, self.B_tf])
             if result_object:
                 result_object.save_result_to_pickle('Network.pkl', (self.W, self.B))
-        print("NN Train accuracy: {0}".format(train_acc)) 
+        print("NTK NN Train accuracy: {0}".format(train_acc)) 
         return train_loss        
 
     def create_mask(self, W0, X):
@@ -93,16 +92,16 @@ class NTKNetwork():
             self.X = tf.placeholder(TYPE, name='X', shape=[None, D])
             self.Y = tf.placeholder(TYPE, name='Y', shape=[None])
             self.mask_tf = tf.placeholder(TYPE, name='mask', shape=[None, self.r])
+            self.W0_tf = tf.constant(self.W.T, name='W0')
+            self.B0_tf = tf.constant(self.B, name='B0')
             self.W_tf = tf.get_variable('W', initializer=self.W.T)
             self.B_tf = tf.get_variable('B_W', initializer=self.B)
             
             
             # Netrowk
+            out_initizlize_layer = tf.reduce_sum(tf.nn.relu(tf.matmul(self.X, self.W0_tf) + self.B0_tf), axis=1) - 1 
             out_train = tf.multiply(tf.matmul(self.X, self.W_tf) + self.B_tf, self.mask_tf)
-            logits_train = tf.reduce_sum(out_train, axis=1)  - 1
-
-            out_test = tf.nn.relu(tf.matmul(self.X, self.W_tf) + self.B_tf)
-            logits_test = tf.reduce_sum(out_test, axis=1)  - 1
+            logits_train = out_initizlize_layer + tf.reduce_sum(out_train, axis=1)
 
             # calc accuracy
             prediction_train = tf.round(tf.nn.sigmoid(logits_train))
@@ -118,8 +117,9 @@ class NTKNetwork():
             accuracy_test = tf.reduce_mean(correct_test)
 
             # calc loss
-            loss_vec = tf.losses.hinge_loss(logits=logits_train, labels=self.Y, reduction=tf.losses.Reduction.NONE)
-            self.loss = tf.reduce_mean(loss_vec)
+            #loss_vec = tf.losses.hinge_loss(logits=logits_train, labels=self.Y, reduction=tf.losses.Reduction.NONE)
+            #self.loss = tf.reduce_mean(loss_vec)
+            self.loss = tf.keras.losses.binary_crossentropy(self.Y, logits_train, from_logits=True)
             
             # set optimizer
             optimizer = tf.train.GradientDescentOptimizer(self.lr)

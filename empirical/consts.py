@@ -6,9 +6,10 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 12
+D = 9
 DNF = [3,3,3]
 FULL = False
+REMOVE_SAMLPE_RANGE = range(0, 1600, 100) 
 
 ### Hyper params ###
 LR = 1e-3
@@ -21,14 +22,15 @@ SIGMA_1 = 1e-1
 SIGMA_2 = 1e-6
 
 ### Test params ###
-TEST_SIZE = 9000
-TRAIN_SIZE = 7000
-TRAIN_SIZE_LIST = range(40, 100, 20) 
-NUM_OF_RUNNING = 2
+TEST_SIZE = 4000
+TRAIN_SIZE = 200
+TRAIN_SIZE_LIST = range(150, 250, 50) 
+NUM_OF_RUNNING = 10
 
 ### Learning ###
-PRINT_STEP_JUMP = 500
-MAX_STEPS = 2
+PRINT_STEP_JUMP = 10000
+MAX_STEPS = 1000000
+CROSSENTROPY_THRESHOLD = 0.0001
 ATTEMPT_NUM = 3
 
 ### After learning ###
@@ -66,9 +68,9 @@ BALANCE_BIMARY_PATH = r"D:\checkouts\read_once_dnf\common\datasets\balance-scale
 
 
 ### Mariano ###
-START_EPSILON = 0.1
-END_EPSILON = 2
-NUMBER_OF_EPSILONS = 20
+START_EPSILON = 0.01
+END_EPSILON = 0.5
+NUMBER_OF_EPSILONS = 50
 
 ### Plot params ###
 #TRAIN_SET_SIZE = 400

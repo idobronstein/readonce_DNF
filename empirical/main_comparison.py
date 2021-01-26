@@ -24,13 +24,14 @@ def main():
 
     all_algorithems = [
         (lambda: FixLayerTwoNetwork(False, LR, R), "Convex NN", 'b', "o"),
+        (lambda: FixLayerTwoNetwork(False, LR, R, use_crossentropy=True), "Convex NN CE", 'g', "s"),
         (lambda: TwoLayerNetwork(R, LR), "Standard NN", 'r', "^"),
-        (lambda: TwoLayerNetwork(R, LR, sigma_1=SIGMA_1, sigma_2=SIGMA_2), "NTK init NN", 'k', "+"),
-        (lambda: NTKsvn(R_SVN), "NTK svn", 'g', "s"),
+        #(lambda: TwoLayerNetwork(R, LR, sigma_1=SIGMA_1, sigma_2=SIGMA_2), "NTK init NN", 'k', "+"),
+        #(lambda: NTKsvn(R_SVN), "NTK svn", 'g', "s"),
         (lambda: NTKNetwork(False, LR, R), "NTK netwotk", 'c', "d"),
         (lambda: mariano(), "mariano", 'm', "H")
     ]
-    result_vec, round_num, train_list_location = result_object.load_state(all_algorithems)
+    
 
     result_object.save_const_file()
 
@@ -40,14 +41,22 @@ def main():
         X_full = np.array(all_combinations, dtype=TYPE)
         Y_full = np.array([readonce.get_label(x) for x in X_full], dtype=TYPE)
         test_set = (X_full, Y_full)
+        train_list_size = [len(all_combinations) - i for i in REMOVE_SAMLPE_RANGE]
     else:
         X_test = get_random_init_uniform_samples(TEST_SIZE, D)
         Y_test = np.array([readonce.get_label(x) for x in X_test], dtype=TYPE)
         test_set = (X_test, Y_test)
+        train_list_size = TRAIN_SIZE_LIST
+
+    result_vec, round_num, train_list_location = result_object.load_state(all_algorithems, train_list_size)
+
     for k in range(round_num, NUM_OF_RUNNING):
-        for i in range(train_list_location, len(TRAIN_SIZE_LIST)):
-            set_size = TRAIN_SIZE_LIST[i]
-            X_train = get_random_init_uniform_samples(set_size, D)
+        for i in range(train_list_location, len(train_list_size)):
+            set_size = train_list_size[i]
+            if FULL:
+                X_train = np.array(random.sample(all_combinations, set_size), dtype=TYPE)
+            else:
+                X_train = get_random_init_uniform_samples(set_size, D)
             Y_train = np.array([readonce.get_label(x) for x in X_train], dtype=TYPE)
             train_set = (X_train, Y_train)
             for j in range(len(all_algorithems)):
@@ -58,7 +67,7 @@ def main():
                 result_vec[k][j][i] = algorithem_result 
                 result_object.save_state(result_vec, k, i)
         train_list_location = 0 
-    result_object.comp_save_graph(result_vec, all_algorithems)
+    result_object.comp_save_graph(result_vec, all_algorithems, train_list_size)
     
 
 main() 

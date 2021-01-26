@@ -74,23 +74,23 @@ class mariano():
 		#print(const_approximation)
 		for epsilon in np.linspace(START_EPSILON, END_EPSILON, NUMBER_OF_EPSILONS):
 			G = epsilon ** 2 / (2 * D)
-			#if const_approximation < epsilon / 2 or const_approximation > 1 - epsilon / 2 or False:
-			#	readonce = ReadOnceDNF(specifiec_DNF=[[0] * D])
-			#else:
-			S = np.zeros([D])
-			all_terms = []
-			for i in range(D):
-				S[i] = self.literal(i, G / 2, X, Y, m)
-			for i in range(D):
-				if S[i] != 0:
-					all_terms.append([(i, S[i])])
-					for j in range(i+1, D):
-						if S[j] !=0:
-							if self.SameTerm(i, j, G / 2, X, Y, m) and self.SameTerm(j, i, G / 2, X, Y, m):
-								all_terms[-1].append((j, S[j]))
-								S[j] = 0
-			#all_terms = self.remove_inaccurate_terms(all_terms, X, Y, epsilon, m)
-			readonce = self.createDNF(all_terms)
+			if const_approximation < epsilon / 2 or const_approximation > 1 - epsilon / 2 or False:
+				readonce = ReadOnceDNF(specifiec_DNF=[[0] * D])
+			else:
+				S = np.zeros([D])
+				all_terms = []
+				for i in range(D):
+					S[i] = self.literal(i, G / 2, X, Y, m)
+				for i in range(D):
+					if S[i] != 0:
+						all_terms.append([(i, S[i])])
+						for j in range(i+1, D):
+							if S[j] !=0:
+								if self.SameTerm(i, j, G / 2, X, Y, m) and self.SameTerm(j, i, G / 2, X, Y, m):
+									all_terms[-1].append((j, S[j]))
+									S[j] = 0
+				all_terms = self.remove_inaccurate_terms(all_terms, X, Y, epsilon, m)
+				readonce = self.createDNF(all_terms)
 			score = readonce.evaluate(X, Y)
 			if score > best_DNF_score:
 				best_DNF = readonce

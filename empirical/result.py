@@ -134,7 +134,7 @@ class Result():
         plt.close(fig)
 
 
-    def comp_save_graph(self, result_vec, all_algorithems):
+    def comp_save_graph(self, result_vec, all_algorithems, train_size_list):
         plt.rcParams.update({'font.size': 26, 'figure.subplot.left': 0.25, 'figure.subplot.right': 0.95, 'figure.subplot.bottom': 0.20, 'figure.subplot.top': 0.97})
         plt.rcParams.update({'axes.labelsize':'large', 'xtick.labelsize':'large', 'ytick.labelsize':'large','legend.fontsize': 'medium'})
         result_vec = 100 * result_vec
@@ -146,8 +146,8 @@ class Result():
             label = all_algorithems[i][1]
             color = all_algorithems[i][2]
             marker = all_algorithems[i][3]
-            plt.plot(TRAIN_SIZE_LIST, mean[i], color=color, label=label, marker = marker, linewidth=4.0, markersize=10.0)
-            plt.fill_between(TRAIN_SIZE_LIST , mean[i] + std[i], mean[i] - std[i], alpha=.2, label='_')
+            plt.plot(train_size_list, mean[i], color=color, label=label, marker = marker, linewidth=4.0, markersize=10.0)
+            plt.fill_between(train_size_list , mean[i] + std[i], mean[i] - std[i], alpha=.2, label='_')
         ax.legend(loc=0, prop={'size': 15})
         ax.set_xlabel('Train Set Size')
         ax.xaxis.set_label_coords(0.5, -0.15)
@@ -162,7 +162,7 @@ class Result():
         with open(state_path, 'wb+') as f:
             pickle.dump((result_vec, round_num, train_list_location), f) 
 
-    def load_state(self, all_algorithems):
+    def load_state(self, all_algorithems, train_size_list):
         state_path = os.path.join(self.result_dir, STATE_PATH)
         if os.path.isfile(state_path):
             with open(state_path, 'rb') as f:
@@ -170,7 +170,7 @@ class Result():
                 result_vec, round_num, train_list_location = all_state
             print("Restore state: round_num - {0}, train list location - {1}".format(round_num, train_list_location))
         else:
-            result_vec = np.zeros([NUM_OF_RUNNING, len(all_algorithems), len(TRAIN_SIZE_LIST)])
+            result_vec = np.zeros([NUM_OF_RUNNING, len(all_algorithems), len(train_size_list)])
             round_num = 0
             train_list_location = 0
         return result_vec, round_num, train_list_location
