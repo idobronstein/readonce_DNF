@@ -37,9 +37,9 @@ def main():
 
         #network = FixLayerTwoNetwork(False, LR, R)
         #network = TwoLayerNetwork(R, LR)
-        network = NTKNetwork(False, LR, R)
+        #network = NTKNetwork(False, LR, R)
         #network = mariano()
-        #network = NTKsvn(R)
+        network = NTKsvn(R)
         #network = TwoLayerNetwork(R, LR, sigma_1=SIGMA_1, sigma_2=SIGMA_2)
 
         network.run(train_set, test_set)

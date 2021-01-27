@@ -6,7 +6,8 @@ from utilits import *
 class NTKsvn():
 
 	def __init__(self, r):
-		self.W = np.array(SIGMA * np.random.randn(r, D), dtype=TYPE)
+		self.r = r
+		self.W = np.array(SIGMA * np.random.randn(r, D+1), dtype=TYPE)
 
 	def calc_position_matrix(self, X):
 		XW = tf.tensordot(X, tf.transpose(self.W), 1)
@@ -16,10 +17,12 @@ class NTKsvn():
 	def prepere_distance_matrix(self, x_set_size, y_set_size):
 		self.X = tf.placeholder(TYPE, name='X', shape=[x_set_size, D])
 		self.Y = tf.placeholder(TYPE, name='Y', shape=[y_set_size, D])
-		XW = self.calc_position_matrix(self.X)
-		YW = self.calc_position_matrix(self.Y)
+		X_1 = tf.concat([self.X, tf.ones([self.X.shape[0], 1])], 1)
+		Y_1 = tf.concat([self.Y, tf.ones([self.Y.shape[0], 1])], 1)
+		XW = self.calc_position_matrix(X_1)
+		YW = self.calc_position_matrix(Y_1)
 		Wxy = tf.tensordot(XW, tf.transpose(YW), 1)
-		dot_product_matrix = tf.tensordot(self.X, tf.transpose(self.Y), 1)		
+		dot_product_matrix = tf.tensordot(X_1, tf.transpose(Y_1), 1)		
 		tf_distance_matrix = tf.multiply(dot_product_matrix, Wxy)
 		return tf_distance_matrix
 
