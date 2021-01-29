@@ -61,7 +61,7 @@ class NTKsvn():
 				sess.run(init)
 				test_distance_matrix = sess.run([tf_distance_matrix], {self.X2: test_scale, self.Y2: train_scale})[0]
 
-		test_accuracy = np.dot(np.sign(learne.predict(test_distance_matrix)), test_set[1]) / test_set_size
+		test_accuracy = np.dot(np.sign(learner.predict(test_distance_matrix)), test_set[1]) / test_set_size
 		print("NTK Test accuracy: {0}".format(test_accuracy)) 
 
 		return 1 - train_accuracy, test_accuracy
