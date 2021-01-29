@@ -6,15 +6,15 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 9
+D = 12
 DNF = [3,3,3]
-FULL = False
-REMOVE_SAMLPE_RANGE = range(0, 1600, 100) 
+FULL = True
+REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
 
 ### Hyper params ###
 LR = 1e-3
 R = 700
-R_SVN = 2000
+R_SVN = 5000
 SIGMA = 1e-6
 
 ### Hyper params to NTK###
@@ -22,10 +22,10 @@ SIGMA_1 = 1e-1
 SIGMA_2 = 1e-6
 
 ### Test params ###
-TEST_SIZE = 4000
-TRAIN_SIZE = 100
-TRAIN_SIZE_LIST = range(40, 240, 40) 
-NUM_OF_RUNNING = 3
+TEST_SIZE = 5000
+TRAIN_SIZE = 300
+TRAIN_SIZE_LIST = range(50, 250, 50) 
+NUM_OF_RUNNING = 30
 
 ### Learning ###
 PRINT_STEP_JUMP = 10000
@@ -45,7 +45,7 @@ BINARY_THRESHOLD = 127
 BATCH_SIZE = 5000
 
 ### Result ###
-IS_TEMP = False
+IS_TEMP = True
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
 CONST_FILE_NAME = "consts.py"

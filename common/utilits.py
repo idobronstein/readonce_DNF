@@ -126,3 +126,8 @@ def validate_dataset_with_all_terms(dataset, all_terms, need_to_reshape=False):
 		if not flag and y == NEGATIVE:
 			success_num += 1
 	return success_num / float(dataset[0].shape[0])
+
+
+def my_tf_round(x, decimals = 0):
+    multiplier = tf.constant(10**decimals, dtype=x.dtype)
+    return tf.round(x * multiplier) / multiplier

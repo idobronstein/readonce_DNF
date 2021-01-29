@@ -45,7 +45,7 @@ def main():
             all_partitions = get_all_balanced_partitions(dnf_size)
             # remove the DNF of all 1 and the DNF with one term
             all_partitions = all_partitions[1:-1]
-            all_partitions = [[3,3,3]]
+
             if len(all_partitions) == 0:
                 result_object.logger.info("No relevant phrases. Skippinig..")
             
@@ -76,7 +76,6 @@ def main():
                             init = tf.initialize_all_variables()
                             sess.run(init)
                             minimum_point = run_network(network, X, Y, backup_name, result_object, readonce, noise_size, sess)
-                    
                             save_results(minimum_point, os.path.join(run_name, ORIGINAL_FINAL_DIR), result_object, network, readonce, X, sess, noise_size)
                     tf.reset_default_graph()
                     with tf.Graph().as_default():
