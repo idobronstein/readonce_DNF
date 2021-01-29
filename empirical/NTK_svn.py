@@ -49,7 +49,7 @@ class NTKsvn():
 		learner = SVC(kernel='precomputed')
 		learner.fit(train_distance_matrix, train_set[1])
 		
-		train_accuracy = np.dot(np.sign(learner.predict(train_distance_matrix_1)), train_set[1]) / train_set_size
+		train_accuracy = np.dot(np.sign(learner.predict(train_distance_matrix)), train_set[1]) / train_set_size
 		print("NTK Train accuracy: {0}".format(train_accuracy))
 		
 		tf.reset_default_graph()
