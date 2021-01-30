@@ -6,10 +6,11 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 12
+D = 20
 DNF = [3,3,3]
-FULL = True
-REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
+MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
+NUMBER_OF_TERMS = 100
+TERM_SIZE = 4
 
 ### Hyper params ###
 LR = 1e-3
@@ -25,6 +26,8 @@ SIGMA_2 = 1e-6
 TEST_SIZE = 5000
 TRAIN_SIZE = 300
 TRAIN_SIZE_LIST = range(50, 250, 50) 
+FULL = False
+REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
 NUM_OF_RUNNING = 30
 
 ### Learning ###

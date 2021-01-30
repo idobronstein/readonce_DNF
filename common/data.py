@@ -50,6 +50,31 @@ def get_random_init_uniform_samples(set_size, D=D):
 def get_random_init_non_uniform_samples(set_size, positive_prob, D=D):
     return np.random.choice([POSITIVE, NEGATIVE], [set_size, D], p=[positive_prob, 1 - positive_prob])
 
+
+def generate_dnfs(number_of_terms_per_index, number_of_terms_with_index, size_of_terms, fix_indexs, D=D):
+    all_terms = []
+    for index in fix_indexs:
+        left_indexes = list(range(D))
+        left_indexes.remove(index)
+        for _ in range(number_of_terms_with_index):
+            term = np.zeros([D])
+            term[index] = 1
+            random_other_indexes = np.random.choice(left_indexes, size_of_terms-1)
+            term[random_other_indexes] = 1
+            all_terms.append(term)
+        for _ in range(number_of_terms_per_index - number_of_terms_with_index):
+            term = np.zeros([D])
+            random_indexes = np.random.choice(list(range(D)), size_of_terms)
+            term[random_indexes] = 1
+            all_terms.append(term)
+    return ReadOnceDNF(specifiec_DNF=all_terms)
+
+def generate_all_dnfs():
+    all_dnfs = []
+    for number_of_terms_with_index in MAX_LITERAL_REPEAT:
+        all_dnfs.append(NUMBER_OF_TERMS, number_of_terms_with_index, TERM_SIZE, [0,-1])
+    return all_dnfs
+
 class ReadOnceDNF():
 
     def __init__(self, partition=[], specifiec_DNF=None):

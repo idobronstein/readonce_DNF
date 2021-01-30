@@ -29,7 +29,7 @@ def main():
         #(lambda: TwoLayerNetwork(R, LR, sigma_1=SIGMA_1, sigma_2=SIGMA_2), "NTK init NN", 'k', "+"),
         (lambda: NTKsvn(R_SVN), "NTK svn", 'g', "s"),
         #(lambda: NTKNetwork(False, LR, R), "NTK netwotk", 'c', "d"),
-        #(lambda: mariano(), "mariano", 'm', "H")
+        (lambda: mariano(), "mariano", 'm', "H")
     ]
     
 
