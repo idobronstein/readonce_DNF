@@ -21,7 +21,8 @@ def main():
     result_object.create_dir(run_name)
 
     all_readonce = generate_all_dnfs()
-    result_vec, round_num, train_list_location = result_object.load_state(all_readonce)
+    #import ipdb; ipdb.set_trace()
+    result_vec, round_num, train_list_location = result_object.load_state(all_readonce, TRAIN_SIZE_LIST)
 
     result_object.save_const_file()
 
@@ -42,6 +43,6 @@ def main():
                 result_vec[k][j][i] = dnf_test_result 
                 result_object.save_state(result_vec, k, i)
         train_list_location = 0 
-    result_object.comp_save_graph(result_vec, all_readonce)
+    result_object.comp_save_graph(result_vec, all_readonce, TRAIN_SIZE_LIST)
     
 main() 

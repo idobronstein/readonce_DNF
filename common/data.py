@@ -70,9 +70,11 @@ def generate_dnfs(number_of_terms_per_index, number_of_terms_with_index, size_of
     return ReadOnceDNF(specifiec_DNF=all_terms)
 
 def generate_all_dnfs():
+    preset_options = [['b', "o"],['g', "s"],['r', "^"],['k', "+"],['g', "s"],['c', "d"],['m', "H"]]
     all_dnfs = []
-    for number_of_terms_with_index in MAX_LITERAL_REPEAT:
-        all_dnfs.append(NUMBER_OF_TERMS, number_of_terms_with_index, TERM_SIZE, [0,-1])
+    for i, number_of_terms_with_index in enumerate(MAX_LITERAL_REPEAT):
+        dnf = generate_dnfs(NUMBER_OF_TERMS, number_of_terms_with_index, TERM_SIZE, [0,D-1])
+        all_dnfs.append([dnf, str(number_of_terms_with_index)] + list(preset_options[i]))
     return all_dnfs
 
 class ReadOnceDNF():
