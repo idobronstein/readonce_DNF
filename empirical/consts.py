@@ -6,33 +6,33 @@ POSITIVE = 1
 TYPE = np.float32
 
 ### Target params ###
-D = 20
-DNF = [3,3,3]
+D = 12
+DNF = [3,3,4]
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 100
 TERM_SIZE = 4
 
 ### Hyper params ###
 LR = 1e-3
-R = 700
+R = 5000
 R_SVN = 5000
-SIGMA = 1e-6
+SIGMA = 1e-1
 
 ### Hyper params to NTK###
 SIGMA_1 = 1e-1
 SIGMA_2 = 1e-6
 
 ### Test params ###
-TEST_SIZE = 5000
+TEST_SIZE = 12000
 TRAIN_SIZE = 300
-TRAIN_SIZE_LIST = range(100, 2300, 200) 
-FULL = False
+TRAIN_SIZE_LIST = range(100, 500, 200) 
+FULL = True
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
 NUM_OF_RUNNING = 3
 
 ### Learning ###
 PRINT_STEP_JUMP = 10000
-MAX_STEPS = 1000000
+MAX_STEPS = 2
 CROSSENTROPY_THRESHOLD = 0.001
 ATTEMPT_NUM = 3
 
