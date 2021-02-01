@@ -72,7 +72,7 @@ class FixLayerTwoNetwork():
                     print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
             if np.ceil(all_train_size / BATCH_SIZE) == minimum_point_counter:
                 print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
-                
+                break
             self.W, self.B = sess.run([self.W_tf, self.B_tf])
         print("NN Train accuracy: {0}".format(train_acc)) 
         return train_loss        
