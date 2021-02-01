@@ -24,6 +24,7 @@ class FixLayerTwoNetwork():
             self.r = r 
             self.W = np.array(SIGMA * np.random.randn(self.r, D), dtype=TYPE)
             self.B = np.zeros([self.r], dtype=TYPE)
+            self.B0 = np.zeros([1], dtype=TYPE)
         else:
             self.r = W_init.shape[0]
             self.W = W_init
@@ -31,6 +32,7 @@ class FixLayerTwoNetwork():
         self.lr = lr
         self.all_W = [self.W]
         self.all_B = [self.B]
+        self.all_B0 = [self.B0]
         self.use_batch = use_batch
         self.use_crossentropy = use_crossentropy
 
@@ -39,41 +41,39 @@ class FixLayerTwoNetwork():
         Y_positive = np.ones([X_positive.shape[0]], dtype=TYPE)
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1])})
-            positive_loss = sess.run([ self.loss], {self.X:X_positive, self.Y:shift_label(Y_positive)})[0]
-            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or ((self.use_crossentropy and positive_loss <= CROSSENTROPY_THRESHOLD) or (not self.use_crossentropy and train_loss <= 0)):
-                print('step: {0}, loss: {1}, accuracy: {2}, positive_loss: {3}'.format(step, train_loss, train_acc, positive_loss)) 
+            if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or ((self.use_crossentropy and train_loss <= CROSSENTROPY_THRESHOLD) or (not self.use_crossentropy and train_loss <= 0)):
+                print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                 break 
             if step % PRINT_STEP_JUMP == 0:
-                print('step: {0}, loss: {1}, accuracy: {2}, positive_loss: {3}'.format(step, train_loss, train_acc, positive_loss)) 
+                print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
         print("NN Train accuracy: {0}".format(train_acc)) 
         return train_loss
 
     def train_with_batch(self, train_set, sess, result_object=None):
         all_train_size = train_set[0].shape[0]
         step = 0
-        
-
         while step < MAX_STEPS:
             minimum_point_counter = 0
+            shuffle_indexes = range(all_train_size)
+            X_shuffle = train_set[0][shuffle_indexes]
+            Y_shuffle = train_set[1][shuffle_indexes]
             for i in range(0, all_train_size, BATCH_SIZE):
                 if i + BATCH_SIZE < all_train_size:
-                    X_batch, Y_batch =  train_set[0][i : i + BATCH_SIZE], train_set[1][i : i + BATCH_SIZE]
+                    X_batch, Y_batch =  X_shuffle[i : i + BATCH_SIZE], Y_shuffle[i : i + BATCH_SIZE]
                     _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:X_batch, self.Y:shift_label(Y_batch)})
                 else:
-                    X_batch, Y_batch =  train_set[0][i:], train_set[1][i:]
+                    X_batch, Y_batch =  X_shuffle[i:], Y_shuffle[i:]
                     _, train_loss, current_gradient = sess.run([self.train_op, self.loss, self.gradient], {self.X:X_batch, self.Y:shift_label(Y_batch)})
                     train_acc = -1
                 step += 1
-                if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or (train_loss <= self.train_loss_thresholod):
-                    print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+                if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or ((self.use_crossentropy and train_loss <= CROSSENTROPY_THRESHOLD) or (not self.use_crossentropy and train_loss <= 0)):
                     minimum_point_counter += 1 
                 if step % PRINT_STEP_JUMP == 0:
                     print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
-            if i == minimum_point_counter:
-                break
+            if np.ceil(all_train_size / BATCH_SIZE) == minimum_point_counter:
+                print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+                
             self.W, self.B = sess.run([self.W_tf, self.B_tf])
-            if result_object:
-                result_object.save_result_to_pickle('Network.pkl', (self.W, self.B))
         print("NN Train accuracy: {0}".format(train_acc)) 
         return train_loss        
 
@@ -92,10 +92,11 @@ class FixLayerTwoNetwork():
             self.Y = tf.placeholder(TYPE, name='Y', shape=[None])
             self.W_tf = tf.get_variable('W', initializer=self.W.T)
             self.B_tf = tf.get_variable('B_W', initializer=self.B)
+            self.B0_tf = tf.get_variable('B_0', initializer=self.B0)
             
             # Netrowk
             out_1 = tf.nn.relu(tf.matmul(self.X, self.W_tf) + self.B_tf)
-            logits = tf.reduce_sum(out_1, axis=1)  - 1
+            logits = tf.reduce_sum(out_1, axis=1)  + self.B0_tf
 
             # calc accuracy
             prediction_train = tf.round(tf.nn.sigmoid(logits))
@@ -137,7 +138,7 @@ class FixLayerTwoNetwork():
                 test_loss, test_acc = sess.run([self.loss, accuracy_test], {self.X:test_set[0], self.Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
 
-                self.W, self.B = sess.run([self.W_tf, self.B_tf])
+                self.W, self.B, self.B0 = sess.run([self.W_tf, self.B_tf, self.B0_tf])
                 self.W = self.W.T
 
             return train_loss, test_acc
