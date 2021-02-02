@@ -24,23 +24,23 @@ def main():
 
     for round_num in range(NUM_OF_RUNNING):
         print("Running round {0} with train set in size {1}".format(round_num, TRAIN_SIZE))
-        #X = get_random_init_uniform_samples(TRAIN_SIZE, D)
-        #Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
-        all_combinations = get_all_combinations()
-        X = np.array(random.sample(all_combinations, len(all_combinations) - 100), dtype=TYPE)
+        X = get_random_init_uniform_samples(TRAIN_SIZE, D)
         Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
+        #all_combinations = get_all_combinations()
+        #X = np.array(random.sample(all_combinations, len(all_combinations) - 50), dtype=TYPE)
+        #Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
 
         X_test = get_random_init_uniform_samples(TEST_SIZE, D)
         Y_test = np.array([readonce.get_label(x) for x in X_test], dtype=TYPE)
         train_set = (X, Y)
         test_set = (X_test, Y_test)
 
-        network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
+        #network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
         #network = TwoLayerNetwork(R, LR_STA, use_batch=True, use_crossentropy=True)
         #network = NTKNetwork(False, LR, R)
-        #network = mariano()
+        network = mariano()
         #network = NTKsvn(R)
-        #network = TwoLayerNetwork(R, LR, sigma_1=SIGMA_1, sigma_2=SIGMA_2)
+        #network = TwoLayerNetwork(R, LR, use_batch=True, use_crossentropy=True, sigma_1=SIGMA_1, sigma_2=SIGMA_2)
 
         network.run(train_set, test_set)
 

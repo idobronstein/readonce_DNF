@@ -32,6 +32,13 @@ class NTKsvn():
 		tf_distance_matrix = tf.multiply((1 / (2 * math.pi)) * (dot_product_matrix), (math.pi - tf.math.acos(dot_product_matrix)))
 		return tf_distance_matrix
 
+	def check_success_rate(self, predicts, labels, size):
+		res = 0
+		for y_predict, y_label in zip(predicts, labels):
+			if y_predict == y_label:
+				res += 1
+		return res / size
+
 	def run(self, train_set, test_set):
 		train_set_size = train_set[0].shape[0]
 		test_set_size = test_set[0].shape[0]
@@ -49,7 +56,7 @@ class NTKsvn():
 		learner = SVC(kernel='precomputed')
 		learner.fit(train_distance_matrix, train_set[1])
 		
-		train_accuracy = np.dot(np.sign(learner.predict(train_distance_matrix)), train_set[1]) / train_set_size
+		train_accuracy = self.check_success_rate(np.sign(learner.predict(train_distance_matrix)), train_set[1], train_set_size)
 		print("NTK Train accuracy: {0}".format(train_accuracy))
 		
 		tf.reset_default_graph()
@@ -61,7 +68,7 @@ class NTKsvn():
 				sess.run(init)
 				test_distance_matrix = sess.run([tf_distance_matrix], {self.X2: test_scale, self.Y2: train_scale})[0]
 
-		test_accuracy = np.dot(np.sign(learner.predict(test_distance_matrix)), test_set[1]) / test_set_size
+		test_accuracy = self.check_success_rate(np.sign(learner.predict(test_distance_matrix)), test_set[1], test_set_size)
 		print("NTK Test accuracy: {0}".format(test_accuracy)) 
 
 		return 1 - train_accuracy, test_accuracy

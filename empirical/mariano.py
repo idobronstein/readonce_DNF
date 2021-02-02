@@ -68,6 +68,7 @@ class mariano():
 
 	def LeanMaxEnt(self, X, Y):
 		m = X.shape[0]
+		print(m)
 		best_DNF = None
 		best_DNF_score = 0
 		const_approximation = self.SQ(lambda x: NEGATIVE, X, Y, m)
@@ -99,14 +100,31 @@ class mariano():
 		return best_DNF
 
 
+	def remove_duplicate_samples(self, train_set):
+		m = train_set[0].shape[0]
+		X = []
+		Y = []
+		for i in range(m):
+			flag = True
+			for j in range(len(X)):
+				if np.dot(train_set[0][i], X[j]) == D:
+					flag = False
+			if flag:
+				X.append(train_set[0][i])
+				Y.append(train_set[1][i])
+		return np.array(X, dtype=TYPE), np.array(Y, dtype=TYPE)
+
 
 	def run(self, train_set, test_set):
-		dnf = self.LeanMaxEnt(train_set[0], train_set[1])
+		X_train, Y_train = self.remove_duplicate_samples(train_set)
+		X_test, Y_test = self.remove_duplicate_samples(test_set)
+
+		dnf = self.LeanMaxEnt(X_train, Y_train)
 		
-		train_accuracy = dnf.evaluate(train_set[0], train_set[1])
+		train_accuracy = dnf.evaluate(X_train, Y_train)
 		print('mariano Train accuracy: {0}'.format(train_accuracy)) 
 
-		test_accuracy = dnf.evaluate(test_set[0], test_set[1])
+		test_accuracy = dnf.evaluate(X_test, Y_test)
 		print('mariano Test accuracy: {0}'.format(test_accuracy)) 
 
 		return 0, test_accuracy
