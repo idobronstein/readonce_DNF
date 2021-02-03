@@ -66,7 +66,16 @@ class mariano():
 			dnf.append(term)
 		return ReadOnceDNF(specifiec_DNF=dnf)
 
-	def LeanMaxEnt(self, X, Y):
+	def split_date(self, X, Y):
+		m = X.shape[0]
+		shuffle_indexes = list(range(m))
+		np.random.shuffle(shuffle_indexes)
+		train_set_size = int(m * (1 - VALIDATION_SIZE))
+		train_set = (X[shuffle_indexes[:train_set_size]], Y[shuffle_indexes[:train_set_size]])
+		validation_set = (X[shuffle_indexes[train_set_size:]], Y[shuffle_indexes[train_set_size:]])
+		return train_set, validation_set
+
+	def LeanMaxEnt(self, X, Y, X_validation, Y_validation):
 		m = X.shape[0]
 		print(m)
 		best_DNF = None
@@ -92,7 +101,7 @@ class mariano():
 									S[j] = 0
 				all_terms = self.remove_inaccurate_terms(all_terms, X, Y, epsilon, m)
 				readonce = self.createDNF(all_terms)
-			score = readonce.evaluate(X, Y)
+			score = readonce.evaluate(X_validation, Y_validation)
 			if score > best_DNF_score:
 				best_DNF = readonce
 				best_DNF_score = score
@@ -116,10 +125,12 @@ class mariano():
 
 
 	def run(self, train_set, test_set):
+		train_set, validation_set = self.split_date(train_set[0], train_set[1])
 		X_train, Y_train = self.remove_duplicate_samples(train_set)
+		X_validation, Y_validation = self.remove_duplicate_samples(validation_set)
 		X_test, Y_test = self.remove_duplicate_samples(test_set)
 
-		dnf = self.LeanMaxEnt(X_train, Y_train)
+		dnf = self.LeanMaxEnt(X_train, Y_train, X_validation, Y_validation)
 		
 		train_accuracy = dnf.evaluate(X_train, Y_train)
 		print('mariano Train accuracy: {0}'.format(train_accuracy)) 

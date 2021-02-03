@@ -14,7 +14,7 @@ from mariano import *
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
     print("Making result object in the path: {0}".format(result_path))
-    result_object = Result(result_path, IS_TEMP, const_dir=True, extra_to_name='comp_5')
+    result_object = Result(result_path, IS_TEMP, const_dir=True, extra_to_name='comp_6')
 
     print("Start a run for: {0}".format(DNF))        
     run_name = '_'.join([str(i) for i in DNF]) 
@@ -23,10 +23,10 @@ def main():
     noise_size = D - sum(DNF)
 
     all_algorithems = [
-        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True), "Convex NN", 'b', "o"),
-        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True, use_crossentropy=True), "Convex NN CE", 'g', "s"),
-        (lambda: TwoLayerNetwork(R, LR_STA, use_batch=True), "Standard NN", 'r', "^"),
-        (lambda: TwoLayerNetwork(R, LR_STA, use_batch=True, use_crossentropy=True), "Standard NN CE", 'k', "+"),
+        #(lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True), "Convex NN", 'b', "o"),
+        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True, use_crossentropy=True), "Convex NN CE", 'b', "o"),
+        #(lambda: TwoLayerNetwork(R, LR_STA, use_batch=True), "Standard NN", 'r', "^"),
+        (lambda: TwoLayerNetwork(R, LR_STA, use_batch=True, use_crossentropy=True), "Standard NN CE", 'r', "+"),
         (lambda: NTKsvn(R), "NTK svn", 'g', "s"),
         (lambda: mariano(), "mariano", 'm', "H")
     ]
