@@ -8,14 +8,14 @@ TYPE = np.float32
 EXTRA_TO_NANE = ''
 
 ### Target params ###
-D = 9
-DNF = [3,3,3]
+D = 25
+DNF = [3,3,3,4,4,5]
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 100
 TERM_SIZE = 4
 
 ### Hyper params ###
-LR = 1e-4
+LR = 1e-3
 R = 700
 R_SVN = 5000
 SIGMA = 1e-6
@@ -27,9 +27,9 @@ SIGMA_1 = 1
 SIGMA_2 = 1
 
 ### Test params ###
-TEST_SIZE = 500
+TEST_SIZE = 15000
 TRAIN_SIZE = 100
-TRAIN_SIZE_LIST = range(100, 500, 200) 
+TRAIN_SIZE_LIST = list(range(400, 1000, 200)) + list(range(1000, 5500, 500))  + list(range(5500, 12500, 1000)) 
 FULL = False
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
 NUM_OF_RUNNING = 10
