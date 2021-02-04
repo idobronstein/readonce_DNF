@@ -36,9 +36,9 @@ def main():
         test_set = (X_test, Y_test)
 
         #network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
-        #network = TwoLayerNetwork(R, LR_STA, use_batch=True, use_crossentropy=True)
+        network = TwoLayerNetwork(R, LR_STA, use_crossentropy=True)
         #network = NTKNetwork(False, LR, R)
-        network = mariano()
+        #network = mariano()
         #network = NTKsvn(R)
         #network = TwoLayerNetwork(R, LR, use_batch=True, use_crossentropy=True, sigma_1=SIGMA_1, sigma_2=SIGMA_2)
 

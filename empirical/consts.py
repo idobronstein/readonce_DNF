@@ -5,6 +5,8 @@ NEGATIVE = -1
 POSITIVE = 1
 TYPE = np.float32
 
+EXTRA_TO_NANE = ''
+
 ### Target params ###
 D = 9
 DNF = [3,3,3]
@@ -14,7 +16,7 @@ TERM_SIZE = 4
 
 ### Hyper params ###
 LR = 1e-4
-R = 5000
+R = 700
 R_SVN = 5000
 SIGMA = 1e-6
 LR_FIX = 1e-3
@@ -26,15 +28,15 @@ SIGMA_2 = 1
 
 ### Test params ###
 TEST_SIZE = 500
-TRAIN_SIZE = 1000
+TRAIN_SIZE = 100
 TRAIN_SIZE_LIST = range(100, 500, 200) 
 FULL = False
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
-NUM_OF_RUNNING = 1
+NUM_OF_RUNNING = 10
 
 ### Learning ###
 PRINT_STEP_JUMP = 50000
-MAX_STEPS = 2
+MAX_STEPS = 20000000
 CROSSENTROPY_THRESHOLD = 0.01
 HINGELOSS_THRESHOLD = 1e-4
 ATTEMPT_NUM = 3

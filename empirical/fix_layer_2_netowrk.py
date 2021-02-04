@@ -24,11 +24,11 @@ class FixLayerTwoNetwork():
             self.r = r 
             self.W = np.array(SIGMA * np.random.randn(self.r, D), dtype=TYPE)
             self.B = np.zeros([self.r], dtype=TYPE)
-            self.B0 = np.zeros([1], dtype=TYPE)
         else:
             self.r = W_init.shape[0]
             self.W = W_init
             self.B = B_init
+        self.B0 = np.zeros([1], dtype=TYPE)
         self.lr = lr
         self.all_W = [self.W]
         self.all_B = [self.B]
