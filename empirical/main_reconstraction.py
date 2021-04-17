@@ -28,9 +28,8 @@ def main():
             train_set = (X, Y)
             network = FixLayerTwoNetwork(False, LR, R)
             network.run(train_set, train_set)
-            result_object.cluster_graph(network, " - {0}, {1}".format(round_num, train_set_size))
+            result_object.cluster_graph(network, "{0}_{1}- ".format(round_num, train_set_size))
             for prune_factor in PRUNE_FACTOR_RANGE:
-                import IPython; IPython.embed()
                 flag = False
                 above_mean_indexes = find_indexes_above_half_of_max(network, 1, prune_factor)
                 if len(above_mean_indexes) > 0:

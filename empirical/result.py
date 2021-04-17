@@ -37,7 +37,7 @@ class Result():
 
     def create_dir(self, name):
         self.result_dir = os.path.join(self.result_dir, name)
-        if self.const_dir and not os.path.exists(self.result_dir):
+        if not os.path.exists(self.result_dir):
             os.mkdir(self.result_dir)
 
     def enforce_delete_dir(self):
