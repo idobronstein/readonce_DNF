@@ -20,13 +20,15 @@ def main():
     noise_size = D - sum(DNF)
     result_vec = np.zeros([NUM_OF_RUNNING, len(TRAIN_SIZE_LIST)])
 
+    result_object.save_const_file()
+
     for round_num in range(NUM_OF_RUNNING):
         for i, train_set_size in enumerate(TRAIN_SIZE_LIST):
             print("Running round {0} with train set in size {1}".format(round_num, train_set_size))
             X = get_random_init_uniform_samples(train_set_size, D)
             Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
             train_set = (X, Y)
-            network = FixLayerTwoNetwork(False, LR, R)
+            network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
             network.run(train_set, train_set)
             result_object.cluster_graph(network, "{0}_{1}- ".format(round_num, train_set_size))
             for prune_factor in PRUNE_FACTOR_RANGE:

@@ -27,7 +27,7 @@ def main():
         #X = get_random_init_uniform_samples(TRAIN_SIZE, D)
         #Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
         all_combinations = get_all_combinations()
-        X = np.array(random.sample(all_combinations, len(all_combinations) ), dtype=TYPE)
+        X = np.array(random.sample(all_combinations, len(all_combinations)), dtype=TYPE)
         Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
 
         X_test = get_random_init_uniform_samples(TEST_SIZE, D)
