@@ -13,9 +13,9 @@ def main():
     print("Making result object in the path: {0}".format(result_path))
     result_object = Result(result_path, IS_TEMP, extra_to_name='overlap')
 
-    dnf_1 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 1, 1, 1]])
-    dnf_2 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 0, 0]])
-    dnf_3 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 0, 0, 0, 0, 0, 0], [0, 1, 1, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 1, 1, 0] , [0, 0, 0, 0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1, 0, 0, 0]])
+    dnf_1 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1]])
+    dnf_2 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0, 0]])
+    dnf_3 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 0, 0]])
     all_DNF = [dnf_1]
     result_vec = result_vec = np.zeros([len(all_DNF), NUM_OF_RUNNING, len(TRAIN_SIZE_LIST)])
 
@@ -29,7 +29,7 @@ def main():
                 X = get_random_init_non_uniform_samples(train_set_size, 0.9, D)
                 Y = np.array([dnf.get_label(x) for x in X], dtype=TYPE)
                 train_set = (X, Y)
-                network = FixLayerTwoNetwork(False, LR, R)
+                network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
                 network.run(train_set, train_set)
                 for prune_factor in PRUNE_FACTOR_RANGE:
                     flag = False
@@ -46,8 +46,8 @@ def main():
                                 break
                         if flag:
                             break
-                import IPython; IPython.embed()
                 result_object.save_result_to_pickle('result.pkl', result_vec)
+    import ipdb; ipdb.set_trace()
     result_vec_mean = np.mean(result_vec, axis=0)
     result_object.save_reconstraction_graph(result_vec_mean)
     

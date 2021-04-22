@@ -8,14 +8,14 @@ TYPE = np.float32
 EXTRA_TO_NANE = ''
 
 ### Target params ###
-D = 14
-DNF = [3,4,4]
+D = 9
+DNF = [3,3,3]
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 100
 TERM_SIZE = 4
 
 ### Hyper params ###
-LR = 1e-4
+LR = 1e-3
 R = 700
 R_SVN = 5000
 SIGMA = 1e-6
@@ -29,17 +29,17 @@ SIGMA_2 = 1
 ### Test params ###
 TEST_SIZE = 15000
 TRAIN_SIZE = 100
-TRAIN_SIZE_LIST = list(range(2000, 2200, 200)) 
+TRAIN_SIZE_LIST = list(range(40, 160, 20)) + list(range(160, 600, 40))  + list(range(600, 2260, 100))
 FULL = False
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
-NUM_OF_RUNNING = 5
+NUM_OF_RUNNING = 100
 
 ### Learning ###
 PRINT_STEP_JUMP = 5000
 MAX_STEPS = 100
-CROSSENTROPY_THRESHOLD = 0.005
-HINGELOSS_THRESHOLD = 1e-4
-ATTEMPT_NUM = 3
+CROSSENTROPY_THRESHOLD = 0.02
+HINGELOSS_THRESHOLD = 1e-3
+ATTEMPT_NUM = 100
 
 ### After learning ###
 PRUNE_FACTOR_RANGE = np.arange(0.1, 1, 0.1)
@@ -53,7 +53,7 @@ BINARY_THRESHOLD = 127
 BATCH_SIZE = 64
 
 ### Result ###
-IS_TEMP = True
+IS_TEMP = False
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
 CONST_FILE_NAME = "consts.py"
