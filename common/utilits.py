@@ -95,6 +95,26 @@ def check_reconstraction(network, readonce, noize_size, reconstraction_factor_we
 		return False
 	return True
 
+def check_reconstraction_per_nueron(network, readonce, noize_size):
+	terms_flag = [False] * len(readonce.DNF)
+	for i in range(network.r):
+		flag = False
+		for reconstraction_factor in RECONSTRACTION_FACTOR_RANGE:
+			reconstraction_nueron = reconstraction(network, i, 1, reconstraction_factor)
+			for j, term in enumerate(readonce.DNF):
+				term = np.pad(term, [0, noize_size], 'constant', constant_values=(0))
+				if np.array_equal(term, reconstraction_nueron):
+					flag = True
+					terms_flag[j] = True
+			if flag:
+				break
+		if not flag:
+			return False
+	if False in terms_flag:
+		return False
+	return True
+
+
 def calc_bais_threshold(w, readonce, noize_size, D):
     value = 0
     padded_terms = [np.pad(term, [0, noize_size], 'constant', constant_values=(0)) for term in readonce.DNF]

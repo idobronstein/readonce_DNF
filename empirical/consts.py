@@ -29,10 +29,10 @@ SIGMA_2 = 1
 ### Test params ###
 TEST_SIZE = 15000
 TRAIN_SIZE = 100
-TRAIN_SIZE_LIST = list(range(40, 160, 20)) + list(range(160, 600, 40))  + list(range(600, 2260, 100))
+TRAIN_SIZE_LIST = list(range(40, 80, 20)) 
 FULL = False
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
-NUM_OF_RUNNING = 100
+NUM_OF_RUNNING = 2
 
 ### Learning ###
 PRINT_STEP_JUMP = 5000
@@ -42,8 +42,8 @@ HINGELOSS_THRESHOLD = 1e-3
 ATTEMPT_NUM = 100
 
 ### After learning ###
-PRUNE_FACTOR_RANGE = np.arange(0.1, 1, 0.1)
-RECONSTRACTION_FACTOR_RANGE = np.arange(0.1, 1, 0.1)
+PRUNE_FACTOR_RANGE = np.arange(0, 1, 0.1)
+RECONSTRACTION_FACTOR_RANGE = np.arange(0, 1, 0.2)
 
 ### MNIST ###
 POSITIVE_NUMBERS = [2,4]

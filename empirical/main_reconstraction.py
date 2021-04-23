@@ -39,16 +39,16 @@ def main():
                     B_prone = network.B[above_mean_indexes]
                     prone_network = FixLayerTwoNetwork(False, LR, W_init=W_prone, B_init=B_prone)    
                     for reconstraction_factor in RECONSTRACTION_FACTOR_RANGE:
-                        if check_reconstraction(prone_network, readonce, noise_size, 1, reconstraction_factor):
-                            print("Reconstraction seecced with prune_factor: {0} and reconstraction_factor: {1}".format(prune_factor, reconstraction_factor))
+                        if check_reconstraction_per_nueron(prone_network, readonce, noise_size):
+                            print("Reconstraction seecced")
                             result_vec[round_num][i] = 1
                             flag = True
                             break
                     if flag:
                         break
-            result_object.save_result_to_pickle('result.pkl', result_vec)
-    #result_vec_mean = np.mean(result_vec, axis=0)
-    #result_object.save_reconstraction_graph(result_vec_mean)
+            result_object.save_result_to_pickle('result.pkl', np.mean(result_vec))
+    result_vec_mean = np.mean(result_vec, axis=0)
+    result_object.save_reconstraction_graph(result_vec_mean)
     
     
 main() 
