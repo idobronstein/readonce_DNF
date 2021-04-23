@@ -21,7 +21,7 @@ def main():
     result_object.create_dir(run_name)
     #readonce = ReadOnceDNF(DNF)
     #noise_size = D - sum(DNF)
-    readonce = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0],  [0, 1, 1, 1, 1, 0, 0, 0]])
+    readonce = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0],  [0, 0, 1, 1, 1, 1, 0, 0]])
     for round_num in range(NUM_OF_RUNNING):
         print("Running round {0} with train set in size {1}".format(round_num, TRAIN_SIZE))
         #X = get_random_init_uniform_samples(TRAIN_SIZE, D)

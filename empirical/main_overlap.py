@@ -16,7 +16,7 @@ def main():
     dnf_1 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1]])
     dnf_2 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0, 0]])
     dnf_3 = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 0, 0]])
-    all_DNF = [dnf_1]
+    all_DNF = [dnf_1, dnf_2, dnf_3]
     result_vec = result_vec = np.zeros([len(all_DNF), NUM_OF_RUNNING, len(TRAIN_SIZE_LIST)])
 
     for j, dnf in enumerate(all_DNF):

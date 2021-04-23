@@ -5,7 +5,7 @@ from utilits import *
 
 class FixLayerTwoNetwork():
 
-    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, use_batch=False, use_crossentropy=False):
+    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, use_batch=False, use_crossentropy=True):
         assert epsilon_init or (not epsilon_init and r > 0) or (W_init is not None and B_init is not None)
         # init graph
         if epsilon_init:

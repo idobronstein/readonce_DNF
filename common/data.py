@@ -77,10 +77,20 @@ def generate_all_dnfs():
         all_dnfs.append([dnf, str(number_of_terms_with_index)] + list(preset_options[i]))
     return all_dnfs
 
+def generate_dnfs_with_2_terms_and_increase_overlap(term_size):
+    preset_options = [['b', "o"],['g', "s"],['r', "^"],['k', "+"],['g', "s"],['c', "d"],['m', "H"]]
+    all_dnfs = []
+    for i in range(term_size):
+        all_terms = np.array([[1] * term_size + [0] * term_size, [0] * (term_size - i) + [1] * term_size + [0] * i], dtype=TYPE)
+        print(all_terms)
+        dnf = ReadOnceDNF(specifiec_DNF=all_terms)
+        all_dnfs.append([dnf, str(i)] + list(preset_options[i]))
+    return all_dnfs
+
 class ReadOnceDNF():
 
     def __init__(self, partition=[], specifiec_DNF=None):
-        if specifiec_DNF:
+        if specifiec_DNF is not None:
             self.DNF = specifiec_DNF
         else:
             self.DNF = []

@@ -8,7 +8,7 @@ TYPE = np.float32
 EXTRA_TO_NANE = ''
 
 ### Target params ###
-D = 9
+D = 15
 DNF = [3,3,3]
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 100
@@ -29,14 +29,14 @@ SIGMA_2 = 1
 ### Test params ###
 TEST_SIZE = 15000
 TRAIN_SIZE = 100
-TRAIN_SIZE_LIST = list(range(40, 80, 20)) 
+TRAIN_SIZE_LIST = list(range(100, 1050, 50)) + list(range(1000, 2200, 200)) + list(range(2000, 10000, 500))
 FULL = False
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
-NUM_OF_RUNNING = 2
+NUM_OF_RUNNING = 1
 
 ### Learning ###
 PRINT_STEP_JUMP = 5000
-MAX_STEPS = 100
+MAX_STEPS = 1000000
 CROSSENTROPY_THRESHOLD = 0.02
 HINGELOSS_THRESHOLD = 1e-3
 ATTEMPT_NUM = 100

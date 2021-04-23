@@ -20,7 +20,7 @@ def main():
     run_name = '_'.join([str(i) for i in DNF]) 
     result_object.create_dir(run_name)
 
-    all_readonce = generate_all_dnfs()
+    all_readonce = generate_dnfs_with_2_terms_and_increase_overlap(5)
     #import ipdb; ipdb.set_trace()
     result_vec, round_num, train_list_location = result_object.load_state(all_readonce, TRAIN_SIZE_LIST)
 
@@ -31,15 +31,18 @@ def main():
             set_size = TRAIN_SIZE_LIST[i]
             #X = np.array(get_all_combinations(), dtype=TYPE)
             X = get_random_init_uniform_samples(set_size, D)
-            X_test = get_random_init_uniform_samples(TEST_SIZE, D)
+            #X_test = get_random_init_uniform_samples(TEST_SIZE, D)
+            X_test = np.array(get_all_combinations(), dtype=TYPE)
             for j, readonce in enumerate(all_readonce):
                 print('Running DNF num: "{0}" with train set in size: {1}'.format(j, set_size))
+                #import ipdb; ipdb.set_trace()
                 Y = np.array([readonce[0].get_label(x) for x in X], dtype=TYPE)
                 Y_test = np.array([readonce[0].get_label(x) for x in X_test], dtype=TYPE)
                 train_set = (X, Y)
                 test_set = (X_test, Y_test)
-                network = FixLayerTwoNetwork(False, LR, R)
+                network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
                 train_result, dnf_test_result= network.run(train_set, test_set)
+                result_object.cluster_graph(network, "{0}_{1}_{2}- ".format(k, set_size,j))
                 result_vec[k][j][i] = dnf_test_result 
                 result_object.save_state(result_vec, k, i)
         train_list_location = 0 
