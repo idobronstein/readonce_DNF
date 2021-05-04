@@ -87,6 +87,13 @@ def generate_dnfs_with_2_terms_and_increase_overlap(term_size):
         all_dnfs.append([dnf, str(i)] + list(preset_options[i]))
     return all_dnfs
 
+def get_parity_label(x):
+    res = 1 
+    for i in x:
+        res = res * i
+    return res
+
+
 class ReadOnceDNF():
 
     def __init__(self, partition=[], specifiec_DNF=None):

@@ -42,14 +42,16 @@ class FixLayerTwoNetwork():
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1])})
             W, B, B0 = sess.run([self.W_tf, self.B_tf, self.B0_tf])
-            #self.all_W.append(W.T)
-            #self.all_B.append(B)
-            #self.all_B0.append(B0)
+            self.all_W.append(W.T)
+            self.all_B.append(B)
+            self.all_B0.append(B0)
             if (np.sum(np.abs(current_gradient[0][0])) == 0 and np.sum(np.abs(current_gradient[1][0])) == 0) or ((self.use_crossentropy and train_loss <= CROSSENTROPY_THRESHOLD) or (not self.use_crossentropy and train_loss <= 0)):
                 print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
                 break 
             if step % PRINT_STEP_JUMP == 0:
                 print('step: {0}, loss: {1}, accuracy: {2}'.format(step, train_loss, train_acc)) 
+            if result_object:
+                result_object.cluster_graph(self, "{0}".format(step))
         print("NN Train accuracy: {0}".format(train_acc)) 
         return train_loss
 

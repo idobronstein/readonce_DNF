@@ -19,9 +19,9 @@ def main():
     print("Start a run for: {0}".format(DNF))        
     run_name = '_'.join([str(i) for i in DNF]) 
     result_object.create_dir(run_name)
-    #readonce = ReadOnceDNF(DNF)
+    readonce = ReadOnceDNF(DNF)
     #noise_size = D - sum(DNF)
-    readonce = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 0, 0, 0, 0],  [0, 0, 1, 1, 1, 1, 0, 0]])
+    #readonce = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 1, 1, 0, 0, 0, 0],  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]])
     for round_num in range(NUM_OF_RUNNING):
         print("Running round {0} with train set in size {1}".format(round_num, TRAIN_SIZE))
         #X = get_random_init_uniform_samples(TRAIN_SIZE, D)
@@ -35,7 +35,7 @@ def main():
         train_set = (X, Y)
         test_set = (X_test, Y_test)
 
-        network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
+        network = FixLayerTwoNetwork(True, LR, R, use_crossentropy=True)
         #network = TwoLayerNetwork(R, LR_STA, use_crossentropy=True)
         #network = NTKNetwork(False, LR, R)
         #network = mariano()
@@ -44,7 +44,6 @@ def main():
 
         network.run(train_set, test_set)
 
-        
-
-        import IPython; IPython.embed()     
+        import IPython; IPython.embed()
+    
 main() 

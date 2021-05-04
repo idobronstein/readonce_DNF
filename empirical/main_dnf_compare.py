@@ -14,13 +14,14 @@ from mariano import *
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
     print("Making result object in the path: {0}".format(result_path))
-    result_object = Result(result_path, IS_TEMP, extra_to_name='dnf_comp', const_dir=True)
+    result_object = Result(result_path, IS_TEMP, extra_to_name='dnf_comp_3', const_dir=True)
 
     print("Start a run for: {0}".format(DNF))        
     run_name = '_'.join([str(i) for i in DNF]) 
     result_object.create_dir(run_name)
 
-    all_readonce = generate_dnfs_with_2_terms_and_increase_overlap(5)
+    all_readonce = [["", "parity",'b', "o"]]
+    #all_readonce = generate_dnfs_with_2_terms_and_increase_overlap( )
     #import ipdb; ipdb.set_trace()
     result_vec, round_num, train_list_location = result_object.load_state(all_readonce, TRAIN_SIZE_LIST)
 
@@ -36,8 +37,10 @@ def main():
             for j, readonce in enumerate(all_readonce):
                 print('Running DNF num: "{0}" with train set in size: {1}'.format(j, set_size))
                 #import ipdb; ipdb.set_trace()
-                Y = np.array([readonce[0].get_label(x) for x in X], dtype=TYPE)
-                Y_test = np.array([readonce[0].get_label(x) for x in X_test], dtype=TYPE)
+                #Y = np.array([readonce[0].get_label(x) for x in X], dtype=TYPE)
+                #Y_test = np.array([readonce[0].get_label(x) for x in X_test], dtype=TYPE)
+                Y = np.array([get_parity_label(x) for x in X], dtype=TYPE)
+                Y_test = np.array([get_parity_label(x) for x in X_test], dtype=TYPE)
                 train_set = (X, Y)
                 test_set = (X_test, Y_test)
                 network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)

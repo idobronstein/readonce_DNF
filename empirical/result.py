@@ -134,7 +134,7 @@ class Result():
         plt.close(fig)
 
 
-    def comp_save_graph(self, result_vec, all_algorithems, train_size_list):
+    def comp_save_graph(self, result_vec, all_algorithems, train_size_list, extra_to_name=''):
         plt.rcParams.update({'font.size': 26, 'figure.subplot.left': 0.25, 'figure.subplot.right': 0.95, 'figure.subplot.bottom': 0.20, 'figure.subplot.top': 0.97})
         plt.rcParams.update({'axes.labelsize':'large', 'xtick.labelsize':'large', 'ytick.labelsize':'large','legend.fontsize': 'medium'})
         result_vec = 100 * result_vec
@@ -153,7 +153,7 @@ class Result():
         ax.xaxis.set_label_coords(0.5, -0.15)
         ax.set_ylabel('Accuracy (%)')
         ax.set_ylim(65, 101)
-        fig.savefig(os.path.join(self.result_dir, "comparsion.png"))
+        fig.savefig(os.path.join(self.result_dir, "comparsion{0}.png".format(extra_to_name)))
         plt.close(fig)
 
     def save_state(self, result_vec, round_num, train_list_location):
@@ -162,8 +162,8 @@ class Result():
         with open(state_path, 'wb+') as f:
             pickle.dump((result_vec, round_num, train_list_location), f) 
 
-    def load_state(self, all_algorithems, train_size_list):
-        state_path = os.path.join(self.result_dir, STATE_PATH)
+    def load_state(self, all_algorithems, train_size_list, extra_to_name=""):
+        state_path = os.path.join(self.result_dir, STATE_PATH + extra_to_name)
         if os.path.isfile(state_path):
             with open(state_path, 'rb') as f:
                 all_state = pickle.load(f) 
