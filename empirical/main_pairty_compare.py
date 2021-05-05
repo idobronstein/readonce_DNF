@@ -51,7 +51,7 @@ def main():
                 result_vec_test[k][j][i] = dnf_test_result 
                 result_vec_train[k][j][i] = train_result 
                 result_object.save_state(result_vec_test, k, i)
-                result_object.save_state(result_vec_train, k, i)
+                result_object.save_state(result_vec_train, k, i, "_train")
         train_list_location = 0 
     result_object.comp_save_graph(result_vec_test, all_readonce, TRAIN_SIZE_LIST)
     result_object.comp_save_graph(result_vec_train, all_readonce, TRAIN_SIZE_LIST, "_train")
