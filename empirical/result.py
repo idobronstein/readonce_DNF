@@ -156,9 +156,9 @@ class Result():
         fig.savefig(os.path.join(self.result_dir, "comparsion{0}.png".format(extra_to_name)))
         plt.close(fig)
 
-    def save_state(self, result_vec, round_num, train_list_location):
+    def save_state(self, result_vec, round_num, train_list_location, extra_to_name=""):
         print("Saving state for: round_num - {0}, train list location - {1}".format(round_num, train_list_location))
-        state_path = os.path.join(self.result_dir, STATE_PATH)
+        state_path = os.path.join(self.result_dir, STATE_PATH + extra_to_name)
         with open(state_path, 'wb+') as f:
             pickle.dump((result_vec, round_num, train_list_location), f) 
 
