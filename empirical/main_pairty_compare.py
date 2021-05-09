@@ -41,8 +41,8 @@ def main():
                     Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
                     Y_test = np.array([readonce.get_label(x) for x in X_test], dtype=TYPE)
                 else:
-                    Y = np.array([get_parity_label(x) for x in X], dtype=TYPE)
-                    Y_test = np.array([get_parity_label(x) for x in X_test], dtype=TYPE)
+                    Y = np.array([get_parity_label(x[:PARITY_SIZE]) for x in X], dtype=TYPE)
+                    Y_test = np.array([get_parity_label(x[:PARITY_SIZE]) for x in X_test], dtype=TYPE)
                 train_set = (X, Y)
                 test_set = (X_test, Y_test)
                 network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
