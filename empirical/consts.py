@@ -9,10 +9,11 @@ EXTRA_TO_NANE = ''
 
 ### Target params ###
 D = 64
-DNF = [4]*16
+DNF = [8]*8
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 100
 TERM_SIZE = 4
+PARITY_SIZE = 8
 
 ### Hyper params ###
 LR = 1e-3
@@ -27,7 +28,7 @@ SIGMA_1 = 1
 SIGMA_2 = 1
 
 ### Test params ###
-TEST_SIZE = 700
+TEST_SIZE = 25000
 TRAIN_SIZE = 100
 TRAIN_SIZE_LIST = list(range(800, 4000, 200)) + list(range(4000, 8500, 500))  +  list(range(8500, 13500, 1000))
 FULL = False

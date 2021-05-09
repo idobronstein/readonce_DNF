@@ -28,7 +28,7 @@ def main():
             X = get_random_init_uniform_samples(train_set_size, D)
             Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
             train_set = (X, Y)
-            network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True)
+            network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, use_batch=True)
             network.run(train_set, train_set)
             result_object.cluster_graph(network, "{0}_{1}- ".format(round_num, train_set_size))
             for prune_factor in PRUNE_FACTOR_RANGE:

@@ -47,7 +47,7 @@ def main():
         test_set = (X_test, Y_test)
         train_list_size = TRAIN_SIZE_LIST
 
-    result_vec, round_num, train_list_location = result_object.load_state(all_algorithems, train_list_size)
+    w, round_num, train_list_location = result_object.load_state(all_algorithems, train_list_size)
 
     for k in range(round_num, NUM_OF_RUNNING):
         for i in range(train_list_location, len(train_list_size)):
