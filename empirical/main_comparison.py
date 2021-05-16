@@ -25,7 +25,7 @@ def main():
     all_algorithems = [
         #(lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True), "Convex NN", 'b', "o"),
         (lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True, use_crossentropy=True, xavier_init=True), "Convex, Standard init", 'b', "o", True),
-        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, sigma=SIGMA_LARGE, use_batch=True, use_crossentropy=True, xavier_init=False), "Convex, Standard init", 'g', "s", True),
+        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, sigma=SIGMA_LARGE, use_batch=True, use_crossentropy=True, xavier_init=False), "Convex, Large init", 'g', "s", True),
         (lambda: TwoLayerNetwork(R, LR_STA, use_batch=True, use_crossentropy=True, xavier_init=True), "Standard, Standard  init", 'r', "+", False),
         #(lambda: NTKsvn(R), "NTK svn", 'g', "s"),
         (lambda: mariano(), "mariano", 'm', "H", False)

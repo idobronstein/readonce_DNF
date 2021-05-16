@@ -55,7 +55,7 @@ BINARY_THRESHOLD = 127
 BATCH_SIZE = 32
 
 ### Result ###
-IS_TEMP = True
+IS_TEMP = False
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
 CONST_FILE_NAME = "consts.py"
