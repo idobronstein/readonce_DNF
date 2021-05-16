@@ -11,7 +11,7 @@ from two_layer_network import *
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
     print("Making result object in the path: {0}".format(result_path))
-    result_object = Result(result_path, IS_TEMP, extra_to_name='reconstraction')
+    result_object = Result(result_path, IS_TEMP, extra_to_name='best_reconstraction')
 
     print("Start a run for: {0}".format(DNF))        
     run_name = '_'.join([str(i) for i in DNF]) 
@@ -28,7 +28,7 @@ def main():
             X = get_random_init_uniform_samples(train_set_size, D)
             Y = np.array([readonce.get_label(x) for x in X], dtype=TYPE)
             train_set = (X, Y)
-            network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, use_batch=True)
+            network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, use_batch=True, xavier_init=True)
             network.run(train_set, train_set)
             result_object.cluster_graph(network, "{0}_{1}- ".format(round_num, train_set_size))
             for prune_factor in PRUNE_FACTOR_RANGE:
