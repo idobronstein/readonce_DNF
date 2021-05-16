@@ -24,11 +24,11 @@ def main():
 
     all_algorithems = [
         #(lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True), "Convex NN", 'b', "o"),
-        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True, use_crossentropy=True), "Convex NN CE", 'b', "o"),
-        #(lambda: TwoLayerNetwork(R, LR_STA, use_batch=True), "Standard NN", 'r', "^"),
-        (lambda: TwoLayerNetwork(R, LR_STA, use_batch=True, use_crossentropy=True), "Standard NN CE", 'r', "+"),
-        (lambda: NTKsvn(R), "NTK svn", 'g', "s"),
-        (lambda: mariano(), "mariano", 'm', "H")
+        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, use_batch=True, use_crossentropy=True, xavier_init=True), "Convex, Standard init", 'b', "o", True),
+        (lambda: FixLayerTwoNetwork(False, LR_FIX, R, sigma=SIGMA_LARGE, use_batch=True, use_crossentropy=True, xavier_init=False), "Convex, Standard init", 'g', "s", True),
+        (lambda: TwoLayerNetwork(R, LR_STA, use_batch=True, use_crossentropy=True, xavier_init=True), "Standard, Standard  init", 'r', "+", False),
+        #(lambda: NTKsvn(R), "NTK svn", 'g', "s"),
+        (lambda: mariano(), "mariano", 'm', "H", False)
     ]
     
 
@@ -47,7 +47,7 @@ def main():
         test_set = (X_test, Y_test)
         train_list_size = TRAIN_SIZE_LIST
 
-    w, round_num, train_list_location = result_object.load_state(all_algorithems, train_list_size)
+    result_vec, round_num, train_list_location = result_object.load_state(all_algorithems, train_list_size)
 
     for k in range(round_num, NUM_OF_RUNNING):
         for i in range(train_list_location, len(train_list_size)):
@@ -63,6 +63,8 @@ def main():
                 print('Running algorithem: "{0}" with train set in size: {1}'.format(algorithem[1], set_size))
                 network = algorithem[0]()
                 train_result, algorithem_result = network.run(train_set, test_set) 
+                if algorithem[4]:
+                    result_object.cluster_graph(network, "{0}_{1}_{2} - ".format(k, set_size, algorithem[1]))
                 result_vec[k][j][i] = algorithem_result 
                 result_object.save_state(result_vec, k, i)
         train_list_location = 0 

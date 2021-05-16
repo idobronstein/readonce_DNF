@@ -5,7 +5,7 @@ from utilits import *
 
 class TwoLayerNetwork():
 
-    def __init__(self, r ,lr, W_init=None, U_init=None, B_W_init=None, B_U_init=None, sigma_1=SIGMA, sigma_2=SIGMA, use_batch=False, use_crossentropy=False):
+    def __init__(self, r ,lr, W_init=None, U_init=None, B_W_init=None, B_U_init=None, sigma_1=SIGMA, sigma_2=SIGMA, use_batch=False, use_crossentropy=False, xavier_init=False):
         print("Initialize two layer network with gaussin initialization")
         if W_init is not None:
             self.W = W_init
@@ -15,8 +15,12 @@ class TwoLayerNetwork():
             self.r = W_init.shape[0]
         else:
             self.r = r 
-            self.W = np.array(sigma_1 * np.random.randn(self.r, D), dtype=TYPE)
-            self.U = np.array(sigma_2 * np.random.randn(self.r), dtype=TYPE)
+            if xavier_init:
+                self.W = None
+                self.U = None
+            else:
+                self.W = np.array(sigma_1 * np.random.randn(self.r, D), dtype=TYPE)
+                self.U = np.array(sigma_2 * np.random.randn(self.r), dtype=TYPE)
             self.B_W = np.zeros([self.r], dtype=TYPE)
             self.B_U = np.zeros([1], dtype=TYPE)
         self.lr = lr
@@ -76,8 +80,12 @@ class TwoLayerNetwork():
             global_step = tf.Variable(0, trainable=False, name='global_step')
             self.X = tf.placeholder(TYPE, name='X', shape=[None, D])
             self.Y = tf.placeholder(TYPE, name='Y', shape=[None])
-            self.W_tf = tf.get_variable('W', initializer=self.W.T)
-            self.U_tf = tf.get_variable('U', initializer=self.U)
+            if self.W is not None:
+                self.W_tf = tf.get_variable('W', initializer=self.W.T)
+                self.U_tf = tf.get_variable('U', initializer=self.U)
+            else:
+                self.W_tf = tf.get_variable('W', shape=[D, self.r])
+                self.U_tf = tf.get_variable('U', shape=[self.r])
             self.B_W_tf = tf.get_variable('B_W', initializer=self.B_W)
             self.B_U_tf = tf.get_variable('B_U', initializer=self.B_U)
             

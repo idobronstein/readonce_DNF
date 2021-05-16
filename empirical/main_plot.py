@@ -35,7 +35,7 @@ def main():
         train_set = (X, Y)
         test_set = (X_test, Y_test)
 
-        network = FixLayerTwoNetwork(True, LR, R, use_crossentropy=True)
+        network = FixLayerTwoNetwork(True, LR, R, use_crossentropy=True, use_batch=True, xavier_init=True)
         #network = TwoLayerNetwork(R, LR_STA, use_crossentropy=True)
         #network = NTKNetwork(False, LR, R)
         #network = mariano()

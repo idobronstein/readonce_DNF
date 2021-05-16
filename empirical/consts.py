@@ -8,8 +8,8 @@ TYPE = np.float32
 EXTRA_TO_NANE = ''
 
 ### Target params ###
-D = 64
-DNF = [8]*8
+D = 9
+DNF = [3,3,3]
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 100
 TERM_SIZE = 4
@@ -17,9 +17,10 @@ PARITY_SIZE = 8
 
 ### Hyper params ###
 LR = 1e-3
-R = 5000
+R = 2000
 R_SVN = 5000
 SIGMA = 1e-6
+SIGMA_LARGE = 1e-1
 LR_FIX = 1e-3
 LR_STA = 1e-2
 
@@ -28,17 +29,17 @@ SIGMA_1 = 1
 SIGMA_2 = 1
 
 ### Test params ###
-TEST_SIZE = 25000
-TRAIN_SIZE = 100
-TRAIN_SIZE_LIST = list(range(800, 4000, 200)) + list(range(4000, 8500, 500))  +  list(range(8500, 13500, 1000))
-FULL = False
+TEST_SIZE = -1
+TRAIN_SIZE = -1
+TRAIN_SIZE_LIST = list(range(40, 160, 20)) + list(range(160, 600, 40))  + list(range(600, 2260, 100))
+FULL = True
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
-NUM_OF_RUNNING = 10
+NUM_OF_RUNNING = 100
 
 ### Learning ###
-PRINT_STEP_JUMP = 5000
+PRINT_STEP_JUMP = 50000
 MAX_STEPS = 2000000
-CROSSENTROPY_THRESHOLD = 0.01
+CROSSENTROPY_THRESHOLD = 0.02
 HINGELOSS_THRESHOLD = 1e-3
 ATTEMPT_NUM = 100
 
@@ -51,10 +52,10 @@ POSITIVE_NUMBERS = [2,4]
 NEGATIVE_NUMBERS = [1,3]
 TRAIN_SET_PRECENT = 0.8
 BINARY_THRESHOLD = 127
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 
 ### Result ###
-IS_TEMP = False
+IS_TEMP = True
 TEMP_RESULT_PATH = "tmp"
 GENERAL_RESULT_PATH = "results"
 CONST_FILE_NAME = "consts.py"

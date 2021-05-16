@@ -121,17 +121,17 @@ class Result():
         fig.savefig(os.path.join(self.result_dir, add_to_name + "cluster_w.png"), bbox_inches="tight")
         plt.close(fig)
 
-        # Plot B graph
-        fig = pylab.figure()
-        axmatrix = fig.add_axes([0.3,0.1,0.6,0.8])
-        weights_by_leaves = np.array([network.B]).T[leaves_index,:]
-        im = axmatrix.matshow(weights_by_leaves, aspect='auto', origin='lower')
-        axmatrix.set_xticks([])
-        axmatrix.set_yticks([])
-        axcolor = fig.add_axes([0.91,0.1,0.02,0.8])
-        pylab.colorbar(im, cax=axcolor)
-        fig.savefig(os.path.join(self.result_dir, add_to_name+ "cluster_b.png"), bbox_inches="tight")
-        plt.close(fig)
+        ## Plot B graph
+        #fig = pylab.figure()
+        #axmatrix = fig.add_axes([0.3,0.1,0.6,0.8])
+        #weights_by_leaves = np.array([network.B]).T[leaves_index,:]
+        #im = axmatrix.matshow(weights_by_leaves, aspect='auto', origin='lower')
+        #axmatrix.set_xticks([])
+        #axmatrix.set_yticks([])
+        #axcolor = fig.add_axes([0.91,0.1,0.02,0.8])
+        #pylab.colorbar(im, cax=axcolor)
+        #fig.savefig(os.path.join(self.result_dir, add_to_name+ "cluster_b.png"), bbox_inches="tight")
+        #plt.close(fig)
 
 
     def comp_save_graph(self, result_vec, all_algorithems, train_size_list, extra_to_name=''):

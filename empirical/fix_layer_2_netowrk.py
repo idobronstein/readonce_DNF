@@ -5,24 +5,27 @@ from utilits import *
 
 class FixLayerTwoNetwork():
 
-    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, use_batch=False, use_crossentropy=True):
+    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, use_batch=False, use_crossentropy=True, xavier_init=False, sigma=SIGMA):
         assert epsilon_init or (not epsilon_init and r > 0) or (W_init is not None and B_init is not None)
         # init graph
         if epsilon_init:
             print("Initialize fix layer two network with epsilon initialization")
             all_combinations = get_all_combinations()
             if r > 0:
-                self.W = np.array(get_random_init_uniform_samples(r), dtype=TYPE) * SIGMA
+                self.W = np.array(get_random_init_uniform_samples(r), dtype=TYPE) * sigma
                 self.r = r
             else:
-                self.W = np.array(all_combinations, dtype=TYPE) * SIGMA
+                self.W = np.array(all_combinations, dtype=TYPE) * sigma
                 self.r = 2 ** D
             self.W = self.W
             self.B = np.zeros([self.r], dtype=TYPE)
         elif r > 0:
             print("Initialize fix layer two network with gaussin initialization")
             self.r = r 
-            self.W = np.array(SIGMA * np.random.randn(self.r, D), dtype=TYPE)
+            if xavier_init:
+                self.W = None
+            else:
+                self.W = np.array(sigma * np.random.randn(self.r, D), dtype=TYPE)
             self.B = np.zeros([self.r], dtype=TYPE) 
         else:
             self.r = W_init.shape[0]
@@ -96,7 +99,10 @@ class FixLayerTwoNetwork():
             global_step = tf.Variable(0, trainable=False, name='global_step')
             self.X = tf.placeholder(TYPE, name='X', shape=[None, D])
             self.Y = tf.placeholder(TYPE, name='Y', shape=[None])
-            self.W_tf = tf.get_variable('W', initializer=self.W.T)
+            if self.W is not None:
+                self.W_tf = tf.get_variable('W', initializer=self.W.T)
+            else:
+                self.W_tf = tf.get_variable('W', shape=[D, self.r])
             self.B_tf = tf.get_variable('B_W', initializer=self.B)
             self.B0_tf = tf.get_variable('B_0', initializer=self.B0)
             
@@ -126,6 +132,7 @@ class FixLayerTwoNetwork():
             
             # set optimizer
             optimizer = tf.train.GradientDescentOptimizer(self.lr)
+            #optimizer = tf.train.AdamOptimizer(self.lr)
             self.gradient = optimizer.compute_gradients(self.loss)
             self.train_op = optimizer.apply_gradients(self.gradient, global_step=global_step)
 
