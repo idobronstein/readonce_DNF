@@ -14,7 +14,7 @@ from mariano import *
 def main():
     result_path = TEMP_RESULT_PATH if IS_TEMP else GENERAL_RESULT_PATH
     print("Making result object in the path: {0}".format(result_path))
-    result_object = Result(result_path, IS_TEMP, const_dir=True, extra_to_name='new_comp_' + EXTRA_TO_NANE)
+    result_object = Result(result_path, IS_TEMP, const_dir=True, extra_to_name='best_comp_' + EXTRA_TO_NANE)
 
     print("Start a run for: {0}".format(DNF))        
     run_name = '_'.join([str(i) for i in DNF]) 
