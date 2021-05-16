@@ -40,12 +40,12 @@ def main():
         X_full = np.array(all_combinations, dtype=TYPE)
         Y_full = np.array([readonce.get_label(x) for x in X_full], dtype=TYPE)
         test_set = (X_full, Y_full)
-        train_list_size = [len(all_combinations) - i for i in REMOVE_SAMLPE_RANGE]
+        #train_list_size = [len(all_combinations) - i for i in REMOVE_SAMLPE_RANGE]
     else:
         X_test = get_random_init_uniform_samples(TEST_SIZE, D)
         Y_test = np.array([readonce.get_label(x) for x in X_test], dtype=TYPE)
         test_set = (X_test, Y_test)
-        train_list_size = TRAIN_SIZE_LIST
+    train_list_size = TRAIN_SIZE_LIST
 
     result_vec, round_num, train_list_location = result_object.load_state(all_algorithems, train_list_size)
 
