@@ -33,8 +33,8 @@ def main():
             set_size = TRAIN_SIZE_LIST[i]
             #X = np.array(get_all_combinations(), dtype=TYPE)
             X = get_random_init_uniform_samples(set_size, D)
-            #X_test = get_random_init_uniform_samples(TEST_SIZE, D)
-            X_test = np.array(get_all_combinations(), dtype=TYPE)
+            X_test = get_random_init_uniform_samples(TEST_SIZE, D)
+            #X_test = np.array(get_all_combinations(), dtype=TYPE)
             for j in range(2):
                 if j == 0:
                     print('Running DNF with train set in size: {0}'.format(set_size))

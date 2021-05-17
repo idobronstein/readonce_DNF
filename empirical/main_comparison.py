@@ -52,10 +52,7 @@ def main():
     for k in range(round_num, NUM_OF_RUNNING):
         for i in range(train_list_location, len(train_list_size)):
             set_size = train_list_size[i]
-            if FULL:
-                X_train = np.array(random.sample(all_combinations, set_size), dtype=TYPE)
-            else:
-                X_train = get_random_init_uniform_samples(set_size, D)
+            X_train = get_random_init_uniform_samples(set_size, D)
             Y_train = np.array([readonce.get_label(x) for x in X_train], dtype=TYPE)
             train_set = (X_train, Y_train)
             for j in range(len(all_algorithems)):

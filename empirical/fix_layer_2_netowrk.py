@@ -5,7 +5,7 @@ from utilits import *
 
 class FixLayerTwoNetwork():
 
-    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, use_batch=False, use_crossentropy=True, xavier_init=False, sigma=SIGMA):
+    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, B0_init=None, use_batch=False, use_crossentropy=True, xavier_init=False, sigma=SIGMA):
         assert epsilon_init or (not epsilon_init and r > 0) or (W_init is not None and B_init is not None)
         # init graph
         if epsilon_init:
@@ -31,7 +31,10 @@ class FixLayerTwoNetwork():
             self.r = W_init.shape[0]
             self.W = W_init
             self.B = B_init
-        self.B0 = np.zeros([1], dtype=TYPE)
+        if B0_init is None:
+            self.B0 = np.zeros([1], dtype=TYPE)
+        else:
+            self.B0 = B0_init
         self.lr = lr
         self.all_W = [self.W]
         self.all_B = [self.B]
@@ -137,10 +140,10 @@ class FixLayerTwoNetwork():
             self.train_op = optimizer.apply_gradients(self.gradient, global_step=global_step)
 
             with tf.Session() as sess:
+                
                 # init params
                 init = tf.initialize_all_variables()
                 sess.run(init)
-                
                 # train
                 if not just_test:
                     if self.use_batch:
