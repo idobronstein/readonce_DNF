@@ -144,13 +144,15 @@ class FixLayerTwoNetwork():
                 # init params
                 init = tf.initialize_all_variables()
                 sess.run(init)
+                #import IPython; IPython.embed()
                 # train
+                #import IPython; IPython.embed()
                 if not just_test:
                     if self.use_batch:
                         train_loss = self.train_with_batch(train_set, sess, result_object)    
                     else:
                         train_loss = self.train_without_batch(train_set, sess, result_object)
-                    
+
                 test_loss, test_acc = sess.run([self.loss, accuracy_test], {self.X:test_set[0], self.Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
 

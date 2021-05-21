@@ -36,25 +36,25 @@ def main():
         train_set = (X, Y)
         test_set = (X_test, Y_test)
 
-        #recovery_network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, xavier_init=True)
+        
         #network = TwoLayerNetwork(R, LR_STA, use_crossentropy=True)
         #network = NTKNetwork(False, LR, R)
         #network = mariano()
         #network = NTKsvn(R)
         #network = TwoLayerNetwork(R, LR, use_batch=True, use_crossentropy=True, sigma_1=SIGMA_1, sigma_2=SIGMA_2)
 
-        #recovery_network.run(train_set, test_set)
-
-        #result_object.cluster_graph(recovery_network, "recovery - ")
+        recovery_network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, xavier_init=False)
+        recovery_network.run(train_set, test_set)
+        result_object.cluster_graph(recovery_network, "recovery - ")
 
         X_positive = np.array([x for x in X if readonce.get_label(x) == POSITIVE], dtype=TYPE)
         W_memo = np.zeros([R, D], dtype=TYPE)
-        B_memo = np.ones([R], dtype=TYPE) * (- D + 2)
+        B_memo = np.ones([R], dtype=TYPE) * (- D + 2 - 0.1)
         num_of_positive = X_positive.shape[0]
         for i in range(R):
-            W_memo = X_positive[i % num_of_positive]
+            W_memo[i] = X_positive[i % num_of_positive]
 
-        memo_network = FixLayerTwoNetwork(False, LR, 0, W_init=W_memo, B_init=B_memo, B0_init=np.ones([1], dtype=TYPE), use_crossentropy=True, xavier_init=False)
+        memo_network = FixLayerTwoNetwork(False, LR, 0, W_init=W_memo, B_init=B_memo, B0_init=-1 * np.ones([1], dtype=TYPE), use_crossentropy=True, xavier_init=False)
         memo_network.run(train_set, test_set)
 
         result_object.cluster_graph(memo_network, "memorization - ")
