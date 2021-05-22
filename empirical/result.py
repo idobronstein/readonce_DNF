@@ -156,6 +156,23 @@ class Result():
         fig.savefig(os.path.join(self.result_dir, "comparsion{0}.png".format(extra_to_name)))
         plt.close(fig)
 
+    def dnfs_save_graph(self, result_vec, extra_to_name=''):
+        plt.rcParams.update({'font.size': 24, 'figure.subplot.left': 0.25, 'figure.subplot.right': 0.95, 'figure.subplot.bottom': 0.20, 'figure.subplot.top': 0.97})
+        plt.rcParams.update({'axes.labelsize':'large', 'xtick.labelsize':'large', 'ytick.labelsize':'large','legend.fontsize': 'medium'})
+        result_vec = 100 * result_vec
+        mean = np.mean(result_vec, axis=0).reshape(result_vec.shape[1])
+        std = np.std(result_vec, axis=0).reshape(result_vec.shape[1])
+        fig, ax = plt.subplots()
+        fig.set_size_inches(6.4, 4.8)
+        plt.plot(range(mean.shape[0]), mean, color='b', marker = "o", linewidth=4.0, markersize=10.0)
+        plt.fill_between(range(mean.shape[0]) , mean + std, mean - std, alpha=.2, label='_')
+        ax.set_xlabel('Number of overlap terms')
+        ax.xaxis.set_label_coords(0.5, -0.15)
+        ax.set_ylabel('Accuracy (%)')
+        ax.set_ylim(65, 101)
+        fig.savefig(os.path.join(self.result_dir, "overlap{0}.png".format(extra_to_name)))
+        plt.close(fig)
+
     def save_state(self, result_vec, round_num, train_list_location, extra_to_name=""):
         print("Saving state for: round_num - {0}, train list location - {1}".format(round_num, train_list_location))
         state_path = os.path.join(self.result_dir, STATE_PATH + extra_to_name)

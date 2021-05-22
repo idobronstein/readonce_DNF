@@ -46,6 +46,7 @@ def main():
         recovery_network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, xavier_init=False)
         recovery_network.run(train_set, test_set)
         result_object.cluster_graph(recovery_network, "recovery - ")
+        result_object.save_result_to_pickle("W_reco.pkl", recovery_network.W)
 
         X_positive = np.array([x for x in X if readonce.get_label(x) == POSITIVE], dtype=TYPE)
         W_memo = np.zeros([R, D], dtype=TYPE)
@@ -58,5 +59,5 @@ def main():
         memo_network.run(train_set, test_set)
 
         result_object.cluster_graph(memo_network, "memorization - ")
-    
+        result_object.save_result_to_pickle("W_memo.pkl", memo_network.W)
 main() 

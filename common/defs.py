@@ -15,6 +15,7 @@ import tensorflow.compat.v1 as tf
 from itertools import combinations
 import scipy.cluster.hierarchy as sch
 import matplotlib.pyplot as plt
+from matplotlib.transforms import Bbox
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import logging
