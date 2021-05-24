@@ -13,11 +13,13 @@ def main():
 	result_object = Result(result_path, IS_TEMP, extra_to_name='mnist')
 
 	#train_set, validation_set, test_set = get_db(POSITIVE_NUMBERS, NEGATIVE_NUMBERS)
-	train_set, test_set = get_diabetes()
-	network = FixLayerTwoNetwork(False, LR, R)
-	network.run(train_set, test_set, result_object)
+	train_set, test_set = get_splice_db()
+	#import ipdb; ipdb.set_trace()
+	network = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, use_batch=True)
+	network.run(train_set, test_set)
 	best_threshold = (0, 0)
 	best_threshold_value = 0
+	result_object.cluster_graph(network)
 	for prune_factor in PRUNE_FACTOR_RANGE:
 		print("Prune with factor: {0}".format(prune_factor))
 		above_mean_indexes = find_indexes_above_half_of_max(network, 1, prune_factor)

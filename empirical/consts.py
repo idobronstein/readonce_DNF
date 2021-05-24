@@ -8,8 +8,8 @@ TYPE = np.float32
 EXTRA_TO_NANE = ''
 
 ### Target params ###
-D = 9
-DNF = [3,3,3]
+D = 6
+DNF = [3,3]
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 500
 TERM_SIZE = 4
@@ -20,27 +20,27 @@ OVERLAP_SIZE = 1
 LR = 1e-3
 R = 600
 R_SVN = 5000
-SIGMA = 1e-4
+SIGMA = 1e-6
 SIGMA_LARGE = 1
 LR_FIX = 1e-3
 LR_STA = 1e-2
 
-### Hyper params to NTK###
+### Hyper params to NTK### 
 SIGMA_1 = 1
 SIGMA_2 = 1
 
 ### Test params ###
 TEST_SIZE = 500
 TRAIN_SIZE = 250
-TRAIN_SIZE_LIST = list(range(40, 160, 20)) + list(range(160, 600, 40))  + list(range(600, 2260, 100))
+TRAIN_SIZE_LIST = list(range(40, 100, 20)) 
 FULL = True
 REMOVE_SAMLPE_RANGE = range(0, 2100, 100) 
-NUM_OF_RUNNING = 2
+NUM_OF_RUNNING = 1
 
 ### Learning ###
-PRINT_STEP_JUMP = 500
+PRINT_STEP_JUMP = 5000
 MAX_STEPS = 100
-CROSSENTROPY_THRESHOLD = 0.01
+CROSSENTROPY_THRESHOLD = 0.0002
 HINGELOSS_THRESHOLD = 1e-3
 ATTEMPT_NUM = 100
 
@@ -85,4 +85,4 @@ NUMBER_OF_EPSILONS = 50
 VALIDATION_SIZE = 0.1
 
 ### Plot params ###
-#TRAIN_SET_SIZE = 400
+TRAIN_SET_SIZE = 0.9

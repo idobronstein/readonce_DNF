@@ -5,7 +5,7 @@ from utilits import *
 
 class FixLayerTwoNetwork():
 
-    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, B0_init=None, use_batch=False, use_crossentropy=True, xavier_init=False, sigma=SIGMA):
+    def __init__(self, epsilon_init, lr, r=0, W_init=None, B_init=None, B0_init=None, use_batch=False, use_crossentropy=True, xavier_init=False, sigma=SIGMA, without_B0=False):
         assert epsilon_init or (not epsilon_init and r > 0) or (W_init is not None and B_init is not None)
         # init graph
         if epsilon_init:
@@ -41,13 +41,14 @@ class FixLayerTwoNetwork():
         self.all_B0 = [self.B0]
         self.use_batch = use_batch
         self.use_crossentropy = use_crossentropy
+        self.without_B0 = without_B0
 
     def train_without_batch(self, train_set, sess, result_object=None):
         X_positive = train_set[0][[i for i in range(train_set[0].shape[0]) if train_set[1][i] == POSITIVE]]
         Y_positive = np.ones([X_positive.shape[0]], dtype=TYPE)
         for step in range(0, MAX_STEPS):
             _, train_loss, train_acc, current_gradient = sess.run([self.train_op, self.loss, self.accuracy_train, self.gradient], {self.X:train_set[0], self.Y:shift_label(train_set[1])})
-            W, B, B0 = sess.run([self.W_tf, self.B_tf, self.B0_tf])
+            #W, B, B0 = sess.run([self.W_tf, self.B_tf, self.B0_tf])
             #self.all_W.append(W.T)
             #self.all_B.append(B)
             #self.all_B0.append(B0)
@@ -107,11 +108,17 @@ class FixLayerTwoNetwork():
             else:
                 self.W_tf = tf.get_variable('W', shape=[D, self.r])
             self.B_tf = tf.get_variable('B_W', initializer=self.B)
-            self.B0_tf = tf.get_variable('B_0', initializer=self.B0)
+            if self.without_B0:
+                self.B0_const = tf.constant(-1 * np.zeros([1], dtype=TYPE), dtype=TYPE)
+            else:
+                self.B0_tf = tf.get_variable('B_0', initializer=self.B0)
             
             # Netrowk
             out_1 = tf.nn.relu(tf.matmul(self.X, self.W_tf) + self.B_tf)
-            logits = tf.reduce_sum(out_1, axis=1)  + self.B0_tf
+            if self.without_B0:
+                logits = tf.reduce_sum(out_1, axis=1) + self.B0_const
+            else:
+                logits = tf.reduce_sum(out_1, axis=1)  + self.B0_tf
 
             # calc accuracy
             prediction_train = tf.round(tf.nn.sigmoid(logits))
@@ -144,9 +151,6 @@ class FixLayerTwoNetwork():
                 # init params
                 init = tf.initialize_all_variables()
                 sess.run(init)
-                #import IPython; IPython.embed()
-                # train
-                #import IPython; IPython.embed()
                 if not just_test:
                     if self.use_batch:
                         train_loss = self.train_with_batch(train_set, sess, result_object)    
@@ -156,7 +160,10 @@ class FixLayerTwoNetwork():
                 test_loss, test_acc = sess.run([self.loss, accuracy_test], {self.X:test_set[0], self.Y:shift_label(test_set[1])})  
                 print('NN Test accuracy: {0}'.format(test_acc)) 
 
-                self.W, self.B, self.B0 = sess.run([self.W_tf, self.B_tf, self.B0_tf])
+                if self.without_B0:
+                    self.W, self.B = sess.run([self.W_tf, self.B_tf])
+                else:
+                    self.W, self.B, self.B0 = sess.run([self.W_tf, self.B_tf, self.B0_tf])
                 self.W = self.W.T
 
             return train_loss, test_acc
