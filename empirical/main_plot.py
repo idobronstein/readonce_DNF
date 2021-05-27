@@ -54,8 +54,8 @@ def main():
         
         large_init = 40000
         print("Running round {0} with train set in size {1} - large init".format(round_num, large_init))
-        X = get_random_init_uniform_samples(large_init, D)
-        X_test = get_random_init_uniform_samples(TEST_SIZE, D)
+        #X = get_random_init_uniform_samples(large_init, D)
+        #X_test = get_random_init_uniform_samples(TEST_SIZE, D)
         #X_test = np.array(all_combinations, dtype=TYPE)
         #all_combinations = get_all_combinations()
         #X = np.array(random.sample(all_combinations, len(all_combinations)), dtype=TYPE)
@@ -64,9 +64,9 @@ def main():
         Y = np.array([dnf_first.get_label(x) for x in X], dtype=TYPE)
         train_set = (X, Y)
         test_set = (X_test, Y_test)
-        network_first = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, use_batch=True)
+        network_first = FixLayerTwoNetwork(False, LR, R, use_crossentropy=True, use_batch=True, sigma=SIGMA_LARGE)
         train_result, algorithem_result = network_first.run(train_set, test_set) 
-        result_object.cluster_graph(network_first, "cluster_large_init_{0} - ".format(round_num))
+        #result_object.cluster_graph(network_first, "cluster_large_init_{0} - ".format(round_num))
         result_object.save_result_to_pickle("W_large_init_{0}.pkl".format(round_num), network_first.W)
         result_object.save_result_to_pickle("result_large_init_{0}.pkl".format(round_num), (train_result, algorithem_result))
 

@@ -29,11 +29,12 @@ def main():
     result_object.create_dir(run_name)
     readonce = ReadOnceDNF(DNF)
     #noise_size = D - sum(DNF)
-    #readonce = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 1, 1, 0, 0, 0, 0],  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]])
-    #dnf_first = ReadOnceDNF(DNF)
+    readonce = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 1, 1, 0, 0, 0, 0],  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]])
+    dnf_first = ReadOnceDNF(DNF)
     dnf_second = create_dnf_big_overlap(dnf_first, len(DNF), DNF[0], OVERLAP_SIZE)
     for round_num in range(NUM_OF_RUNNING):
-
+        X = get_random_init_uniform_samples(TRAIN_SIZE, D)
+        X_test = get_random_init_uniform_samples(TEST_SIZE, D)
         Y_test = np.array([dnf_second.get_label(x) for x in X_test], dtype=TYPE)
         Y = np.array([dnf_second.get_label(x) for x in X], dtype=TYPE)
         train_set = (X, Y)

@@ -106,8 +106,9 @@ class Result():
         fig.savefig(os.path.join(self.result_dir, "bias_threshold.png"))
         plt.close(fig)
 
-    def cluster_graph(self, network, add_to_name=''):
-        leaves_index = cluster_network(network)
+    def cluster_graph(self, network, add_to_name='', leaves_index=None):
+        if leaves_index is None:
+            leaves_index = cluster_network(network)
 
         # Plot W graph
         fig = pylab.figure()
