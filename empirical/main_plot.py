@@ -31,7 +31,7 @@ def main():
     #noise_size = D - sum(DNF)
     #readonce = ReadOnceDNF(specifiec_DNF=[[1, 1, 1, 1, 1, 1, 0, 0, 0, 0],  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0]])
     dnf_first = ReadOnceDNF(DNF)
-    dnf_second = create_dnf_big_overlap(dnf_first, len(DNF), DNF[0], OVERLAP_SIZE)
+    #dnf_second = create_dnf_big_overlap(dnf_first, len(DNF), DNF[0], OVERLAP_SIZE)
     for round_num in range(NUM_OF_RUNNING):
         for i in [6000, 15000, 40000]:
             print("Running round {0} with train set in size {1}".format(round_num, i))
