@@ -8,7 +8,7 @@ TYPE = np.float32
 EXTRA_TO_NANE = ''
 
 ### Target params ###
-D = 6
+D = 100
 DNF = [3,3]
 MAX_LITERAL_REPEAT = [1, 10, 25, 50, 80]
 NUMBER_OF_TERMS = 500
